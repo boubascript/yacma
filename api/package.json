@@ -1,0 +1,42 @@
+{
+  "name": "yacma-api",
+  "description": "Yet Another (Distributed) Classroom Management App API",
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": "gang gang",
+  "engines": {
+    "node": ">=12.0.0"
+  },
+  "scripts": {
+    "format": "prettier --write \"./**/*.{ts,tsx}\"",
+    "clean": "rimraf dist",
+    "server": "ts-node app.ts",
+    "dev": "nodemon --exec ts-node -r tsconfig-paths/register app.ts",
+    "build": "tsc -p .",
+    "gcp-build": "npx tsc -p .",
+    "start": "node dist/app.js",
+    "deploy": "gcloud app deploy"
+  },
+  "devDependencies": {
+    "@types/bcryptjs": "^2.4.2",
+    "@types/express": "^4.17.7",
+    "@types/morgan": "^1.9.2",
+    "@types/node": "^14.0.20",
+    "concurrently": "^5.2.0",
+    "nodemon": "^2.0.4",
+    "prettier": "^2.0.5",
+    "ts-node": "^8.10.2",
+    "typescript": "^3.9.6"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "body-parser": "^1.19.0",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "morgan": "^1.10.0",
+    "prettier": "^2.0.5",
+    "rimraf": "^3.0.2",
+    "tsconfig-paths": "^3.9.0",
+    "typescript": "^3.9.6" 
+  }
+}
