@@ -6,11 +6,13 @@ Yet Another (Distributed) Classroom Management App
 
 ## API aka server aka backend
 `cd api`
+
 `npm run dev`
 The client site  will be running at [localhost:3000](localhost:3000).
 
 ## client aka frontend
 `cd client`
+
 `npm start`
 The server api will be running at [localhost:8080](localhost:8080).
 
