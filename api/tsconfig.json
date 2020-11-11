@@ -8,9 +8,10 @@
       "skipLibCheck": true,
       "forceConsistentCasingInFileNames": true,
       "moduleResolution": "node",
+      "baseUrl": "api"
     },
     "include": [
       "*.ts"
     ],
-    "exclude": ["node_modules", "client"]
+    "exclude": ["node_modules"]
 }
