@@ -50,7 +50,6 @@ const Register: React.FunctionComponent = () => {
       ...loginData,
       [event.target.name]: event.target.value,
     });
-
   };
 
   return (
@@ -108,18 +107,18 @@ const Register: React.FunctionComponent = () => {
             />
           </Grid>
           <Grid>
-          <Grid item xs={12}>
-          <Select
-          labelId="demo-simple-select-placeholder-label-label"
-          id="demo-simple-select-placeholder-label"
-          name="isAdmin"
-          value={isAdmin}
-          onChange={handleAdminChange}
-          >
-          <MenuItem value={0}>Student</MenuItem>
-          <MenuItem value={1}>Teacher</MenuItem>
-        </Select>
-          </Grid>
+            <Grid item xs={12}>
+              <Select
+                labelId="demo-simple-select-placeholder-label-label"
+                id="demo-simple-select-placeholder-label"
+                name="isAdmin"
+                value={isAdmin}
+                onChange={handleAdminChange}
+              >
+                <MenuItem value={0}>Student</MenuItem>
+                <MenuItem value={1}>Teacher</MenuItem>
+              </Select>
+            </Grid>
           </Grid>
         </Grid>
         <Button type="submit" fullWidth variant="contained" color="primary">

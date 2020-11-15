@@ -10,7 +10,7 @@ export interface AuthContext {
 
 export const UserContext = createContext<AuthContext>({
   user: null,
-  userInfo: null
+  userInfo: null,
 });
 
 export interface UserAuthInfo {
@@ -35,12 +35,14 @@ export const registerUser = async (userinfo: UserInfo): Promise<any> => {
   return auth
     .createUserWithEmailAndPassword(userinfo.email, userinfo.password!) //password will definitely be passed in registration
     .then((user) => {
-      db.collection("users").doc(auth.currentUser!.uid).set({
-        email: userinfo.email,
-        firstName: userinfo.firstName,
-        lastName: userinfo.lastName,
-        isAdmin: Boolean(userinfo.isAdmin), //convert to bool
-      });
+      db.collection("users")
+        .doc(auth.currentUser!.uid)
+        .set({
+          email: userinfo.email,
+          firstName: userinfo.firstName,
+          lastName: userinfo.lastName,
+          isAdmin: Boolean(userinfo.isAdmin), //convert to bool
+        });
       return { user: user };
     })
     .catch((err) => {

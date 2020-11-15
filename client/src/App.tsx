@@ -19,21 +19,21 @@ const App: React.FunctionComponent = () => {
       setUser(user);
       setLoadingAuthState(false);
       if (user) {
-      db.collection("users")
-      .where('email', '==', auth.currentUser!.email)
-      .get()
-      .then(querySnapshot => {
-        const docData = querySnapshot.docs[0].data();
-        let data : UserInfo = {
-          email: docData.email,
-          firstName: docData.firstName,
-          lastName: docData.lastName,
-          isAdmin: docData.isAdmin
-        }
-        setUserInfo(data);
+        db.collection("users")
+          .where("email", "==", auth.currentUser!.email)
+          .get()
+          .then((querySnapshot) => {
+            const docData = querySnapshot.docs[0].data();
+            let data: UserInfo = {
+              email: docData.email,
+              firstName: docData.firstName,
+              lastName: docData.lastName,
+              isAdmin: docData.isAdmin,
+            };
+            setUserInfo(data);
+          });
+      }
     });
-   }
-  })
   }, []);
 
   if (loadingAuthState) {
@@ -48,7 +48,7 @@ const App: React.FunctionComponent = () => {
   return (
     <div>
       <BrowserRouter>
-        <UserContext.Provider value={{user, userInfo}}>
+        <UserContext.Provider value={{ user, userInfo }}>
           <Switch>
             <ProtectedRoute exact path="/me" component={Profile} />
             <Route path="/register" component={Register} />

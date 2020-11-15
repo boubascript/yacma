@@ -22,7 +22,8 @@ const Profile: React.FunctionComponent = () => {
     <div>
       <Navbar />
       <Typography variant="h1">
-        Welcome, {userInfo!.isAdmin ? "Professor" : ""} {userInfo!.firstName} {userInfo!.lastName} !
+        Welcome, {userInfo!.isAdmin ? "Professor" : ""} {userInfo!.firstName}{" "}
+        {userInfo!.lastName} !
       </Typography>
       <Typography variant="h2">{message}</Typography>
     </div>
