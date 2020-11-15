@@ -7,12 +7,17 @@ import {
   Button,
   TextField,
   Grid,
+  Select,
+  MenuItem,
 } from "@material-ui/core";
 import Navbar from "components/Navbar";
 
 const DEFAULT_INFO: UserInfo = {
   email: "foo@bar.baz",
   password: "foobar",
+  firstName: "foo",
+  lastName: "bar",
+  isAdmin: 0,
 };
 
 const Register: React.FunctionComponent = () => {
@@ -24,6 +29,7 @@ const Register: React.FunctionComponent = () => {
       ...loginData,
       [e.target.name]: e.target.value,
     });
+    console.log(loginData);
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -36,6 +42,17 @@ const Register: React.FunctionComponent = () => {
     }
   };
 
+  const [isAdmin, setAdmin] = React.useState(0);
+
+  const handleAdminChange = (event: any) => {
+    setAdmin(event.target.value);
+    setLoginData({
+      ...loginData,
+      [event.target.name]: event.target.value,
+    });
+
+  };
+
   return (
     <div>
       <Navbar />
@@ -43,6 +60,28 @@ const Register: React.FunctionComponent = () => {
 
       <form onSubmit={handleSubmit} noValidate>
         <Grid container spacing={2}>
+          <Grid item xs={12}>
+            <TextField
+              variant="outlined"
+              required
+              fullWidth
+              name="firstName"
+              label="firstName"
+              id="firstName"
+              onChange={handleChange}
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <TextField
+              variant="outlined"
+              required
+              fullWidth
+              name="lastName"
+              label="lastName"
+              id="lastName"
+              onChange={handleChange}
+            />
+          </Grid>
           <Grid item xs={12}>
             <TextField
               variant="outlined"
@@ -67,6 +106,20 @@ const Register: React.FunctionComponent = () => {
               autoComplete="current-password"
               onChange={handleChange}
             />
+          </Grid>
+          <Grid>
+          <Grid item xs={12}>
+          <Select
+          labelId="demo-simple-select-placeholder-label-label"
+          id="demo-simple-select-placeholder-label"
+          name="isAdmin"
+          value={isAdmin}
+          onChange={handleAdminChange}
+          >
+          <MenuItem value={0}>Student</MenuItem>
+          <MenuItem value={1}>Teacher</MenuItem>
+        </Select>
+          </Grid>
           </Grid>
         </Grid>
         <Button type="submit" fullWidth variant="contained" color="primary">
