@@ -5,10 +5,12 @@ import "firebase/firestore";
 // TODO: add other relevant user info to context type
 export interface AuthContext {
   user: IUser;
+  userInfo: UserInfo | null;
 }
 
 export const UserContext = createContext<AuthContext>({
   user: null,
+  userInfo: null
 });
 
 export interface UserAuthInfo {
@@ -16,7 +18,9 @@ export interface UserAuthInfo {
   password: string;
 }
 
-export interface UserInfo extends UserAuthInfo {
+export interface UserInfo {
+  email: string;
+  password?: string; //used only for auth, not passed in other queries
   firstName: string;
   lastName: string;
   isAdmin: number;
@@ -29,9 +33,8 @@ export interface UserInfo extends UserAuthInfo {
  */
 export const registerUser = async (userinfo: UserInfo): Promise<any> => {
   return auth
-    .createUserWithEmailAndPassword(userinfo.email, userinfo.password)
+    .createUserWithEmailAndPassword(userinfo.email, userinfo.password!) //password will definitely be passed in registration
     .then((user) => {
-      console.log("id" + auth.currentUser!.uid);
       db.collection("users").doc(auth.currentUser!.uid).set({
         email: userinfo.email,
         firstName: userinfo.firstName,

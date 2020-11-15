@@ -6,11 +6,12 @@ import Home from "pages/Home";
 import Login from "pages/Login";
 import Register from "pages/Register";
 import Profile from "pages/Profile";
-import { auth, IUser } from "config/firebase";
-import { UserContext } from "utils/auth";
+import { auth, IUser, db } from "config/firebase";
+import { UserContext, UserInfo } from "utils/auth";
 
 const App: React.FunctionComponent = () => {
   const [user, setUser] = useState<IUser>(auth.currentUser);
+  const [userInfo, setUserInfo] = useState<UserInfo | null>(null);
   const [loadingAuthState, setLoadingAuthState] = useState(true);
 
   useEffect(() => {
@@ -18,10 +19,21 @@ const App: React.FunctionComponent = () => {
       setUser(user);
       setLoadingAuthState(false);
       if (user) {
-        // TODO: query for relevant user info (i.e if theyre a teacher) here
-        // to add to context
-      }
+      db.collection("users")
+      .where('email', '==', auth.currentUser!.email)
+      .get()
+      .then(querySnapshot => {
+        const docData = querySnapshot.docs[0].data();
+        let data : UserInfo = {
+          email: docData.email,
+          firstName: docData.firstName,
+          lastName: docData.lastName,
+          isAdmin: docData.isAdmin
+        }
+        setUserInfo(data);
     });
+   }
+  })
   }, []);
 
   if (loadingAuthState) {
@@ -36,7 +48,7 @@ const App: React.FunctionComponent = () => {
   return (
     <div>
       <BrowserRouter>
-        <UserContext.Provider value={{ user }}>
+        <UserContext.Provider value={{user, userInfo}}>
           <Switch>
             <ProtectedRoute exact path="/me" component={Profile} />
             <Route path="/register" component={Register} />
