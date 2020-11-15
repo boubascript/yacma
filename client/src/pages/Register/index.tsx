@@ -29,7 +29,6 @@ const Register: React.FunctionComponent = () => {
       ...loginData,
       [e.target.name]: e.target.value,
     });
-    console.log(loginData);
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
