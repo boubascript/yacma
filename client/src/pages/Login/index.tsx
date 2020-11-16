@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
-import { UserInfo, loginUser } from "utils/auth";
+import { UserInfo, UserAuthInfo, loginUser } from "utils/auth";
 import {
   Container,
   Typography,
@@ -10,14 +10,14 @@ import {
 } from "@material-ui/core";
 import Navbar from "components/Navbar";
 
-const DEFAULT_INFO: UserInfo = {
+const DEFAULT_INFO: UserAuthInfo = {
   email: "foo@bar.baz",
   password: "foobar",
 };
 
 const Login: React.FunctionComponent = () => {
   const history = useHistory();
-  const [loginData, setLoginData] = useState<UserInfo>(DEFAULT_INFO);
+  const [loginData, setLoginData] = useState<UserAuthInfo>(DEFAULT_INFO);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setLoginData({

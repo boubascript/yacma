@@ -5,7 +5,7 @@ import Navbar from "components/Navbar";
 
 const Profile: React.FunctionComponent = () => {
   const [message, setMessage] = useState("");
-  const { user } = useContext(UserContext);
+  const { user, userInfo } = useContext(UserContext);
 
   const getProfile = async () => {
     // TODO: Query for user profile information and update state
@@ -22,7 +22,7 @@ const Profile: React.FunctionComponent = () => {
     <div>
       <Navbar />
       <Typography variant="h1">
-        Profile Page. Soon Come, {user && user.email}
+        Welcome, { userInfo && userInfo!.isAdmin ? "Professor" : ""} {userInfo && userInfo!.firstName} {userInfo && userInfo!.lastName} !
       </Typography>
       <Typography variant="h2">{message}</Typography>
     </div>
