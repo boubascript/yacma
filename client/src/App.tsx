@@ -20,15 +20,15 @@ const App: React.FunctionComponent = () => {
       setLoadingAuthState(false);
       if (user) {
         db.collection("users")
-          .where("email", "==", auth.currentUser!.email)
+          .doc(user.uid)
           .get()
           .then((querySnapshot) => {
-            const docData = querySnapshot.docs[0].data();
+            const docData = querySnapshot.data();
             let data: UserInfo = {
-              email: docData.email,
-              firstName: docData.firstName,
-              lastName: docData.lastName,
-              isAdmin: docData.isAdmin,
+              email: docData!.email,
+              firstName: docData!.firstName,
+              lastName: docData!.lastName,
+              isAdmin: docData!.isAdmin,
             };
             setUserInfo(data);
           });
