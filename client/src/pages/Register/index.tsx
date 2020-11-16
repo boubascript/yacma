@@ -46,6 +46,7 @@ const Register: React.FunctionComponent = () => {
       ...loginData,
       isAdmin: Boolean(event.target.value),
     });
+    console.log(loginData);
   };
 
   return (
