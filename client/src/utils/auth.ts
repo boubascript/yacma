@@ -1,11 +1,10 @@
 import { createContext } from "react";
-import { auth, IUser, db } from "config/firebase";
+import { auth, IUser, db, UserCredential, AuthError } from "config/firebase";
 import "firebase/firestore";
 
-// TODO: add other relevant user info to context type
 export interface AuthContext {
-  user: IUser;
-  userInfo: UserInfo | null;
+  user: IUser | null;
+  userInfo: UserData | null;
 }
 
 export const UserContext = createContext<AuthContext>({
@@ -13,17 +12,25 @@ export const UserContext = createContext<AuthContext>({
   userInfo: null,
 });
 
-export interface UserAuthInfo {
+interface AuthResult {
+  user?: IUser;
+  error?: AuthError;
+}
+
+export interface LoginData {
   email: string;
   password: string;
 }
 
-export interface UserInfo {
+export interface UserData {
   email: string;
-  password?: string; //used only for auth, not passed in other queries
   firstName: string;
   lastName: string;
   isAdmin: boolean;
+}
+
+export interface RegisterData extends UserData {
+  password: string;
 }
 
 /**
@@ -31,21 +38,17 @@ export interface UserInfo {
  * @return
  * @param {*} user
  */
-export const registerUser = async (userinfo: UserInfo): Promise<any> => {
+export const registerUser = async (
+  userinfo: RegisterData
+): Promise<AuthResult> => {
   return auth
-    .createUserWithEmailAndPassword(userinfo.email, userinfo.password!) //password will definitely be passed in registration
-    .then((usercred) => {
-      db.collection("users")
-        .doc(usercred.user!.uid)
-        .set({
-          email: userinfo.email,
-          firstName: userinfo.firstName,
-          lastName: userinfo.lastName,
-          isAdmin: userinfo.isAdmin, //convert to bool
-        });
-      return { user: userinfo };
+    .createUserWithEmailAndPassword(userinfo.email, userinfo.password)
+    .then(({ user } : UserCredential) => {
+      const { password, ...newUserInfo } = userinfo; // submit data without passwords
+      db.collection("users").doc(user!.uid).set(newUserInfo);
+      return { user: user! };
     })
-    .catch((err) => {
+    .catch((err: AuthError) => {
       return { error: err };
     });
 };
@@ -55,29 +58,27 @@ export const registerUser = async (userinfo: UserInfo): Promise<any> => {
  * @return
  * @param {*} user
  */
-export const loginUser = async (userinfo: UserAuthInfo): Promise<any> => {
+export const loginUser = async ({
+  email,
+  password,
+}: LoginData): Promise<AuthResult> => {
   return auth
-    .signInWithEmailAndPassword(userinfo.email, userinfo.password)
-    .then((user) => {
-      return { user: user };
+    .signInWithEmailAndPassword(email, password)
+    .then(({ user } : UserCredential) => {
+      return { user: user! };
     })
-    .catch((err) => {
+    .catch((err: AuthError) => {
       return { error: err };
     });
 };
 
 /**
  * @desc Logout user
- * @return
+ * @return error object or nothing
  * @param {*} user
  */
-export const logoutUser = async (): Promise<any> => {
-  return auth
-    .signOut()
-    .then(() => {
-      return { success: true };
-    })
-    .catch((err) => {
-      return { error: err };
-    });
+export const logoutUser = async (): Promise<AuthError | void> => {
+  return auth.signOut().catch((err: AuthError) => {
+    return err;
+  });
 };

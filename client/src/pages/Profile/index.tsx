@@ -4,12 +4,10 @@ import { Container, Typography, Button } from "@material-ui/core";
 import Navbar from "components/Navbar";
 
 const Profile: React.FunctionComponent = () => {
-  const [message, setMessage] = useState("");
   const { user, userInfo } = useContext(UserContext);
 
   const getProfile = async () => {
     // TODO: Query for user profile information and update state
-    setMessage("Profile stuff here or something");
   };
 
   useEffect(() => {
@@ -22,9 +20,9 @@ const Profile: React.FunctionComponent = () => {
     <div>
       <Navbar />
       <Typography variant="h1">
-        Welcome, { userInfo && userInfo!.isAdmin ? "Professor" : ""} {userInfo && userInfo!.firstName} {userInfo && userInfo!.lastName} !
+        Welcome, {userInfo && userInfo!.isAdmin ? "Professor" : ""}{" "}
+        {userInfo && userInfo!.firstName} {userInfo && userInfo!.lastName} !
       </Typography>
-      <Typography variant="h2">{message}</Typography>
     </div>
   );
 };
