@@ -1,5 +1,5 @@
-# Exclude compiled .js files
-# *.js
+# Ignore everything
+/**
 
-# Exclude dependencies
-node_modules/
+# Except the built react app
+!build/**
