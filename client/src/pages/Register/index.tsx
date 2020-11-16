@@ -17,7 +17,7 @@ const DEFAULT_INFO: UserInfo = {
   password: "foobar",
   firstName: "foo",
   lastName: "bar",
-  isAdmin: 0,
+  isAdmin: false,
 };
 
 const Register: React.FunctionComponent = () => {
@@ -41,14 +41,13 @@ const Register: React.FunctionComponent = () => {
     }
   };
 
-  const [isAdmin, setAdmin] = React.useState(0);
-
   const handleAdminChange = (event: any) => {
-    setAdmin(event.target.value);
+    console.log("setting to: " + Boolean(event.target.value) );
     setLoginData({
       ...loginData,
-      [event.target.name]: event.target.value,
+      isAdmin: Boolean(event.target.value),
     });
+    console.log(loginData);
   };
 
   return (
@@ -111,7 +110,7 @@ const Register: React.FunctionComponent = () => {
                 labelId="demo-simple-select-placeholder-label-label"
                 id="demo-simple-select-placeholder-label"
                 name="isAdmin"
-                value={isAdmin}
+                value={loginData.isAdmin ? 1 : 0}
                 onChange={handleAdminChange}
               >
                 <MenuItem value={0}>Student</MenuItem>

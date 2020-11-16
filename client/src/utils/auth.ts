@@ -23,7 +23,7 @@ export interface UserInfo {
   password?: string; //used only for auth, not passed in other queries
   firstName: string;
   lastName: string;
-  isAdmin: number;
+  isAdmin: boolean;
 }
 
 /**
@@ -34,16 +34,16 @@ export interface UserInfo {
 export const registerUser = async (userinfo: UserInfo): Promise<any> => {
   return auth
     .createUserWithEmailAndPassword(userinfo.email, userinfo.password!) //password will definitely be passed in registration
-    .then((user) => {
+    .then((usercred) => {
       db.collection("users")
-        .doc(auth.currentUser!.uid)
+        .doc(usercred.user!.uid)
         .set({
           email: userinfo.email,
           firstName: userinfo.firstName,
           lastName: userinfo.lastName,
-          isAdmin: Boolean(userinfo.isAdmin), //convert to bool
+          isAdmin: userinfo.isAdmin, //convert to bool
         });
-      return { user: user };
+      return { user: userinfo };
     })
     .catch((err) => {
       return { error: err };
