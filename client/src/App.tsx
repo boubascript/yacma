@@ -7,31 +7,38 @@ import Login from "pages/Login";
 import Register from "pages/Register";
 import Profile from "pages/Profile";
 import { auth, IUser, db } from "config/firebase";
-import { UserContext, UserInfo } from "utils/auth";
+import { UserContext, UserData } from "utils/auth";
 
 const App: React.FunctionComponent = () => {
-  const [user, setUser] = useState<IUser>(auth.currentUser);
-  const [userInfo, setUserInfo] = useState<UserInfo | null>(null);
+  const [user, setUser] = useState<IUser | null>(auth.currentUser);
+  const [userData, setUserData] = useState<UserData | null>(null);
   const [loadingAuthState, setLoadingAuthState] = useState(true);
 
   useEffect(() => {
     auth.onAuthStateChanged((user) => {
       setUser(user);
-      setLoadingAuthState(false);
       if (user) {
+        setLoadingAuthState(true);
         db.collection("users")
           .doc(user.uid)
           .get()
           .then((querySnapshot) => {
-            const docData = querySnapshot.data();
-            let data: UserInfo = {
-              email: docData!.email,
-              firstName: docData!.firstName,
-              lastName: docData!.lastName,
-              isAdmin: docData!.isAdmin,
-            };
-            setUserInfo(data);
+            const {
+              email,
+              firstName,
+              lastName,
+              isAdmin,
+            } = querySnapshot.data()!;
+            setUserData({
+              email: email,
+              firstName: firstName,
+              lastName: lastName,
+              isAdmin: isAdmin,
+            });
+            setLoadingAuthState(false);
           });
+      } else {
+        setLoadingAuthState(false);
       }
     });
   }, []);
@@ -48,7 +55,7 @@ const App: React.FunctionComponent = () => {
   return (
     <div>
       <BrowserRouter>
-        <UserContext.Provider value={{ user, userInfo }}>
+        <UserContext.Provider value={{ user, userData }}>
           <Switch>
             <ProtectedRoute exact path="/me" component={Profile} />
             <Route path="/register" component={Register} />

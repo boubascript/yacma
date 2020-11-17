@@ -26,9 +26,11 @@ const Navbar: React.FunctionComponent = () => {
   const { user } = useContext(UserContext);
 
   const logout = async () => {
-    const { success, error } = await logoutUser();
-    if (success) history.push("/");
-    else console.log(error);
+    const { code: errorCode, message } = await logoutUser() || {};
+    if (!errorCode) history.push("/");
+    else {
+      console.log(`${errorCode}: ${message}`);
+    }
   };
 
   return (

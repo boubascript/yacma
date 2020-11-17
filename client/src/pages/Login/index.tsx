@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
-import { UserInfo, UserAuthInfo, loginUser } from "utils/auth";
+import { LoginData, loginUser } from "utils/auth";
 import {
   Container,
   Typography,
@@ -10,14 +10,14 @@ import {
 } from "@material-ui/core";
 import Navbar from "components/Navbar";
 
-const DEFAULT_INFO: UserAuthInfo = {
+const DEFAULT_INFO: LoginData = {
   email: "foo@bar.baz",
   password: "foobar",
 };
 
 const Login: React.FunctionComponent = () => {
   const history = useHistory();
-  const [loginData, setLoginData] = useState<UserAuthInfo>(DEFAULT_INFO);
+  const [loginData, setLoginData] = useState<LoginData>(DEFAULT_INFO);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setLoginData({
@@ -40,39 +40,40 @@ const Login: React.FunctionComponent = () => {
     <div>
       <Navbar />
       <Typography variant="h1">Login Page</Typography>
-
-      <form onSubmit={handleSubmit} noValidate>
-        <Grid container spacing={2}>
-          <Grid item xs={12}>
-            <TextField
-              variant="outlined"
-              required
-              fullWidth
-              id="email"
-              label="Email Address"
-              name="email"
-              autoComplete="email"
-              onChange={handleChange}
-            />
+      <Container maxWidth="sm">
+        <form onSubmit={handleSubmit} noValidate>
+          <Grid container spacing={2}>
+            <Grid item xs={12}>
+              <TextField
+                variant="outlined"
+                required
+                fullWidth
+                id="email"
+                label="Email Address"
+                name="email"
+                autoComplete="email"
+                onChange={handleChange}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                variant="outlined"
+                required
+                fullWidth
+                name="password"
+                label="Password"
+                type="password"
+                id="password"
+                autoComplete="current-password"
+                onChange={handleChange}
+              />
+            </Grid>
           </Grid>
-          <Grid item xs={12}>
-            <TextField
-              variant="outlined"
-              required
-              fullWidth
-              name="password"
-              label="Password"
-              type="password"
-              id="password"
-              autoComplete="current-password"
-              onChange={handleChange}
-            />
-          </Grid>
-        </Grid>
-        <Button type="submit" fullWidth variant="contained" color="primary">
-          Log In
-        </Button>
-      </form>
+          <Button type="submit" fullWidth variant="contained" color="primary">
+            Log In
+          </Button>
+        </form>
+      </Container>
     </div>
   );
 };

@@ -30,7 +30,8 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "format": "prettier --write \"./**/*.{ts,tsx}\"",
-    "deploy": "npm run build && gcloud app deploy"
+    "predeploy": "npm run build",
+    "deploy": "gcloud app deploy"
   },
   "eslintConfig": {
     "extends": [
