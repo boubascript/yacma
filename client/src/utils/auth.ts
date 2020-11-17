@@ -4,12 +4,12 @@ import "firebase/firestore";
 
 export interface AuthContext {
   user: IUser | null;
-  userInfo: UserData | null;
+  userData: UserData | null;
 }
 
 export const UserContext = createContext<AuthContext>({
   user: null,
-  userInfo: null,
+  userData: null,
 });
 
 interface AuthResult {

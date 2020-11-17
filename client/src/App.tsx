@@ -11,7 +11,7 @@ import { UserContext, UserData } from "utils/auth";
 
 const App: React.FunctionComponent = () => {
   const [user, setUser] = useState<IUser | null>(auth.currentUser);
-  const [userInfo, setUserInfo] = useState<UserData | null>(null);
+  const [userData, setUserData] = useState<UserData | null>(null);
   const [loadingAuthState, setLoadingAuthState] = useState(true);
 
   useEffect(() => {
@@ -29,7 +29,7 @@ const App: React.FunctionComponent = () => {
               lastName,
               isAdmin,
             } = querySnapshot.data()!;
-            setUserInfo({
+            setUserData({
               email: email,
               firstName: firstName,
               lastName: lastName,
@@ -55,7 +55,7 @@ const App: React.FunctionComponent = () => {
   return (
     <div>
       <BrowserRouter>
-        <UserContext.Provider value={{ user, userInfo }}>
+        <UserContext.Provider value={{ user, userData }}>
           <Switch>
             <ProtectedRoute exact path="/me" component={Profile} />
             <Route path="/register" component={Register} />
