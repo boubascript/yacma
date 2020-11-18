@@ -6,6 +6,7 @@ import Home from "pages/Home";
 import Login from "pages/Login";
 import Register from "pages/Register";
 import Profile from "pages/Profile";
+import Courses from "pages/Courses";
 import { auth, IUser, db } from "config/firebase";
 import { UserContext, UserData } from "utils/auth";
 
@@ -58,6 +59,7 @@ const App: React.FunctionComponent = () => {
         <UserContext.Provider value={{ user, userData }}>
           <Switch>
             <ProtectedRoute exact path="/me" component={Profile} />
+            <ProtectedRoute exact path="/courses" component={Courses} />
             <Route path="/register" component={Register} />
             <Route path="/login" component={Login} />
             <Route component={Home} />
