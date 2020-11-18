@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useContext } from "react";
 import { useHistory } from "react-router-dom";
 import { UserContext } from "utils/auth";
@@ -13,65 +12,71 @@ import {
 import Navbar from "components/Navbar";
 
 const AddCourse: React.FunctionComponent = () => {
-    const { user, userData } = useContext(UserContext);
-    const history = useHistory();
+  const { user, userData } = useContext(UserContext);
+  const history = useHistory();
 
-    interface CourseData {
-        id: string;
-        name: string;
-        description: string,
-        educator: string
-    }
-  
-  const DEFAULT_COURSE_DATA: CourseData = {
-      id: "",
-      name: "",
-      description: "",
-      educator: "Professor " + userData!.lastName,
+  interface CourseData {
+    id: string;
+    name: string;
+    description: string;
+    educator: string;
   }
-    const [courseData, setCourseData] = useState<CourseData>(DEFAULT_COURSE_DATA);
-    
-    const addCourse = async (courseData: CourseData) => {
-    const courseRef = db.collection('courses').doc(courseData.id)
 
-    courseRef.get()
-    .then((docSnapshot) => {
-    // check that course id is not taken    
-    if (!docSnapshot.exists) {
-      courseRef.onSnapshot((doc) => {
-        courseRef.set({...courseData});
-      });
+  const DEFAULT_COURSE_DATA: CourseData = {
+    id: "",
+    name: "",
+    description: "",
+    educator: userData!.firstName + " " + userData!.lastName,
+  };
+  const [courseData, setCourseData] = useState<CourseData>(DEFAULT_COURSE_DATA);
 
-      // add to user 
-      const userRef = db.collection('users').doc(user!.uid)
-      const newCourseData = [...userData!.courses, courseData.id];
-      userRef.get()
+  const addCourse = async (courseData: CourseData) => {
+    const courseRef = db.collection("courses").doc(courseData.id);
+
+    courseRef
+      .get()
       .then((docSnapshot) => {
-      // check that course id is not taken    
-          userRef.update({
-              courses: {newCourseData}
-          })
-        }) .catch(err => {
-      console.log('Error adding course id to user', err);
+        // check that course id is not taken
+        if (!docSnapshot.exists) {
+          courseRef.onSnapshot((doc) => {
+            courseRef.set({ ...courseData });
+          });
+
+          // add to user
+          const userRef = db.collection("users").doc(user!.uid);
+          userRef.get().then((docSnapshot) => {
+            if (docSnapshot.data()!.courses) {
+              userRef
+                .update({
+                  courses: [...docSnapshot.data()!.courses, courseData.id],
+                })
+                .catch((err) => {
+                  console.log("Error adding course id to user", err);
+                });
+            } else {
+              userRef
+                .update({
+                  courses: [courseData.id],
+                })
+                .catch((err) => {
+                  console.log("Error adding course id to user", err);
+                });
+            }
+            return true;
+          });
+        }
+        //TO DO update userData in context by fetching data on /me
+        else {
+          //doc id exists
+          console.log("Use another ID pls.");
+        }
       })
-      //TO DO update userData in context by fetching data on /me
-      return true;
-    }
-    else {
-        //doc id exists
-        console.log("Use another ID pls.")
+      .catch((err) => {
+        console.log("Error adding course to courses", err);
+      });
+  };
 
-    }
-
-}) .catch(err => {
-    console.log('Error adding course to courses', err);
-
-    })
-}
-
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement>
-  ) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setCourseData({
       ...courseData,
       // convert to boolean only for loginData.isAdmin
@@ -83,7 +88,7 @@ const AddCourse: React.FunctionComponent = () => {
     e.preventDefault();
     const addedCourse = await addCourse(courseData);
     if (courseData) {
-        history.push("/me");
+      history.push("/me");
     } else {
       console.log("");
     }
