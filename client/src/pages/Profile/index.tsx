@@ -15,7 +15,8 @@ const Profile: React.FunctionComponent = () => {
     educator: string;
   }
 
-  const [courses, updateCourses] = useState<CourseData[]>([]);
+  const [courses, setCourses] = useState<CourseData[]>([]);
+  const [loadingCoursesState, setLoadingCoursesState] = useState(true);
 
   const getCourses = async () => {
     let docs: CourseData[] = [];
@@ -25,16 +26,15 @@ const Profile: React.FunctionComponent = () => {
         .get()
         .then(function (querySnapshot) {
           querySnapshot.docs.map(function (doc) {
-            updateCourses([...courses, doc.data() as CourseData]);
             docs.push(doc.data() as CourseData);
           });
+          setCourses(courses.concat(docs));
+          setLoadingCoursesState(false);
         })
         .catch(function (error) {
           console.log("Error getting courses: ", error);
         });
     }
-    // TODO: Query for user profile information and update state
-    console.log(courses);
   };
 
   useEffect(() => {
@@ -42,6 +42,26 @@ const Profile: React.FunctionComponent = () => {
       await getCourses();
     })();
   }, []);
+
+  let courseContent: JSX.Element[] = [];
+
+  if (!loadingCoursesState) {
+    courses.map(({ name, id, description, educator }, index) =>
+      courseContent.push(
+        <div key={id}>
+          <Typography variant="h3">
+            <p key="courseName">
+              {" "}
+              <b>{name}</b>{" "}
+            </p>
+          </Typography>
+          <p key="courseId"> {id} </p>
+          <p key="courseDescription"> {description} </p>
+          <hr></hr>
+        </div>
+      )
+    );
+  }
 
   return (
     <div>
@@ -55,16 +75,7 @@ const Profile: React.FunctionComponent = () => {
 
           <Typography variant="h5">
             <b>Your Courses: </b>
-            {courses.map(({ name, id, description, educator }) => (
-              <div>
-                <p>
-                  {" "}
-                  <b> {id} </b>{" "}
-                </p>
-                <p> {name} </p>
-                <p> {description} </p>
-              </div>
-            ))}
+            {courseContent}
           </Typography>
         </div>
       )}
