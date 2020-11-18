@@ -6,13 +6,13 @@ const Post: React.FunctionComponent = props => {
     <React.Fragment>
       <Container >
         <h2>
-          {props.title}
+          {/*props.title*/}
         </h2>
         <p>
-          {props.desc}
+          {/*props.desc*/}
         </p>
         <div>
-          {props.files}
+          {/*props.files*/}
         </div>
       </Container>
     </React.Fragment>

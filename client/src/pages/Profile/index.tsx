@@ -5,10 +5,11 @@ import Navbar from "components/Navbar";
 
 const Profile: React.FunctionComponent = () => {
   const { user, userData } = useContext(UserContext);
-  const { firstName, lastName, isAdmin } = userData || {};
+  const { firstName, lastName, isAdmin, courses } = userData || {};
 
   const getProfile = async () => {
     // TODO: Query for user profile information and update state
+    // check in with this about function passed from context
   };
 
   useEffect(() => {
