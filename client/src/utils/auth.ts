@@ -27,6 +27,7 @@ export interface UserData {
   firstName: string;
   lastName: string;
   isAdmin: boolean;
+  courses?: string[];
 }
 
 export interface RegisterData extends UserData {
@@ -43,7 +44,7 @@ export const registerUser = async (
 ): Promise<AuthResult> => {
   return auth
     .createUserWithEmailAndPassword(userinfo.email, userinfo.password)
-    .then(({ user } : UserCredential) => {
+    .then(({ user }: UserCredential) => {
       const { password, ...newUserInfo } = userinfo; // submit data without passwords
       db.collection("users").doc(user!.uid).set(newUserInfo);
       return { user: user! };
@@ -64,7 +65,7 @@ export const loginUser = async ({
 }: LoginData): Promise<AuthResult> => {
   return auth
     .signInWithEmailAndPassword(email, password)
-    .then(({ user } : UserCredential) => {
+    .then(({ user }: UserCredential) => {
       return { user: user! };
     })
     .catch((err: AuthError) => {

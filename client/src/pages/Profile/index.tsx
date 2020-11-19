@@ -2,66 +2,30 @@ import React, { useState, useEffect, useContext } from "react";
 import { UserContext } from "utils/auth";
 import { Container, Typography, Button } from "@material-ui/core";
 import Navbar from "components/Navbar";
-import { db } from "config/firebase";
+import { getCourses, CourseData } from "utils/firestore";
 
 const Profile: React.FunctionComponent = () => {
   const { user, userData } = useContext(UserContext);
   const { firstName, lastName, isAdmin } = userData || {};
-
-  interface CourseData {
-    id: string;
-    name: string;
-    description: string;
-    educator: string;
-  }
-
   const [courses, setCourses] = useState<CourseData[]>([]);
-  const [loadingCoursesState, setLoadingCoursesState] = useState(true);
-
-  const getCourses = async () => {
-    let docs: CourseData[] = [];
-    if (user) {
-      db.collection("courses")
-        .where("educator", "==", firstName + " " + lastName)
-        .get()
-        .then(function (querySnapshot) {
-          querySnapshot.docs.map(function (doc) {
-            docs.push(doc.data() as CourseData);
-          });
-          setCourses(courses.concat(docs));
-          setLoadingCoursesState(false);
-        })
-        .catch(function (error) {
-          console.log("Error getting courses: ", error);
-        });
-    }
-  };
+  const [loadingCourses, setLoadingCourses] = useState(true);
 
   useEffect(() => {
-    (async () => {
-      await getCourses();
-    })();
+    //TO DO: set timeout
+    const getAsyncCourses = async () => {
+      if (user) {
+        const { data } = await getCourses(
+          userData!.firstName,
+          userData!.lastName
+        );
+        console.log(data);
+        setCourses(courses.concat(data as CourseData[]));
+        setLoadingCourses(false);
+      }
+    };
+
+    getAsyncCourses();
   }, []);
-
-  let courseContent: JSX.Element[] = [];
-
-  if (!loadingCoursesState) {
-    courses.map(({ name, id, description, educator }, index) =>
-      courseContent.push(
-        <div key={id}>
-          <Typography variant="h3">
-            <p key="courseName">
-              {" "}
-              <b>{name}</b>{" "}
-            </p>
-          </Typography>
-          <p key="courseId"> {id} </p>
-          <p key="courseDescription"> {description} </p>
-          <hr></hr>
-        </div>
-      )
-    );
-  }
 
   return (
     <div>
@@ -75,7 +39,21 @@ const Profile: React.FunctionComponent = () => {
 
           <Typography variant="h5">
             <b>Your Courses: </b>
-            {courseContent}
+            {!loadingCourses
+              ? courses.map(({ name, id, description, educator }, index) => (
+                  <div key={id}>
+                    <Typography variant="h3">
+                      <p key="courseName">
+                        {" "}
+                        <b>{name}</b>{" "}
+                      </p>
+                    </Typography>
+                    <p key="courseId"> {id} </p>
+                    <p key="courseDescription"> {description} </p>
+                    <hr></hr>
+                  </div>
+                ))
+              : " "}
           </Typography>
         </div>
       )}

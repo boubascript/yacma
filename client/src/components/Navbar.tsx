@@ -48,15 +48,11 @@ const Navbar: React.FunctionComponent = () => {
         {user ? (
           <div>
             {" "}
-            {userData!.isAdmin ? (
-              <Button color="inherit">
-                <Link className={classes.navlink} to="/addCourse">
-                  Add Course
-                </Link>
-              </Button>
-            ) : (
-              ""
-            )}
+            <Button color="inherit">
+              <Link className={classes.navlink} to="/addCourse">
+                Add Course
+              </Link>
+            </Button>
             <Button onClick={logout} color="inherit">
               {" "}
               Sign Out{" "}

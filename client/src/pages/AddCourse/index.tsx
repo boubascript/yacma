@@ -10,6 +10,7 @@ import {
   Grid,
 } from "@material-ui/core";
 import Navbar from "components/Navbar";
+import { addCourse } from "utils/firestore";
 
 const AddCourse: React.FunctionComponent = () => {
   const { user, userData } = useContext(UserContext);
@@ -30,52 +31,6 @@ const AddCourse: React.FunctionComponent = () => {
   };
   const [courseData, setCourseData] = useState<CourseData>(DEFAULT_COURSE_DATA);
 
-  const addCourse = async (courseData: CourseData) => {
-    const courseRef = db.collection("courses").doc(courseData.id);
-
-    courseRef
-      .get()
-      .then((docSnapshot) => {
-        // check that course id is not taken
-        if (!docSnapshot.exists) {
-          courseRef.onSnapshot((doc) => {
-            courseRef.set({ ...courseData });
-          });
-
-          // add to user
-          const userRef = db.collection("users").doc(user!.uid);
-          userRef.get().then((docSnapshot) => {
-            if (docSnapshot.data()!.courses) {
-              userRef
-                .update({
-                  courses: [...docSnapshot.data()!.courses, courseData.id],
-                })
-                .catch((err) => {
-                  console.log("Error adding course id to user", err);
-                });
-            } else {
-              userRef
-                .update({
-                  courses: [courseData.id],
-                })
-                .catch((err) => {
-                  console.log("Error adding course id to user", err);
-                });
-            }
-            return true;
-          });
-        }
-        //TO DO update userData in context by fetching data on /me
-        else {
-          //doc id exists
-          console.log("Use another ID pls.");
-        }
-      })
-      .catch((err) => {
-        console.log("Error adding course to courses", err);
-      });
-  };
-
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setCourseData({
       ...courseData,
@@ -86,8 +41,8 @@ const AddCourse: React.FunctionComponent = () => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const addedCourse = await addCourse(courseData);
-    if (courseData) {
+    const addedCourse = await addCourse(courseData, user!.uid);
+    if (addedCourse) {
       history.push("/me");
     } else {
       console.log("");

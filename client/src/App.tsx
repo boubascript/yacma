@@ -9,6 +9,7 @@ import Profile from "pages/Profile";
 import AddCourse from "pages/AddCourse";
 import { auth, IUser, db } from "config/firebase";
 import { UserContext, UserData } from "utils/auth";
+import { getUserData } from "utils/firestore";
 
 const App: React.FunctionComponent = () => {
   const [user, setUser] = useState<IUser | null>(auth.currentUser);
@@ -16,28 +17,13 @@ const App: React.FunctionComponent = () => {
   const [loadingAuthState, setLoadingAuthState] = useState(true);
 
   useEffect(() => {
-    auth.onAuthStateChanged((user) => {
+    auth.onAuthStateChanged(async (user) => {
       setUser(user);
       if (user) {
         setLoadingAuthState(true);
-        db.collection("users")
-          .doc(user.uid)
-          .get()
-          .then((querySnapshot) => {
-            const {
-              email,
-              firstName,
-              lastName,
-              isAdmin,
-            } = querySnapshot.data()!;
-            setUserData({
-              email: email,
-              firstName: firstName,
-              lastName: lastName,
-              isAdmin: isAdmin,
-            });
-            setLoadingAuthState(false);
-          });
+        const { data } = await getUserData(user.uid);
+        setUserData(data! as UserData);
+        setLoadingAuthState(false);
       } else {
         setLoadingAuthState(false);
       }
