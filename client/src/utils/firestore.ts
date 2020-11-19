@@ -26,9 +26,6 @@ export const getUserData = async (uid: string): Promise<getDataResult> => {
     .doc(uid)
     .get()
     .then((doc) => {
-        console.log("QUERY SNAP:");
-        console.log(doc.exists);
-        console.log(doc.data());
       return {data: doc.data() as UserData};
     }).catch((err) => {
         return err;
