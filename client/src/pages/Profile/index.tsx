@@ -14,12 +14,15 @@ const Profile: React.FunctionComponent = () => {
     //TO DO: set timeout
     const getAsyncCourses = async () => {
       if (user) {
-        const { data } = await getCourses(
-          userData!.firstName,
-          userData!.lastName
-        );
-        console.log(data);
-        setCourses(courses.concat(data as CourseData[]));
+        const data = await getCourses(userData!.courses!);
+        if (data) {
+          const courseData: CourseData[] = [];
+          data.map((doc) => {
+            courseData.push(doc.data() as CourseData);
+          });
+          // set hook to retrieved course objects array
+          setCourses(courseData);
+        }
         setLoadingCourses(false);
       }
     };

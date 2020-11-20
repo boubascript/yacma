@@ -5,11 +5,13 @@ import "firebase/firestore";
 export interface AuthContext {
   user: IUser | null;
   userData: UserData | null;
+  addCourseContext: (newCourse: string) => void;
 }
 
 export const UserContext = createContext<AuthContext>({
   user: null,
   userData: null,
+  addCourseContext: () => {},
 });
 
 interface AuthResult {
@@ -27,7 +29,7 @@ export interface UserData {
   firstName: string;
   lastName: string;
   isAdmin: boolean;
-  courses?: string[];
+  courses: string[];
 }
 
 export interface RegisterData extends UserData {

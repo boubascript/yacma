@@ -13,7 +13,7 @@ import Navbar from "components/Navbar";
 import { addCourse } from "utils/firestore";
 
 const AddCourse: React.FunctionComponent = () => {
-  const { user, userData } = useContext(UserContext);
+  const { user, userData, addCourseContext } = useContext(UserContext);
   const history = useHistory();
 
   interface CourseData {
@@ -41,7 +41,12 @@ const AddCourse: React.FunctionComponent = () => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const addedCourse = await addCourse(courseData, user!.uid);
+    addCourseContext(courseData.id);
+    const addedCourse = await addCourse(
+      courseData,
+      userData!.courses!,
+      user!.uid
+    );
     if (addedCourse) {
       history.push("/me");
     } else {

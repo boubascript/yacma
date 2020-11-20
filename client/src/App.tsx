@@ -15,13 +15,18 @@ const App: React.FunctionComponent = () => {
   const [user, setUser] = useState<IUser | null>(auth.currentUser);
   const [userData, setUserData] = useState<UserData | null>(null);
   const [loadingAuthState, setLoadingAuthState] = useState(true);
+  const addCourseContext = (newCourse: string) => {
+    const currData = userData;
+    currData!.courses.push(newCourse);
+    setUserData(currData);
+  };
 
   useEffect(() => {
     auth.onAuthStateChanged(async (user) => {
       setUser(user);
       if (user) {
         setLoadingAuthState(true);
-        const { data } = await getUserData(user.uid);
+        const data = await getUserData(user.uid);
         setUserData(data! as UserData);
         setLoadingAuthState(false);
       } else {
@@ -42,7 +47,7 @@ const App: React.FunctionComponent = () => {
   return (
     <div>
       <BrowserRouter>
-        <UserContext.Provider value={{ user, userData }}>
+        <UserContext.Provider value={{ user, userData, addCourseContext }}>
           <Switch>
             <ProtectedRoute exact path="/me" component={Profile} />
             <Route path="/register" component={Register} />
