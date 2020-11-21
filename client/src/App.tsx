@@ -16,10 +16,12 @@ const App: React.FunctionComponent = () => {
   const [user, setUser] = useState<IUser | null>(auth.currentUser);
   const [userData, setUserData] = useState<UserData | null>(null);
   const [loadingAuthState, setLoadingAuthState] = useState(true);
+
   const addCourseContext = (newCourse: string) => {
-    const currData = userData;
-    currData!.courses.push(newCourse);
-    setUserData(currData);
+    setUserData({
+      ...userData!,
+      courses: [...userData!.courses, newCourse]
+    })
   };
 
   useEffect(() => {
