@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from "react";
 import { useHistory } from "react-router-dom";
 import { UserContext } from "utils/auth";
-import { db } from "config/firebase";
+
 import {
   Container,
   Typography,
@@ -10,9 +10,9 @@ import {
   Grid,
 } from "@material-ui/core";
 import Navbar from "components/Navbar";
-import { addCourse } from "utils/firestore";
+import { addCourseAdmin } from "utils/firestore";
 
-const AddCourse: React.FunctionComponent = () => {
+const AddCourseProf: React.FunctionComponent = () => {
   const { user, userData, addCourseContext } = useContext(UserContext);
   const history = useHistory();
 
@@ -34,22 +34,16 @@ const AddCourse: React.FunctionComponent = () => {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setCourseData({
       ...courseData,
-      // convert to boolean only for loginData.isAdmin
       [e.target.name!]: e.target.value,
     });
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const addedCourse = await addCourse(
-      courseData,
-      userData!.courses!,
-      user!.uid
-    );
+    const addedCourse = await addCourseAdmin(courseData, user!.uid);
     if (addedCourse) {
-      // If course is successfully added, it is then pushed to context
-      addCourseContext(courseData.id);
-      history.push("/me");
+        addCourseContext(courseData.id);
+        history.push("/me");
     } else {
       console.log("");
     }
@@ -106,4 +100,4 @@ const AddCourse: React.FunctionComponent = () => {
   );
 };
 
-export default AddCourse;
+export default AddCourseProf;

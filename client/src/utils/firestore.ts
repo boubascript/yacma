@@ -1,4 +1,4 @@
-import { auth, IUser, db, UserCredential, AuthError } from "config/firebase";
+import { auth, IUser, db, UserCredential, AuthError, fieldValue } from "config/firebase";
 import "firebase/firestore";
 import { UserContext, UserData } from "utils/auth";
 
@@ -65,20 +65,21 @@ export const addCourseToCourses = async (courseData: CourseData) => {
   }
 };
 
-export const updateCoursesForUser = async (
-  newCourses: string[],
+export const addCourseForUser = async (
+  newCourse: string,
   uid: string
 ) => {
   // add to user
   const userRef = db.collection("users").doc(uid);
-
   try {
     const user = await userRef.get();
     console.log(user.exists);
     if (user.exists) {
       userRef.update({
-        courses: newCourses,
+        // @ts-ignore
+        courses: fieldValue.arrayUnion(newCourse),
       });
+      return true;
       console.log("updated");
     }
     return true;
@@ -87,16 +88,19 @@ export const updateCoursesForUser = async (
   }
 };
 
-export const addCourse = async (
-  courseData: CourseData,
-  courses: string[],
-  uid: string
-) => {
+export const addCourseAdmin = async (courseData: CourseData, uid:string) => {
   try {
-    const addToCourse = await addCourseToCourses(courseData);
-    const addToUser = await updateCoursesForUser(courses, uid);
-    return addToCourse && addToUser;
-  } catch {
-    console.log("error in addCourse");
+    const addedToCourses = await addCourseToCourses(courseData);
+    if (addedToCourses) {
+      try {
+        const addedToUser = await addCourseForUser(courseData.id, uid);
+        return addedToUser;
+      } catch {
+        console.log("Error adding to user");
+      }
+    }
   }
-};
+  catch {
+    console.log("Error adding to courses");
+  }
+}
