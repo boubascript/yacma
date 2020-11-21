@@ -16,15 +16,10 @@ const Profile: React.FunctionComponent = () => {
       if (user) {
         const data = await getCourses(userData!.courses!);
         if (data) {
-          const courseData: CourseData[] = [];
-          data.map((doc) => {
-            courseData.push(doc.data() as CourseData);
-          });
-          // set hook to retrieved course objects array
-          setCourses(courseData);
+          setCourses(data.map(doc => doc.data() as CourseData));
         }
         setLoadingCourses(false);
-      }
+      };
     };
 
     getAsyncCourses();
@@ -43,7 +38,7 @@ const Profile: React.FunctionComponent = () => {
           <Typography variant="h5">
             <b>Your Courses: </b>
             {!loadingCourses
-              ? courses.map(({ name, id, description, educator }, index) => (
+              && courses.map(({ name, id, description, educator }, index) => (
                   <div key={id}>
                     <Typography variant="h3">
                       <p key="courseName">
@@ -57,7 +52,7 @@ const Profile: React.FunctionComponent = () => {
                     <hr></hr>
                   </div>
                 ))
-              : " "}
+              }
           </Typography>
         </div>
       )}

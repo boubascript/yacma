@@ -27,8 +27,8 @@ const App: React.FunctionComponent = () => {
       setUser(user);
       if (user) {
         setLoadingAuthState(true);
-        const data = await getUserData(user.uid);
-        setUserData(data! as UserData);
+        const data = await getUserData(user.uid) as UserData;
+        setUserData(data!);
         setLoadingAuthState(false);
       } else {
         setLoadingAuthState(false);

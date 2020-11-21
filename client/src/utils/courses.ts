@@ -1,5 +1,4 @@
-import { auth, IUser, db, UserCredential, AuthError, fieldValue } from "config/firebase";
-import "firebase/firestore";
+import { auth, IUser, db, UserCredential, AuthError, FieldValue } from "config/firebase";
 import { UserContext, UserData } from "utils/auth";
 
 export interface CourseData {
@@ -78,8 +77,7 @@ export const addCourseForUser = async (
     console.log(user.exists);
     if (user.exists) {
       userRef.update({
-        // @ts-ignore
-        courses: fieldValue.arrayUnion(newCourse),
+        courses: FieldValue.arrayUnion(newCourse),
       });
       return true;
       console.log("updated");

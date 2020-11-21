@@ -12,23 +12,23 @@ import {
 import Navbar from "components/Navbar";
 import { addCourseAdmin } from "utils/courses";
 
+interface CourseData {
+  id: string;
+  name: string;
+  description: string;
+  educator: string;
+}
+const DEFAULT_COURSE_DATA: CourseData = {
+  id: "",
+  name: "",
+  description: "",
+  educator: "",
+};
 const AddCourseProf: React.FunctionComponent = () => {
   const { user, userData, addCourseContext } = useContext(UserContext);
   const history = useHistory();
 
-  interface CourseData {
-    id: string;
-    name: string;
-    description: string;
-    educator: string;
-  }
 
-  const DEFAULT_COURSE_DATA: CourseData = {
-    id: "",
-    name: "",
-    description: "",
-    educator: userData!.firstName + " " + userData!.lastName,
-  };
   const [courseData, setCourseData] = useState<CourseData>(DEFAULT_COURSE_DATA);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -40,6 +40,10 @@ const AddCourseProf: React.FunctionComponent = () => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setCourseData({
+      ...courseData,
+      educator: userData!.firstName + " " + userData!.lastName
+      })
     const addedCourse = await addCourseAdmin(courseData, user!.uid);
     if (addedCourse) {
         addCourseContext(courseData.id);
