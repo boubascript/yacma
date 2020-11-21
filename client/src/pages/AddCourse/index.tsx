@@ -41,13 +41,14 @@ const AddCourse: React.FunctionComponent = () => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    addCourseContext(courseData.id);
     const addedCourse = await addCourse(
       courseData,
       userData!.courses!,
       user!.uid
     );
     if (addedCourse) {
+      // If course is successfully added, it is then pushed to context
+      addCourseContext(courseData.id);
       history.push("/me");
     } else {
       console.log("");
