@@ -53,13 +53,13 @@ export const addCourseToCourses = async (courseData: CourseData) => {
     const courseRef = db.collection("courses").doc(courseData.id);
     const course = await courseRef.get();
     // It doesn't exit, so add it!
-    if (course) {
+    if (!course.exists) {
       courseRef.set({
         ...courseData,
       });
       return true;
     } else {
-      console.log("Please use another id.");
+      console.log("Course Exists. Please use another id.");
     }
   } catch {
     console.log("Error adding course id to user");
@@ -102,5 +102,25 @@ export const addCourseAdmin = async (courseData: CourseData, uid:string) => {
   }
   catch {
     console.log("Error adding to courses");
+  }
+}
+
+export const addCourseStudent = async (courseId: string, uid: string) => {
+  const courseRef = db.collection("courses").doc(courseId);
+  try {
+    const course = await courseRef.get();
+    if (course.exists) {
+      try {
+          const addedToUser = await addCourseForUser(courseId, uid);
+          return addedToUser;
+        } catch {
+        console.log("Error adding to user");
+      }
+    }
+    else {
+      console.log("Course don't exist");
+    }
+  } catch {
+    console.log("Error checking if course exists");
   }
 }

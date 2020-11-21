@@ -43,15 +43,21 @@ const AddCourseProf: React.FunctionComponent = () => {
     setCourseData({
       ...courseData,
       educator: userData!.firstName + " " + userData!.lastName
-      })
-    const addedCourse = await addCourseAdmin(courseData, user!.uid);
-    if (addedCourse) {
+    })
+    if (!userData!.courses.includes(courseData.id)) {
+      const addedCourse = await addCourseAdmin(courseData, user!.uid);
+      if (addedCourse) {
         addCourseContext(courseData.id);
         history.push("/me");
-    } else {
-      console.log("");
+      } else {
+        console.log("");
+      }
     }
-  };
+    else {
+      console.log("This id is already in your courses.");
+    }
+  }
+  
 
   return (
     <div>

@@ -25,7 +25,6 @@ export interface LoginData {
 }
 
 export interface UserData {
-  uid: string;
   email: string;
   firstName: string;
   lastName: string;
@@ -49,8 +48,6 @@ export const registerUser = async (
     .createUserWithEmailAndPassword(userinfo.email, userinfo.password)
     .then(({ user }: UserCredential) => {
       const { password, ...newUserInfo } = userinfo; // submit data without passwords
-      // add uid
-      newUserInfo.uid = user!.uid;
       db.collection("users").doc(user!.uid).set(newUserInfo as UserData);
       return { user: user! };
     })

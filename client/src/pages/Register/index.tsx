@@ -19,7 +19,6 @@ interface SelectElement {
 }
 
 const DEFAULT_INFO: RegisterData = {
-  uid: "",
   email: "foo@bar.baz",
   password: "foobar",
   firstName: "foo",

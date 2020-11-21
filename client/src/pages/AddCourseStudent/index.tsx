@@ -10,7 +10,7 @@ import {
   Grid,
 } from "@material-ui/core";
 import Navbar from "components/Navbar";
-import { addCourseForUser  } from "utils/courses";
+import { addCourseStudent } from "utils/courses";
 
 const AddCourseStudent: React.FunctionComponent = () => {
   const { user, userData, addCourseContext } = useContext(UserContext);
@@ -23,14 +23,21 @@ const AddCourseStudent: React.FunctionComponent = () => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const addedCourse = await addCourseForUser(courseId, user!.uid);
-    if (addedCourse) {
-      addCourseContext(courseId);
-      history.push("/me");
-    } else {
-      console.log("");
+    
+    // Make sure user is not already enrolled
+    if (!(userData!.courses.includes(courseId))) {
+      const addedCourse = await addCourseStudent(courseId, user!.uid);
+      if (addedCourse) {
+        addCourseContext(courseId);
+        history.push("/me");
+      } else {
+        console.log("");
+      }
     }
-  };
+    else {
+      console.log("Already enrolled. Please enter another course id.")
+    }
+  }
 
   return (
     <div>

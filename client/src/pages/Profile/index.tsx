@@ -6,17 +6,20 @@ import { getCourses, CourseData } from "utils/courses";
 
 const Profile: React.FunctionComponent = () => {
   const { user, userData } = useContext(UserContext);
-  const { firstName, lastName, isAdmin } = userData || {};
-  const [courses, setCourses] = useState<CourseData[]>([]);
+  const { firstName, lastName, isAdmin, courses } = userData || {};
+  const [coursesData, setCoursesData] = useState<CourseData[]>([]);
   const [loadingCourses, setLoadingCourses] = useState(true);
+  console.log("courses");
+  console.log(courses)
+  console.log(coursesData);
 
   useEffect(() => {
     //TO DO: set timeout
     const getAsyncCourses = async () => {
       if (user) {
-        const data = await getCourses(userData!.courses!);
+        const data = await getCourses(courses!);
         if (data) {
-          setCourses(data.map(doc => doc.data() as CourseData));
+          setCoursesData(data.map(doc => doc.data() as CourseData));
         }
         setLoadingCourses(false);
       };
@@ -38,12 +41,11 @@ const Profile: React.FunctionComponent = () => {
           <Typography variant="h5">
             <b>Your Courses: </b>
             {!loadingCourses
-              && courses.map(({ name, id, description, educator }, index) => (
-                  <div key={id}>
+              && coursesData.map(({ name, id, description, educator }, index) => (
+                  <div key="courseData">
                     <Typography variant="h3">
                       <p key="courseName">
-                        {" "}
-                        <b>{name}</b>{" "}
+                        <b>{name}</b>
                       </p>
                     </Typography>
                     <p key="courseId"> {id} </p>
