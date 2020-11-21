@@ -2,7 +2,7 @@ import React, { useState, useEffect, useContext } from "react";
 import { UserContext } from "utils/auth";
 import { Container, Typography, Button } from "@material-ui/core";
 import Navbar from "components/Navbar";
-import { getCourses, CourseData } from "utils/firestore";
+import { getCourses, CourseData } from "utils/courses";
 
 const Profile: React.FunctionComponent = () => {
   const { user, userData } = useContext(UserContext);

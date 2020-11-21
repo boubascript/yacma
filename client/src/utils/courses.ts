@@ -14,7 +14,9 @@ export interface CourseData {
  * @return
  * @param {*}
  */
-export const getUserData = async (uid: string) => {
+
+ //TODO: move out of courses
+ export const getUserData = async (uid: string) => {
   const userRef = db.collection("users").doc(uid);
   try {
     const doc = await userRef.get();

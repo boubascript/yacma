@@ -10,7 +10,7 @@ import {
   Grid,
 } from "@material-ui/core";
 import Navbar from "components/Navbar";
-import { addCourseForUser  } from "utils/firestore";
+import { addCourseForUser  } from "utils/courses";
 
 const AddCourseStudent: React.FunctionComponent = () => {
   const { user, userData, addCourseContext } = useContext(UserContext);
