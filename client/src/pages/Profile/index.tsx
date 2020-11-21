@@ -53,6 +53,7 @@ const Profile: React.FunctionComponent = () => {
                     </Typography>
                     <p key="courseId"> {id} </p>
                     <p key="courseDescription"> {description} </p>
+                    {!isAdmin &&  <p key="educator"> Professor {educator} </p>}
                     <hr></hr>
                   </div>
                 ))
