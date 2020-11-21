@@ -6,37 +6,32 @@ import Home from "pages/Home";
 import Login from "pages/Login";
 import Register from "pages/Register";
 import Profile from "pages/Profile";
+import AddCourseProf from "pages/AddCourseProf";
+import AddCourseStudent from "pages/AddCourseStudent"
 import { auth, IUser, db } from "config/firebase";
 import { UserContext, UserData } from "utils/auth";
+import { getUserData } from "utils/courses";
 
 const App: React.FunctionComponent = () => {
   const [user, setUser] = useState<IUser | null>(auth.currentUser);
   const [userData, setUserData] = useState<UserData | null>(null);
   const [loadingAuthState, setLoadingAuthState] = useState(true);
 
+  const addCourseContext = (newCourse: string) => {
+    setUserData({
+      ...userData!,
+      courses: [...userData!.courses, newCourse]
+    })
+  };
+
   useEffect(() => {
-    auth.onAuthStateChanged((user) => {
+    auth.onAuthStateChanged(async (user) => {
       setUser(user);
       if (user) {
         setLoadingAuthState(true);
-        db.collection("users")
-          .doc(user.uid)
-          .get()
-          .then((querySnapshot) => {
-            const {
-              email,
-              firstName,
-              lastName,
-              isAdmin,
-            } = querySnapshot.data()!;
-            setUserData({
-              email: email,
-              firstName: firstName,
-              lastName: lastName,
-              isAdmin: isAdmin,
-            });
-            setLoadingAuthState(false);
-          });
+        const data = await getUserData(user.uid) as UserData;
+        setUserData(data!);
+        setLoadingAuthState(false);
       } else {
         setLoadingAuthState(false);
       }
@@ -55,11 +50,13 @@ const App: React.FunctionComponent = () => {
   return (
     <div>
       <BrowserRouter>
-        <UserContext.Provider value={{ user, userData }}>
+        <UserContext.Provider value={{ user, userData, addCourseContext }}>
           <Switch>
             <ProtectedRoute exact path="/me" component={Profile} />
             <Route path="/register" component={Register} />
             <Route path="/login" component={Login} />
+            <Route path="/addCourseProf" component={AddCourseProf} />
+            <Route path="/addCourseStudent" component={AddCourseStudent} />
             <Route component={Home} />
           </Switch>
         </UserContext.Provider>

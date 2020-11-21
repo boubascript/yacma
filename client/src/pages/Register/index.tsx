@@ -24,6 +24,7 @@ const DEFAULT_INFO: RegisterData = {
   firstName: "foo",
   lastName: "bar",
   isAdmin: false,
+  courses: [],
 };
 
 const Register: React.FunctionComponent = () => {
@@ -36,7 +37,8 @@ const Register: React.FunctionComponent = () => {
     setLoginData({
       ...loginData,
       // convert to boolean only for loginData.isAdmin
-      [e.target.name!]: e.target.name === "isAdmin" ? !!e.target.value: e.target.value,
+      [e.target.name!]:
+        e.target.name === "isAdmin" ? !!e.target.value : e.target.value,
     });
   };
 

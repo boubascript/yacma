@@ -23,10 +23,11 @@ const useStyles = makeStyles((theme: Theme) =>
 const Navbar: React.FunctionComponent = () => {
   const history = useHistory();
   const classes = useStyles();
-  const { user } = useContext(UserContext);
+  const { user, userData } = useContext(UserContext);
+  const addCourseLink = userData!.isAdmin ? "/addCourseProf" : "/addCourseStudent";
 
   const logout = async () => {
-    const { code: errorCode, message } = await logoutUser() || {};
+    const { code: errorCode, message } = (await logoutUser()) || {};
     if (!errorCode) history.push("/");
     else {
       console.log(`${errorCode}: ${message}`);
@@ -46,9 +47,18 @@ const Navbar: React.FunctionComponent = () => {
           </Link>
         </Typography>
         {user ? (
-          <Button onClick={logout} color="inherit">
-            Sign Out
-          </Button>
+          <div>
+            {" "}
+            <Button color="inherit">
+              <Link className={classes.navlink} to={addCourseLink}>
+                Add Course
+              </Link>
+            </Button>
+            <Button onClick={logout} color="inherit">
+              {" "}
+              Sign Out{" "}
+            </Button>{" "}
+          </div>
         ) : (
           <>
             <Button color="inherit">
