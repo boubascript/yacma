@@ -30,7 +30,7 @@ export interface CourseData {
 };
 
 export const getCourses = async (courseIds: string[]) => {
-  if (courseIds.length > 0) {
+  if (courseIds?.length > 0) {
     const courseRef = db.collection("courses").where("id", "in", courseIds);
     try {
       const courses = await courseRef.get();
