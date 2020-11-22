@@ -12,9 +12,9 @@
   "scripts": {
     "installer": "npm i && npm i --prefix client && npm i --prefix api",
     "format": "prettier --write **/*.{ts,tsx,css}",
-    "dev:server": "npm run dev --prefix api",
+    "dev:api": "npm run dev --prefix api",
     "dev:client": "npm start --prefix client",
-    "dev": "concurrently \"npm:dev:server\" \"npm:dev:client\""
+    "dev": "concurrently \"npm:dev:api\" \"npm:dev:client\""
   },
   "husky": {
     "hooks": {
@@ -25,6 +25,6 @@
     "type": "git",
     "url": "git+https://github.com/boubascript/yacma.git"
   },
-  "author": "",
+  "author": "yacma youth",
   "license": "MIT"
 }

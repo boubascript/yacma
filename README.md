@@ -16,7 +16,7 @@ Run `npm run installer` to install all packages for every service.
 
 `npm run dev:client` or `npm run dev:api`.
 
-`npm run format` to format all `ts/tsx` files in the project.
+`npm run format` will format all `ts/tsx` files in the project.
 
 ## api aka server aka backend
 `cd api`
