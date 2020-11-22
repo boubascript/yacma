@@ -28,23 +28,19 @@ const AddCourseProf: React.FunctionComponent = () => {
   const { user, userData, addCourseContext } = useContext(UserContext);
   const history = useHistory();
 
-
   const [courseData, setCourseData] = useState<CourseData>(DEFAULT_COURSE_DATA);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setCourseData({
-      ...courseData,
-      [e.target.name!]: e.target.value,
-    });
+    setCourseData({ ...courseData, [e.target.name!]: e.target.value });
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setCourseData({
       ...courseData,
-      educator: userData!.firstName + " " + userData!.lastName
-    })
-    if (!userData!.courses.includes(courseData.id)) {
+      educator: userData!.firstName + " " + userData!.lastName,
+    });
+    if (!userData?.courses || !userData.courses.includes(courseData.id)) {
       const addedCourse = await addCourseAdmin(courseData, user!.uid);
       if (addedCourse) {
         addCourseContext(courseData.id);
@@ -52,12 +48,10 @@ const AddCourseProf: React.FunctionComponent = () => {
       } else {
         console.log("");
       }
-    }
-    else {
+    } else {
       console.log("This id is already in your courses.");
     }
-  }
-  
+  };
 
   return (
     <div>

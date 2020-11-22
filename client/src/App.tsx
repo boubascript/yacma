@@ -7,7 +7,7 @@ import Login from "pages/Login";
 import Register from "pages/Register";
 import Profile from "pages/Profile";
 import AddCourseProf from "pages/AddCourseProf";
-import AddCourseStudent from "pages/AddCourseStudent"
+import AddCourseStudent from "pages/AddCourseStudent";
 import { auth, IUser, db } from "config/firebase";
 import { UserContext, UserData } from "utils/auth";
 import { getUserData } from "utils/courses";
@@ -18,10 +18,7 @@ const App: React.FunctionComponent = () => {
   const [loadingAuthState, setLoadingAuthState] = useState(true);
 
   const addCourseContext = (newCourse: string) => {
-    setUserData({
-      ...userData!,
-      courses: [...userData!.courses, newCourse]
-    })
+    setUserData({ ...userData!, courses: [...userData!.courses, newCourse] });
   };
 
   useEffect(() => {
@@ -29,7 +26,7 @@ const App: React.FunctionComponent = () => {
       setUser(user);
       if (user) {
         setLoadingAuthState(true);
-        const data = await getUserData(user.uid) as UserData;
+        const data = (await getUserData(user.uid)) as UserData;
         setUserData(data!);
         setLoadingAuthState(false);
       } else {

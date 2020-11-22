@@ -10,7 +10,7 @@ const Profile: React.FunctionComponent = () => {
   const [coursesData, setCoursesData] = useState<CourseData[]>([]);
   const [loadingCourses, setLoadingCourses] = useState(true);
   console.log("courses");
-  console.log(courses)
+  console.log(courses);
   console.log(coursesData);
 
   useEffect(() => {
@@ -19,10 +19,10 @@ const Profile: React.FunctionComponent = () => {
       if (user) {
         const data = await getCourses(courses!);
         if (data) {
-          setCoursesData(data.map(doc => doc.data() as CourseData));
+          setCoursesData(data.map((doc) => doc.data() as CourseData));
         }
         setLoadingCourses(false);
-      };
+      }
     };
 
     getAsyncCourses();
@@ -40,21 +40,20 @@ const Profile: React.FunctionComponent = () => {
 
           <Typography variant="h5">
             <b>Your Courses: </b>
-            {!loadingCourses
-              && coursesData.map(({ name, id, description, educator }, index) => (
-                  <div key="courseData">
-                    <Typography variant="h3">
-                      <p key="courseName">
-                        <b>{name}</b>
-                      </p>
-                    </Typography>
-                    <p key="courseId"> {id} </p>
-                    <p key="courseDescription"> {description} </p>
-                    {!isAdmin &&  <p key="educator"> Professor {educator} </p>}
-                    <hr></hr>
-                  </div>
-                ))
-              }
+            {!loadingCourses &&
+              coursesData.map(({ name, id, description, educator }, index) => (
+                <div key="courseData">
+                  <Typography variant="h3">
+                    <p key="courseName">
+                      <b>{name}</b>
+                    </p>
+                  </Typography>
+                  <p key="courseId"> {id} </p>
+                  <p key="courseDescription"> {description} </p>
+                  {!isAdmin && <p key="educator"> Professor {educator} </p>}
+                  <hr></hr>
+                </div>
+              ))}
           </Typography>
         </div>
       )}

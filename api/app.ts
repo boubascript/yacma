@@ -29,7 +29,6 @@ import logger from "morgan";
       });
     }
 
-
     // Routes
     app.get("/", (req: express.Request, res: express.Response) => {
       return res.send(`Hello YACMA!`);

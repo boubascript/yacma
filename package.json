@@ -1,0 +1,30 @@
+{
+  "name": "yacma",
+  "version": "1.0.0",
+  "description": "Yet Another (Distributed) Classroom Management App",
+  "devDependencies": {
+    "concurrently": "^5.3.0",
+    "husky": "^4.3.0",
+    "lint-staged": "^10.5.1",
+    "prettier": "^2.2.0",
+    "typescript": "^4.1.2"
+  },
+  "scripts": {
+    "installer": "npm i && npm i --prefix client && npm i --prefix api",
+    "format": "prettier --write **/*.{ts,tsx,css}",
+    "dev:api": "npm run dev --prefix api",
+    "dev:client": "npm start --prefix client",
+    "dev": "concurrently \"npm:dev:api\" \"npm:dev:client\""
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/boubascript/yacma.git"
+  },
+  "author": "yacma youth",
+  "license": "MIT"
+}

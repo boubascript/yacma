@@ -23,9 +23,9 @@ const AddCourseStudent: React.FunctionComponent = () => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    
+
     // Make sure user is not already enrolled
-    if (!(userData!.courses.includes(courseId))) {
+    if (!userData!.courses.includes(courseId)) {
       const addedCourse = await addCourseStudent(courseId, user!.uid);
       if (addedCourse) {
         addCourseContext(courseId);
@@ -33,11 +33,10 @@ const AddCourseStudent: React.FunctionComponent = () => {
       } else {
         console.log("");
       }
+    } else {
+      console.log("Already enrolled. Please enter another course id.");
     }
-    else {
-      console.log("Already enrolled. Please enter another course id.")
-    }
-  }
+  };
 
   return (
     <div>
