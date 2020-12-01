@@ -11,6 +11,8 @@ import AddCourseStudent from "pages/AddCourseStudent";
 import { auth, IUser, db } from "config/firebase";
 import { UserContext, UserData } from "utils/auth";
 import { getUserData } from "utils/courses";
+import Post from "pages/Post";
+import NewPost from "pages/NewPost";
 
 const App: React.FunctionComponent = () => {
   const [user, setUser] = useState<IUser | null>(auth.currentUser);
@@ -54,6 +56,7 @@ const App: React.FunctionComponent = () => {
             <Route path="/login" component={Login} />
             <Route path="/addCourseProf" component={AddCourseProf} />
             <Route path="/addCourseStudent" component={AddCourseStudent} />
+            <Route path="/addPost" component={NewPost} />
             <Route component={Home} />
           </Switch>
         </UserContext.Provider>
