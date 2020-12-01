@@ -1,13 +1,4 @@
-import {
-  auth,
-  IUser,
-  db,
-  UserCredential,
-  AuthError,
-  FieldValue,
-} from "config/firebase";
-import { UserContext, UserData } from "utils/auth";
-// some course context import { CourseContext, CourseData } from "utils/courses";
+import { db } from "config/firebase";
 
 export interface PostData {
   title: string;
@@ -17,13 +8,12 @@ export interface PostData {
 }
 
 /**
- * @desc Get post data
- * @return
- * @param uid user id
- * @param courseId course id which posts belong to
+ * @desc Determines if course exists
+ * @return true if course exists
+ * @param courseId Course id which posts belong to
  */
 
-/* May not need... */
+/* Might not need... */
 const courseExists = async (courseId: string) => {
   const courseRef = db.collection("courses").doc(courseId);
 
@@ -41,6 +31,13 @@ const courseExists = async (courseId: string) => {
     console.log("Something went wrong");
   }
 };
+
+/**
+ * @desc Get post data
+ * @return Array of all posts
+ * @param uid Current user id
+ * @param courseId course id which posts belong to
+ */
 
 // TODO: Reduce calls from two -> one
 export const getPosts = async (uid: string, courseId: string) => {
@@ -68,12 +65,15 @@ export const getPosts = async (uid: string, courseId: string) => {
   }
 };
 
+/**
+ * @desc Add Post to Course
+ * @return true if add is successful
+ * @param courseId Course id which posts belong to
+ * @param postData Post object data
+ */
+
 // TODO: Reduce calls from three -> one
-export const addPostToPosts = async (
-  uid: string,
-  courseId: string,
-  postData: PostData
-) => {
+export const addPostToPosts = async (courseId: string, postData: PostData) => {
   // Check if course exists
   if (courseExists(courseId)) {
     try {
@@ -82,15 +82,38 @@ export const addPostToPosts = async (
         .doc(courseId)
         .collection("posts");
 
-      console.log("got postsref");
-      // Add a new document with a generated id.
-      const res = await postsRef.add(postData);
-      console.log("got res");
-
-      // Sanity Check
-      // console.log('Added document with ID: ', res.id);
+      // Add new post with a generated id.
+      postsRef.add(postData);
+      return true;
     } catch (error) {
       console.log("Error, could not add post :O");
     }
   }
 };
+
+/**
+ * @desc Update post
+ * @return true if add is successful
+ * @param postId  Post Id
+ * @param postData Post object data
+ */
+
+// TODO: Edit Post
+export const updatePost = async (postId: string, postData: PostData) => {};
+
+/**
+ * @desc Delete post
+ * @return true if add is successful
+ * @param postId  Post Id
+ */
+// TODO: Delete Post
+export const deletePost = async (postId: string) => {};
+
+/**
+ * @desc Get post
+ * @return Post
+ * @param postId  Post Id
+ */
+
+// TODO: Get Post
+export const getPost = async (postId: string) => {};
