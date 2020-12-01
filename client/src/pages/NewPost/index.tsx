@@ -30,9 +30,8 @@ const NewPost: React.FunctionComponent = () => {
       author: userData!.firstName + " " + userData!.lastName,
     };
 
-    // TODO: Connect to CourseId
+    // TODO: Connect CourseId via Course Context
     const post = await addPost("4", postBody);
-    console.log("After Posted ;)", post);
   };
 
   return (
