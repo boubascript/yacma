@@ -22,8 +22,8 @@ const courseExists = async (courseId: string) => {
     } else {
       return true;
     }
-  } catch (error) {
-    console.log("Something went wrong");
+  } catch (e) {
+    console.log("Something went wrong :/");
   }
 };
 
@@ -46,13 +46,17 @@ export const getPosts = async (uid: string, courseId: string) => {
 
       // Check if posts collection exists
       if (postsSnap.size > 0) {
+        let postData: Array<Object> = [];
+
         postsSnap.forEach((doc) => {
-          console.log(doc.id, "=>", doc.data());
+          postData.push(doc.data());
         });
+
+        return postData;
       } else {
         console.log("No posts for this course");
       }
-    } catch (error) {
+    } catch (e) {
       console.log("Error, could not get Course/Post Data");
     }
   } else {
@@ -83,7 +87,7 @@ export const getPost = async (courseId: string, postId: string) => {
       } else {
         return post.data();
       }
-    } catch (error) {
+    } catch (e) {
       console.log("Could not add post");
     }
   } else {
@@ -111,7 +115,7 @@ export const addPost = async (courseId: string, postData: PostData) => {
       // Add new post with a generated id.
       await postsRef.add(postData);
       return true;
-    } catch (error) {
+    } catch (e) {
       console.log("Error, could not add post :O");
     }
   } else {
