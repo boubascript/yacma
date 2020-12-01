@@ -12,19 +12,14 @@ export interface PostData {
  * @return true if course exists
  * @param courseId Course id which posts belong to
  */
-
-/* Might not need... */
 const courseExists = async (courseId: string) => {
   const courseRef = db.collection("courses").doc(courseId);
-
   try {
     const courseSnap = await courseRef.get();
-
     if (!courseSnap.exists) {
       console.log("Course does not exist :/");
       return false;
     } else {
-      console.log(courseSnap.data());
       return true;
     }
   } catch (error) {
@@ -37,9 +32,8 @@ const courseExists = async (courseId: string) => {
  * @return Array of all posts
  * @param uid Current user id
  * @param courseId course id which posts belong to
+ * Cost = Two calls to DB
  */
-
-// TODO: Reduce calls from two -> one
 export const getPosts = async (uid: string, courseId: string) => {
   // Check if course exists
   if (courseExists(courseId)) {
@@ -52,7 +46,6 @@ export const getPosts = async (uid: string, courseId: string) => {
 
       // Check if posts collection exists
       if (postsSnap.size > 0) {
-        //TODO: update to array return
         postsSnap.forEach((doc) => {
           console.log(doc.id, "=>", doc.data());
         });
@@ -62,6 +55,39 @@ export const getPosts = async (uid: string, courseId: string) => {
     } catch (error) {
       console.log("Error, could not get Course/Post Data");
     }
+  } else {
+    console.log("Course does not exist...");
+  }
+};
+
+/**
+ * @desc Get post
+ * @return Post
+ * @param courseId Course id which posts belong to
+ * @param postId  Post Id
+ * Cost = Two calls to DB
+ */
+export const getPost = async (courseId: string, postId: string) => {
+  // Check if course exists
+  if (courseExists(courseId)) {
+    try {
+      const postRef = db
+        .collection("courses")
+        .doc(courseId)
+        .collection("posts")
+        .doc(postId);
+      const post = await postRef.get();
+
+      if (!post.exists) {
+        console.log("No such post exists. *raises eyebrow*");
+      } else {
+        return post.data();
+      }
+    } catch (error) {
+      console.log("Could not add post");
+    }
+  } else {
+    console.log("Course does not exist...");
   }
 };
 
@@ -70,8 +96,8 @@ export const getPosts = async (uid: string, courseId: string) => {
  * @return true if add is successful
  * @param courseId Course id which posts belong to
  * @param postData Post object data
+ * Cost = Two calls to DB
  */
-
 // TODO: Reduce calls from three -> one
 export const addPost = async (courseId: string, postData: PostData) => {
   // Check if course exists
@@ -83,11 +109,13 @@ export const addPost = async (courseId: string, postData: PostData) => {
         .collection("posts");
 
       // Add new post with a generated id.
-      postsRef.add(postData);
+      await postsRef.add(postData);
       return true;
     } catch (error) {
       console.log("Error, could not add post :O");
     }
+  } else {
+    console.log("Course does not exist...");
   }
 };
 
@@ -97,42 +125,29 @@ export const addPost = async (courseId: string, postData: PostData) => {
  * @param courseId Course id which posts belong to
  * @param postId  Post Id
  * @param postData Post object data
+ * Cost = Two calls to DB
  */
-
-// TODO: Edit Post
 export const updatePost = async (
   courseId: string,
   postId: string,
   postData: PostData
-) => {};
-
-/**
- * @desc Delete post
- * @return true if add is successful
- * @param courseId Course id which posts belong to
- * @param postId  Post Id
- */
-// TODO: Delete Post
-export const deletePost = async (courseId: string, postId: string) => {};
-
-/**
- * @desc Get post
- * @return Post
- * @param courseId Course id which posts belong to
- * @param postId  Post Id
- */
-export const getPost = async (courseId: string, postId: string) => {
-  const postRef = db
-    .collection("courses")
-    .doc(courseId)
-    .collection("posts")
-    .doc(postId);
-  const post = await postRef.get();
-
-  if (!post.exists) {
-    console.log("No such post exists. *raises eyebrow*");
+) => {
+  // Check if course exists
+  if (courseExists(courseId)) {
+    try {
+      const postRef = db
+        .collection("courses")
+        .doc(courseId)
+        .collection("posts")
+        .doc(postId);
+      await postRef.update(postData);
+      return true;
+    } catch (e) {
+      console.log("Could not edit post.", e);
+    }
   } else {
-    console.log("Post data:", post.data());
-    return post.data();
+    console.log("Course does not exist...");
   }
 };
+
+// TODO: Delete Post => Cloud Function to delete associated comments
