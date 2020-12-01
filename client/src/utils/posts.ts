@@ -73,7 +73,7 @@ export const getPosts = async (uid: string, courseId: string) => {
  */
 
 // TODO: Reduce calls from three -> one
-export const addPostToPosts = async (courseId: string, postData: PostData) => {
+export const addPost = async (courseId: string, postData: PostData) => {
   // Check if course exists
   if (courseExists(courseId)) {
     try {
@@ -94,26 +94,45 @@ export const addPostToPosts = async (courseId: string, postData: PostData) => {
 /**
  * @desc Update post
  * @return true if add is successful
+ * @param courseId Course id which posts belong to
  * @param postId  Post Id
  * @param postData Post object data
  */
 
 // TODO: Edit Post
-export const updatePost = async (postId: string, postData: PostData) => {};
+export const updatePost = async (
+  courseId: string,
+  postId: string,
+  postData: PostData
+) => {};
 
 /**
  * @desc Delete post
  * @return true if add is successful
+ * @param courseId Course id which posts belong to
  * @param postId  Post Id
  */
 // TODO: Delete Post
-export const deletePost = async (postId: string) => {};
+export const deletePost = async (courseId: string, postId: string) => {};
 
 /**
  * @desc Get post
  * @return Post
+ * @param courseId Course id which posts belong to
  * @param postId  Post Id
  */
+export const getPost = async (courseId: string, postId: string) => {
+  const postRef = db
+    .collection("courses")
+    .doc(courseId)
+    .collection("posts")
+    .doc(postId);
+  const post = await postRef.get();
 
-// TODO: Get Post
-export const getPost = async (postId: string) => {};
+  if (!post.exists) {
+    console.log("No such post exists. *raises eyebrow*");
+  } else {
+    console.log("Post data:", post.data());
+    return post.data();
+  }
+};
