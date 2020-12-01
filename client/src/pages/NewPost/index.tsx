@@ -25,14 +25,13 @@ const NewPost: React.FunctionComponent = () => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    // TODO: set state async not really needed
-    await setPostData((prevState) => ({
-      ...prevState,
+    const postBody = {
+      ...postData,
       author: userData!.firstName + " " + userData!.lastName,
-    }));
+    };
 
     // TODO: Connect to CourseId
-    const post = await addPost("4", postData);
+    const post = await addPost("4", postBody);
     console.log("After Posted ;)", post);
   };
 
