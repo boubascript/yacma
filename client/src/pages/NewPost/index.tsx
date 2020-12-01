@@ -1,7 +1,7 @@
 import React, { useState, useContext } from "react";
 import { Grid, TextField, Button } from "@material-ui/core";
 import { UserContext } from "utils/auth";
-import { addPostToPosts, PostData } from "utils/posts";
+import { addPost, PostData } from "utils/posts";
 
 // TODO: Update links to media object type
 const DEFAULT_POST_DATA: PostData = {
@@ -24,13 +24,15 @@ const NewPost: React.FunctionComponent = () => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setPostData((prevState) => ({
+
+    // TODO: set state async not really needed
+    await setPostData((prevState) => ({
       ...prevState,
       author: userData!.firstName + " " + userData!.lastName,
     }));
 
     // TODO: Connect to CourseId
-    const post = await addPostToPosts("4", postData);
+    const post = await addPost("4", postData);
     console.log("After Posted ;)", post);
   };
 
