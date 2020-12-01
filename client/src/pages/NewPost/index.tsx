@@ -12,7 +12,7 @@ const DEFAULT_POST_DATA: PostData = {
 };
 
 const NewPost: React.FunctionComponent = () => {
-  const { user, userData } = useContext(UserContext);
+  const { userData } = useContext(UserContext);
   const [postData, setPostData] = useState<PostData>(DEFAULT_POST_DATA);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
