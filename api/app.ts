@@ -2,6 +2,10 @@ import express from "express";
 import bodyparser from "body-parser";
 import logger from "morgan";
 
+const courseRouter = require('./routes/courses');
+
+export const {GOOGLE_APPLICATION_CREDENTIALS} = process.env;
+
 (async () => {
   try {
     // Initialize express
@@ -28,6 +32,8 @@ import logger from "morgan";
         next();
       });
     }
+
+    app.use('/courses', courseRouter);
 
     // Routes
     app.get("/", (req: express.Request, res: express.Response) => {

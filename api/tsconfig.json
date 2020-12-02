@@ -11,7 +11,7 @@
       "baseUrl": "api"
     },
     "include": [
-      "*.ts"
+      "*.ts", "config/firestore.ts"
     ],
     "exclude": ["node_modules"]
 }

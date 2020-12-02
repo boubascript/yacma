@@ -4,6 +4,7 @@ import { UserContext } from "utils/auth";
 import { getCourses, CourseData } from "utils/courses";
 import Navbar from "components/Navbar";
 import { Typography, Button } from "@material-ui/core";
+import axios from 'axios';
 
 const Profile: React.FunctionComponent = () => {
   const { user, userData } = useContext(UserContext);
@@ -19,9 +20,11 @@ const Profile: React.FunctionComponent = () => {
     //TO DO: set timeout
     const getAsyncCourses = async () => {
       if (user) {
-        const data = await getCourses(courses!);
-        if (data) {
-          setCoursesData(data.map((doc) => doc.data() as CourseData));
+        const data = await axios.get('/courses/getCourses', {params: {"courseIds": courses}});
+        console.log(data.data);
+        if (data.data) {
+          // @ts-ignore
+          setCoursesData(data.data.courses.map(doc => doc as CourseData));
         }
         setLoadingCourses(false);
       }
