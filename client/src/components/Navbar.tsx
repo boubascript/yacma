@@ -24,7 +24,12 @@ const Navbar: React.FunctionComponent = () => {
   const history = useHistory();
   const classes = useStyles();
   const { user, userData } = useContext(UserContext);
-  const addCourseLink = userData!.isAdmin ? "/addCourseProf" : "/addCourseStudent";
+  let addCourseLink = "/";
+
+  if (userData != null) {
+    addCourseLink = userData!.isAdmin ? "/addCourseProf" : "/addCourseStudent";
+
+  }
 
   const logout = async () => {
     const { code: errorCode, message } = (await logoutUser()) || {};
