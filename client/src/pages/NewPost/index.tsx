@@ -11,7 +11,7 @@ const DEFAULT_POST_DATA: PostData = {
   links: "",
 };
 
-const NewPost: React.FunctionComponent = () => {
+const NewPost: React.FunctionComponent = (props) => {
   const { userData } = useContext(UserContext);
   const [postData, setPostData] = useState<PostData>(DEFAULT_POST_DATA);
 

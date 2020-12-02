@@ -12,7 +12,7 @@ export interface PostData {
  * @return true if course exists
  * @param courseId Course id which posts belong to
  */
-const courseExists = async (courseId: string) => {
+export const courseExists = async (courseId: string) => {
   const courseRef = db.collection("courses").doc(courseId);
   try {
     const courseSnap = await courseRef.get();
@@ -23,12 +23,12 @@ const courseExists = async (courseId: string) => {
       return true;
     }
   } catch (e) {
-    console.log("Something went wrong :/");
+    console.log("Something went wrong, can't find the course :/");
   }
 };
 
 /**
- * @desc Get post data
+ * @desc Get all posts
  * @return Array of all posts
  * @param uid Current user id
  * @param courseId course id which posts belong to
