@@ -2,24 +2,21 @@ import React, { useState, useEffect, useContext } from "react";
 import { UserContext } from "utils/auth";
 import { Container, Typography, Button } from "@material-ui/core";
 import Navbar from "components/Navbar";
-import { getCourses, CourseData } from "utils/courses";
+import { CourseData } from "utils/courses";
 import axios from 'axios';
-import { any } from "prop-types";
+
 
 const Profile: React.FunctionComponent = () => {
   const { user, userData } = useContext(UserContext);
   const { firstName, lastName, isAdmin, courses } = userData || {};
   const [coursesData, setCoursesData] = useState<CourseData[]>([]);
   const [loadingCourses, setLoadingCourses] = useState(true);
-  console.log("courses");
-  console.log(courses);
-  console.log(coursesData);
 
   useEffect(() => {
     //TO DO: set timeout
     const getAsyncCourses = async () => {
       if (user) {
-        const data = await axios.get('/courses/getCourses', {params: {"courseIds": courses}});
+        const data = await axios.get('/courses/getCourses', {params: {"courseCodes": courses}});
         console.log(data.data);
         if (data.data) {
           // @ts-ignore

@@ -9,8 +9,7 @@ import Profile from "pages/Profile";
 import AddCourseProf from "pages/AddCourseProf";
 import AddCourseStudent from "pages/AddCourseStudent"
 import { auth, IUser, db } from "config/firebase";
-import { UserContext, UserData } from "utils/auth";
-import { getUserData } from "utils/courses";
+import { UserContext, UserData, getUserData } from "utils/auth";
 
 const App: React.FunctionComponent = () => {
   const [user, setUser] = useState<IUser | null>(auth.currentUser);

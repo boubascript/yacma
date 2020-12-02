@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useContext } from "react";
 import { useHistory } from "react-router-dom";
 import { UserContext } from "utils/auth";
+import axios from 'axios';
 
 import {
   Container,
@@ -10,16 +11,15 @@ import {
   Grid,
 } from "@material-ui/core";
 import Navbar from "components/Navbar";
-import { addCourseAdmin } from "utils/courses";
 
 interface CourseData {
-  id: string;
+  code: string;
   name: string;
   description: string;
   educator: string;
 }
 const DEFAULT_COURSE_DATA: CourseData = {
-  id: "",
+  code: "",
   name: "",
   description: "",
   educator: "",
@@ -44,17 +44,23 @@ const AddCourseProf: React.FunctionComponent = () => {
       ...courseData,
       educator: userData!.firstName + " " + userData!.lastName
     })
-    if (!userData!.courses.includes(courseData.id)) {
-      const addedCourse = await addCourseAdmin(courseData, user!.uid);
+    if (!userData!.courses.includes(courseData.code)) {
+
+      const addedCourse = await axios.get("/courses/addCourseAdmin", {
+        params: {
+          "courseData": {...courseData, educator: userData!.firstName + " " + userData!.lastName},
+          "uid": user!.uid
+      }});
+
       if (addedCourse) {
-        addCourseContext(courseData.id);
+        addCourseContext(courseData.code);
         history.push("/me");
       } else {
         console.log("");
       }
     }
     else {
-      console.log("This id is already in your courses.");
+      console.log("This course code is already in your courses.");
     }
   }
   
@@ -71,9 +77,9 @@ const AddCourseProf: React.FunctionComponent = () => {
                 variant="outlined"
                 required
                 fullWidth
-                name="id"
-                label="Course ID"
-                id="id"
+                name="code"
+                label="Course Code"
+                id="code"
                 onChange={handleChange}
               />
             </Grid>
