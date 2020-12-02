@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useContext } from "react";
 import { useHistory } from "react-router-dom";
 import { UserContext } from "utils/auth";
+import axios from "axios";
 
 import {
   Container,
@@ -10,28 +11,33 @@ import {
   Grid,
 } from "@material-ui/core";
 import Navbar from "components/Navbar";
-import { addCourseStudent } from "utils/courses";
 
 const AddCourseStudent: React.FunctionComponent = () => {
   const { user, userData, addCourseContext } = useContext(UserContext);
-  const [courseId, setCourseId] = useState<string>("");
+  const [courseCode, setCourseCode] = useState<string>("");
   const history = useHistory();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setCourseId(e.target.value);
+    setCourseCode(e.target.value);
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     // Make sure user is not already enrolled
-    if (!userData!.courses.includes(courseId)) {
-      const addedCourse = await addCourseStudent(courseId, user!.uid);
+    if (!(userData!.courses.includes(courseCode))) {
+      const addedCourse = await axios.get("/courses/addCourseStudent", {params: 
+        {
+          courseCode: courseCode,
+          uid: user!.uid
+        }
+      });
       if (addedCourse) {
-        addCourseContext(courseId);
+        addCourseContext(courseCode);
+        console.log("pushing");
         history.push("/me");
       } else {
-        console.log("");
+        console.log("Didn't add");
       }
     } else {
       console.log("Already enrolled. Please enter another course id.");
@@ -50,8 +56,8 @@ const AddCourseStudent: React.FunctionComponent = () => {
                 variant="outlined"
                 required
                 fullWidth
-                name="id"
-                label="Course ID"
+                name="code"
+                label="Course Code"
                 id="id"
                 onChange={handleChange}
               />

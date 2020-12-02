@@ -1,8 +1,8 @@
-import  { db } from '../config/firebase';
+import  { db, FieldValue } from '../config/firebase';
 import { Router, Request, Response } from 'express';
 
 export interface CourseData {
-    id: string;
+    code: string;
     name: string;
     description: string;
     educator: string;
@@ -10,21 +10,18 @@ export interface CourseData {
 
 const router = Router();
 const courses = db.collection('courses'); 
+const users = db.collection('users');
 
 router.get('/getCourses', async (req: Request, res:Response) => {
-    console.log("running route");
-    console.log(req.query['courseIds']);
-    const courseIds: string[] = req.query.courseIds as unknown as string[];
-    console.log(courseIds);
-    if (courseIds.length > 0) {
-        const courseRef =  courses.where("id", "in", courseIds);
+    const courseCodes: string[] = req.query.courseCodes as unknown as string[];
+
+    if (courseCodes.length > 0) {
+        const courseRef = courses.where("code", "in", courseCodes);
       try {
-        console.log("running get");
         const courses = await courseRef.get();
         if (!courses.empty) {
             let ret: CourseData[] = []
             courses.docs.map(doc => ret.push(doc.data() as unknown as CourseData));
-            console.log(courses.docs[0].data());
             res.json({
                 courses: ret
             });
@@ -39,5 +36,79 @@ router.get('/getCourses', async (req: Request, res:Response) => {
         return [];
     }
 });
+
+export const addCourseToCourses = async (courseData: CourseData) => {
+    // First check if course exits
+    try {
+      const courseRef = courses.where("code", "==", courseData.code);
+      const course = await courseRef.get();
+
+      // It doesn't exit, so add it!
+      if (course.empty) {
+
+          courses.add(courseData);
+        return true;
+      } else {
+        console.log("Course Exists. Please use another id.");
+      }
+    } catch (e) {
+        console.log(e);
+        console.log("Error adding course to courses");
+    }
+  };
+
+export const addCourseForUser = async (
+    newCourse: string,
+    uid: string
+  ) => {
+    // add to user
+    const userRef = users.doc(uid);
+    try {
+      const user = await userRef.get();
+
+      if (user.exists) {
+        userRef.update({
+          courses: FieldValue.arrayUnion(newCourse),
+        });
+        return true;
+      }
+      return true;
+    } catch {
+      console.log("error updating courses");
+    }
+};
+
+router.get('/addCourseAdmin', async (req: Request, res:Response) => {
+    const courseData: CourseData = JSON.parse(req.query['courseData'] as string) as unknown as CourseData;
+    const uid: string = req.query['uid'] as string;
+    try {
+        const addedToCourses = await addCourseToCourses(courseData);
+        if (addedToCourses) {
+          try {
+            const addedToUser = await addCourseForUser(courseData.code, uid);
+            return res.send(addedToUser);
+          } catch {
+            console.log("Error adding to user");
+          }
+        }
+      }
+      catch {
+        console.log("Error adding to courses");
+      }
+});
+
+router.get('/addCourseStudent', async (req: Request, res:Response) => {
+    const courseCode = req.query['courseCode'] as string;
+    const uid: string = req.query['uid'] as string;
+
+    try {
+        const addedToUser = await addCourseForUser(courseCode, uid);
+        return res.send(addedToUser);
+    } catch (e) {
+        console.log(e);
+        console.log("Error adding to user");
+    }
+});
+
 
 module.exports = router;

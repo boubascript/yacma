@@ -1,10 +1,11 @@
 import React, { useState, useEffect, useContext } from "react";
 import { useHistory } from "react-router-dom";
 import { UserContext } from "utils/auth";
-import { getCourses, CourseData } from "utils/courses";
+import { Container, Typography, Button } from "@material-ui/core";
 import Navbar from "components/Navbar";
-import { Typography, Button } from "@material-ui/core";
+import { CourseData } from "utils/courses";
 import axios from 'axios';
+
 
 const Profile: React.FunctionComponent = () => {
   const { user, userData } = useContext(UserContext);
@@ -12,15 +13,12 @@ const Profile: React.FunctionComponent = () => {
   const [coursesData, setCoursesData] = useState<CourseData[]>([]);
   const [loadingCourses, setLoadingCourses] = useState(true);
   const history = useHistory();
-  console.log("courses");
-  console.log(courses);
-  console.log(coursesData);
 
   useEffect(() => {
     //TO DO: set timeout
     const getAsyncCourses = async () => {
       if (user) {
-        const data = await axios.get('/courses/getCourses', {params: {"courseIds": courses}});
+        const data = await axios.get('/courses/getCourses', {params: {"courseCodes": courses}});
         console.log(data.data);
         if (data.data) {
           // @ts-ignore

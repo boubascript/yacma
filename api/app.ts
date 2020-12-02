@@ -2,6 +2,7 @@ import express from "express";
 import bodyparser from "body-parser";
 import logger from "morgan";
 
+
 const courseRouter = require('./routes/courses');
 
 export const {GOOGLE_APPLICATION_CREDENTIALS} = process.env;
@@ -12,11 +13,11 @@ export const {GOOGLE_APPLICATION_CREDENTIALS} = process.env;
     const app = express();
     const port = Number(process.env.PORT) || 8080;
     app.set("port", port);
-
+    
     // Middleware
     app.use(bodyparser.urlencoded({ extended: false }));
     app.use(bodyparser.json());
-
+    
     if (process.env.NODE_ENV !== "production") {
       app.use(logger("dev"));
       app.use(function (

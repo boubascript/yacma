@@ -8,10 +8,9 @@ import Register from "pages/Register";
 import Profile from "pages/Profile";
 import Courses from "pages/Courses";
 import AddCourseProf from "pages/AddCourseProf";
-import AddCourseStudent from "pages/AddCourseStudent";
+import AddCourseStudent from "pages/AddCourseStudent"
 import { auth, IUser } from "config/firebase";
-import { UserContext, UserData } from "utils/auth";
-import { getUserData } from "utils/courses";
+import { UserContext, UserData, getUserData } from "utils/auth";
 import NewPost from "pages/NewPost";
 import NewComment from "pages/NewComment";
 import Course from "pages/Course";

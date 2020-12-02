@@ -87,3 +87,17 @@ export const logoutUser = async (): Promise<AuthError | void> => {
     return err;
   });
 };
+
+export const getUserData = async (uid: string) => {
+  const userRef = db.collection("users").doc(uid);
+  try {
+    const doc = await userRef.get();
+    if (doc.exists) {
+      return doc.data() as UserData;
+    } else {
+      console.log("No such user!");
+    }
+  } catch (error) {
+    console.log("error getting document in getUserData");
+  }
+};
