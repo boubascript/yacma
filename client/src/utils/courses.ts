@@ -7,7 +7,6 @@ import {
   FieldValue,
 } from "config/firebase";
 import { UserContext, UserData } from "utils/auth";
-import { courseExists } from "./posts";
 
 export interface CourseData {
   id: string;

@@ -40,8 +40,6 @@ const NewComment: React.FunctionComponent<NewCommentProps> = ({
       author: userData!.firstName + " " + userData!.lastName,
     };
 
-    // TODO: Connect CourseId and PostId via Context or Props
-
     if (courseId && postId) {
       const comment = await addComment(courseId, postId, commentBody);
       refresh(); // refresh comments in Course Page

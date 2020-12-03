@@ -3,7 +3,7 @@ import { useHistory } from "react-router-dom";
 import { UserContext } from "utils/auth";
 import { getCourses, CourseData } from "utils/courses";
 import Navbar from "components/Navbar";
-import { Container, Typography, Button } from "@material-ui/core";
+import { Typography, Button } from "@material-ui/core";
 
 const Profile: React.FunctionComponent = () => {
   const { user, userData } = useContext(UserContext);

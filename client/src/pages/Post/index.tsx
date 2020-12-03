@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Container from "@material-ui/core/Container";
-import { PostData, PostDataId } from "utils/posts";
-import { getComments, CommentData, CommentDataId } from "utils/comments";
+import { PostDataId } from "utils/posts";
+import { getComments, CommentDataId } from "utils/comments";
 import Comment from "pages/Comment";
 import { Button } from "@material-ui/core";
 import NewComment from "pages/NewComment";
