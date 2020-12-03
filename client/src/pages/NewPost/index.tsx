@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState, useContext } from "react";
 import { UserContext } from "utils/auth";
 import { addPost, PostData } from "utils/posts";
 import { Grid, TextField, Button } from "@material-ui/core";
@@ -20,10 +20,6 @@ const NewPost: React.FunctionComponent<NewPostProps> = ({
   const { userData } = useContext(UserContext);
   const [postData, setPostData] = useState<PostData>(DEFAULT_POST_DATA);
 
-  const cancel = () => {
-    exit(false);
-  };
-
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setPostData((prevState) => ({
       ...prevState,
@@ -39,14 +35,17 @@ const NewPost: React.FunctionComponent<NewPostProps> = ({
       author: userData!.firstName + " " + userData!.lastName,
     };
 
-    // TODO: Connect CourseId via Props or Context
     if (courseId) {
       const post = await addPost(courseId, postBody);
       console.log("Post Data", post);
       // TODO: Find a better way to reload posts
-      refresh(); // Refresh posts in Coursepage
+      refresh(); // Refresh posts in Course Page
     }
     exit(false); // exit New Post form
+  };
+
+  const cancel = () => {
+    exit(false);
   };
 
   return (
