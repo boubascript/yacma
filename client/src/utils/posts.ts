@@ -34,7 +34,7 @@ export const courseExists = async (courseId: string) => {
  * @param courseId course id which posts belong to
  * Cost = Two calls to DB
  */
-export const getPosts = async (uid: string, courseId: string) => {
+export const getPosts = async (courseId: string) => {
   // Check if course exists
   if (courseExists(courseId)) {
     try {
