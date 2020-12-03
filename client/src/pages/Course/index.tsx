@@ -15,14 +15,16 @@ const Course: React.FunctionComponent<RouteComponentProps> = ({
   const [addingPost, setAddingPost] = useState(false);
   const courseId = search.substring(1);
 
-  const getCourseInfo = async () => {
-    // TODO: Add error handling
-    const courseData = (await getCourse(courseId)) as CourseData;
-    setCourse(courseData);
+  useEffect(() => {
+    (async () => {
+      // TODO: Add error handling
+      const courseData = (await getCourse(courseId)) as CourseData;
+      setCourse(courseData);
 
-    const postsData = (await getPosts(courseId)) as PostDataId[];
-    setPosts(postsData);
-  };
+      const postsData = (await getPosts(courseId)) as PostDataId[];
+      setPosts(postsData);
+    })();
+  }, [courseId]);
 
   const handleNewPost = () => {
     setAddingPost(true);
@@ -34,14 +36,9 @@ const Course: React.FunctionComponent<RouteComponentProps> = ({
 
   // TODO: Find a better way to do this
   const refreshPosts = async () => {
-    // TODO: Add check for get course failure
     const postsData = (await getPosts(courseId)) as PostDataId[];
     setPosts(postsData);
   };
-
-  useEffect(() => {
-    getCourseInfo();
-  }, []);
 
   return (
     <div>

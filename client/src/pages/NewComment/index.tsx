@@ -41,7 +41,7 @@ const NewComment: React.FunctionComponent<NewCommentProps> = ({
     };
 
     if (courseId && postId) {
-      const comment = await addComment(courseId, postId, commentBody);
+      await addComment(courseId, postId, commentBody);
       refresh(); // refresh comments in Course Page
     }
     exit(false); // exit New Comment form

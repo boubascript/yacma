@@ -18,6 +18,13 @@ const Post: React.FunctionComponent<PostProps> = ({
   const [comments, setComments] = useState<CommentDataId[]>([]);
   const [addingComment, setAddingComment] = useState(false);
 
+  useEffect(() => {
+    (async () => {
+      const commentsData = (await getComments(courseId, id)) as CommentDataId[];
+      setComments(commentsData);
+    })();
+  }, [courseId, id]);
+
   const handleNewComment = () => {
     setAddingComment(true);
   };
@@ -26,22 +33,11 @@ const Post: React.FunctionComponent<PostProps> = ({
     setAddingComment(exit);
   };
 
-  // TODO: ADD RETURN EMPTY FOR NO COMMENTS CASE
-  const getAllComments = async () => {
-    const commentsData = (await getComments(courseId, id)) as CommentDataId[];
-    setComments(commentsData);
-  };
-
   // TODO: Find a better way to do this
   const refreshComments = async () => {
-    // TODO: Add check for get course failure
     const commentsData = (await getComments(courseId, id)) as CommentDataId[];
     setComments(commentsData);
   };
-
-  useEffect(() => {
-    getAllComments();
-  }, []);
 
   return (
     <React.Fragment>
