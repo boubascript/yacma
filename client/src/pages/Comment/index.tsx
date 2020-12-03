@@ -1,12 +1,23 @@
 import React from "react";
 import Container from "@material-ui/core/Container";
+import { CommentDataId } from "utils/comments";
 
-const Comment: React.FunctionComponent = (props) => {
+type CommentProps = { postId: string; commentData: CommentDataId };
+const Comment: React.FunctionComponent<CommentProps> = ({
+  commentData,
+  postId,
+}: CommentProps) => {
+  const {
+    data: { author, comment },
+    id,
+  } = commentData; // id => commentId
+
+  /* TODO: Update + delete functions */
   return (
     <React.Fragment>
       <Container>
-        <p>{/*props.comment*/}</p>
-        <p>{/*props.author*/}</p>
+        <p>{author}</p>
+        <p>{comment}</p>
       </Container>
     </React.Fragment>
   );
