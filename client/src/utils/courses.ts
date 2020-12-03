@@ -1,5 +1,13 @@
-import { auth, IUser, db, UserCredential, AuthError, FieldValue } from "config/firebase";
+import {
+  auth,
+  IUser,
+  db,
+  UserCredential,
+  AuthError,
+  FieldValue,
+} from "config/firebase";
 import { UserContext, UserData } from "utils/auth";
+import { courseExists } from "./posts";
 
 export interface CourseData {
   id: string;
@@ -14,8 +22,8 @@ export interface CourseData {
  * @param {*}
  */
 
- //TODO: move out of courses
- export const getUserData = async (uid: string) => {
+//TODO: move out of courses
+export const getUserData = async (uid: string) => {
   const userRef = db.collection("users").doc(uid);
   try {
     const doc = await userRef.get();
@@ -66,10 +74,7 @@ export const addCourseToCourses = async (courseData: CourseData) => {
   }
 };
 
-export const addCourseForUser = async (
-  newCourse: string,
-  uid: string
-) => {
+export const addCourseForUser = async (newCourse: string, uid: string) => {
   // add to user
   const userRef = db.collection("users").doc(uid);
   try {
@@ -88,7 +93,7 @@ export const addCourseForUser = async (
   }
 };
 
-export const addCourseAdmin = async (courseData: CourseData, uid:string) => {
+export const addCourseAdmin = async (courseData: CourseData, uid: string) => {
   try {
     const addedToCourses = await addCourseToCourses(courseData);
     if (addedToCourses) {
@@ -99,11 +104,10 @@ export const addCourseAdmin = async (courseData: CourseData, uid:string) => {
         console.log("Error adding to user");
       }
     }
-  }
-  catch {
+  } catch {
     console.log("Error adding to courses");
   }
-}
+};
 
 export const addCourseStudent = async (courseId: string, uid: string) => {
   const courseRef = db.collection("courses").doc(courseId);
@@ -111,16 +115,29 @@ export const addCourseStudent = async (courseId: string, uid: string) => {
     const course = await courseRef.get();
     if (course.exists) {
       try {
-          const addedToUser = await addCourseForUser(courseId, uid);
-          return addedToUser;
-        } catch {
+        const addedToUser = await addCourseForUser(courseId, uid);
+        return addedToUser;
+      } catch {
         console.log("Error adding to user");
       }
-    }
-    else {
+    } else {
       console.log("Course don't exist");
     }
   } catch {
     console.log("Error checking if course exists");
   }
-}
+};
+
+export const getCourse = async (courseId: string) => {
+  const courseRef = db.collection("courses").doc(courseId);
+  try {
+    const course = await courseRef.get();
+    if (course.exists) {
+      return course.data();
+    } else {
+      console.log("Course does not exist.");
+    }
+  } catch (error) {
+    console.log("Something went wrong, couldn't retrieve course :/");
+  }
+};
