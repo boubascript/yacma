@@ -8,8 +8,18 @@ const DEFAULT_COMMENT_DATA: CommentData = {
   comment: "",
 };
 
-// TODO: Update with props from passed from Course Page
-const NewComment: React.FunctionComponent = (/*{ courseId,  postId }*/) => {
+type NewCommentProps = {
+  courseId: string;
+  postId: string;
+  exit: Function;
+  refresh: Function;
+};
+const NewComment: React.FunctionComponent<NewCommentProps> = ({
+  courseId,
+  postId,
+  exit,
+  refresh,
+}) => {
   const { userData } = useContext(UserContext);
   const [commentData, setCommentData] = useState<CommentData>(
     DEFAULT_COMMENT_DATA
@@ -31,8 +41,16 @@ const NewComment: React.FunctionComponent = (/*{ courseId,  postId }*/) => {
     };
 
     // TODO: Connect CourseId and PostId via Context or Props
-    const comment = await addComment("4", "Eovg3jgXBbwyJdKB7HCD", commentBody);
-    console.log("Add Comment Success:", comment);
+
+    if (courseId && postId) {
+      const comment = await addComment(courseId, postId, commentBody);
+      refresh(); // refresh comments in Course Page
+    }
+    exit(false); // exit New Comment form
+  };
+
+  const cancel = () => {
+    exit(false);
   };
 
   return (
@@ -54,6 +72,9 @@ const NewComment: React.FunctionComponent = (/*{ courseId,  postId }*/) => {
       <br></br>
       <Button type="submit" variant="contained" color="primary">
         New Comment
+      </Button>
+      <Button variant="contained" color="primary" onClick={cancel}>
+        Cancel
       </Button>
     </form>
   );
