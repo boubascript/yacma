@@ -7,6 +7,16 @@ export interface PostData {
   links: string;
 }
 
+export interface PostDataId {
+  data: {
+    title: string;
+    author: string;
+    description: string;
+    links: string;
+  };
+  id: string;
+}
+
 /**
  * @desc Determines if course exists
  * @return true if course exists
@@ -49,7 +59,8 @@ export const getPosts = async (courseId: string) => {
         let postData: Array<Object> = [];
 
         postsSnap.forEach((doc) => {
-          postData.push(doc.data());
+          const data = { data: doc.data(), id: doc.id };
+          postData.push(data);
         });
 
         return postData;

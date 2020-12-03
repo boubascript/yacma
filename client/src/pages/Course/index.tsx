@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { RouteComponentProps } from "react-router";
 import { getCourse, CourseData } from "utils/courses";
-import { getPosts, PostData } from "utils/posts";
+import { getPosts, PostData, PostDataId } from "utils/posts";
 import { Button, Typography } from "@material-ui/core";
 import Navbar from "components/Navbar";
 import Post from "pages/Post";
@@ -11,7 +11,7 @@ const Course: React.FunctionComponent<RouteComponentProps> = ({
   location: { search },
 }) => {
   const [course, setCourse] = useState<CourseData>();
-  const [posts, setPosts] = useState<PostData[]>([]);
+  const [posts, setPosts] = useState<PostDataId[]>([]);
   const [addingPost, setAddingPost] = useState(false);
   const courseId = search.substring(1);
 
@@ -20,8 +20,7 @@ const Course: React.FunctionComponent<RouteComponentProps> = ({
     const courseData = (await getCourse(courseId)) as CourseData;
     setCourse(courseData);
 
-    // TODO: Add check for get course failure
-    const postsData = (await getPosts(courseId)) as PostData[];
+    const postsData = (await getPosts(courseId)) as PostDataId[];
     setPosts(postsData);
   };
 
@@ -36,7 +35,7 @@ const Course: React.FunctionComponent<RouteComponentProps> = ({
   // TODO: Find a better way to do this
   const refreshPosts = async () => {
     // TODO: Add check for get course failure
-    const postsData = (await getPosts(courseId)) as PostData[];
+    const postsData = (await getPosts(courseId)) as PostDataId[];
     setPosts(postsData);
   };
 
@@ -54,8 +53,7 @@ const Course: React.FunctionComponent<RouteComponentProps> = ({
       <Typography variant="h4">{course?.description}</Typography>
       {!addingPost ? (
         <Button variant="contained" color="primary" onClick={handleNewPost}>
-          {" "}
-          Add Post{" "}
+          Add Post
         </Button>
       ) : (
         <NewPost
@@ -66,12 +64,9 @@ const Course: React.FunctionComponent<RouteComponentProps> = ({
       )}
       <div className="posts">
         {posts &&
-          posts.map(
-            (doc, index) => (
-              console.log("Post #", index, doc),
-              (<Post courseId={courseId} post={doc} />)
-            )
-          )}
+          posts.map((doc, index) => (
+            <Post key={index} courseId={courseId} post={doc} />
+          ))}
       </div>
     </div>
   );

@@ -6,6 +6,13 @@ export interface CommentData {
   comment: string;
 }
 
+export interface CommentDataId {
+  data: {
+    author: string;
+    comment: string;
+  };
+  id: string;
+}
 /**
  * @desc Determines if course exists
  * @return true if course exists
@@ -55,7 +62,8 @@ export const getComments = async (courseId: string, postId: string) => {
       if (commentsSnap.size > 0) {
         let commentData: Array<Object> = [];
         commentsSnap.forEach((doc) => {
-          commentData.push(doc.data());
+          const data = { data: doc.data(), id: doc.id };
+          commentData.push(data);
         });
 
         return commentData;
