@@ -2,6 +2,7 @@ import React, { useState, useContext } from "react";
 import { Grid, TextField, Button } from "@material-ui/core";
 import { UserContext } from "utils/auth";
 import { addPost, PostData } from "utils/posts";
+import Navbar from "components/Navbar";
 
 // TODO: Update links to media object type
 const DEFAULT_POST_DATA: PostData = {
@@ -11,7 +12,8 @@ const DEFAULT_POST_DATA: PostData = {
   links: "",
 };
 
-const NewPost: React.FunctionComponent = (props) => {
+// TODO: Update with props from passed from Course Page
+const NewPost: React.FunctionComponent = (/*{courseId}*/) => {
   const { userData } = useContext(UserContext);
   const [postData, setPostData] = useState<PostData>(DEFAULT_POST_DATA);
 
@@ -30,51 +32,54 @@ const NewPost: React.FunctionComponent = (props) => {
       author: userData!.firstName + " " + userData!.lastName,
     };
 
-    // TODO: Connect CourseId via Course Context
-    const post = await addPost("4", postBody);
+    // TODO: Connect CourseId via Props or Context
+    const post = await addPost(/*courseId,*/ "4", postBody);
   };
 
   return (
-    <form onSubmit={handleSubmit} noValidate>
-      <Grid container spacing={2} alignItems="center" justify="center">
-        <Grid item xs={12}>
-          <TextField
-            name="title"
-            label="Title"
-            id="Title"
-            multiline
-            fullWidth
-            variant="outlined"
-            onChange={handleChange}
-          />
+    <>
+      <Navbar />
+      <form onSubmit={handleSubmit} noValidate>
+        <Grid container spacing={2} alignItems="center" justify="center">
+          <Grid item xs={12}>
+            <TextField
+              name="title"
+              label="Title"
+              id="Title"
+              multiline
+              fullWidth
+              variant="outlined"
+              onChange={handleChange}
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <TextField
+              name="description"
+              label="Description"
+              id="Description"
+              multiline
+              fullWidth
+              rows={4}
+              variant="outlined"
+              onChange={handleChange}
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <input
+              accept="image/*, video/*, .pdf,.doc"
+              id="inputFiles"
+              multiple
+              type="file"
+            />
+          </Grid>
         </Grid>
-        <Grid item xs={12}>
-          <TextField
-            name="description"
-            label="Description"
-            id="Description"
-            multiline
-            fullWidth
-            rows={4}
-            variant="outlined"
-            onChange={handleChange}
-          />
-        </Grid>
-        <Grid item xs={12}>
-          <input
-            accept="image/*, video/*, .pdf,.doc"
-            id="inputFiles"
-            multiple
-            type="file"
-          />
-        </Grid>
-      </Grid>
 
-      <br></br>
-      <Button type="submit" variant="contained" color="primary">
-        New Post
-      </Button>
-    </form>
+        <br></br>
+        <Button type="submit" variant="contained" color="primary">
+          New Post
+        </Button>
+      </form>
+    </>
   );
 };
 

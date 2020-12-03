@@ -1,19 +1,15 @@
 import React, { useState, useContext } from "react";
 import { Grid, TextField, Button } from "@material-ui/core";
 import { UserContext } from "utils/auth";
-import {
-  addComment,
-  CommentData,
-  getComment,
-  updateComment,
-} from "utils/comments";
+import { addComment, CommentData } from "utils/comments";
 
 const DEFAULT_COMMENT_DATA: CommentData = {
   author: "",
   comment: "",
 };
 
-const NewComment: React.FunctionComponent = (props) => {
+// TODO: Update with props from passed from Course Page
+const NewComment: React.FunctionComponent = (/*{ courseId,  postId }*/) => {
   const { userData } = useContext(UserContext);
   const [commentData, setCommentData] = useState<CommentData>(
     DEFAULT_COMMENT_DATA
@@ -34,7 +30,7 @@ const NewComment: React.FunctionComponent = (props) => {
       author: userData!.firstName + " " + userData!.lastName,
     };
 
-    // TODO: Connect CourseId and PostId via Course Context? or Props
+    // TODO: Connect CourseId and PostId via Context or Props
     const comment = await addComment("4", "Eovg3jgXBbwyJdKB7HCD", commentBody);
     console.log("Add Comment Success:", comment);
   };
