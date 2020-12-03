@@ -20,6 +20,7 @@ if (!firebase.apps.length) {
 
 export const auth = firebase.auth();
 export const db = firebase.firestore();
+export const FieldValue = firebase.firestore.FieldValue;
 export type IUser = firebase.User;
 export type AuthError = firebase.auth.Error;
 export type UserCredential = firebase.auth.UserCredential;

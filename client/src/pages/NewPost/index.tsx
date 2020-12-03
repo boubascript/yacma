@@ -1,13 +1,11 @@
-import React from 'react'
-import TextField from '@material-ui/core/TextField';
-import Button from '@material-ui/core/Button';
-
+import React from "react";
+import TextField from "@material-ui/core/TextField";
+import Button from "@material-ui/core/Button";
 
 const NewPost: React.FunctionComponent = () => {
+  const [title, setTitle] = React.useState("");
+  const [desc, setDesc] = React.useState("");
 
-  const [title, setTitle] = React.useState('');
-  const [desc, setDesc] = React.useState('');
-  
   const handleTitle = (event: React.ChangeEvent<HTMLInputElement>) => {
     setTitle(event.target.value);
   };
@@ -16,7 +14,6 @@ const NewPost: React.FunctionComponent = () => {
     setDesc(event.target.value);
   };
 
-  
   return (
     <form action="/posts" id="NewPostForm" noValidate autoComplete="off">
       <div>
@@ -27,12 +24,11 @@ const NewPost: React.FunctionComponent = () => {
           fullWidth
           variant="outlined"
           onChange={handleTitle}
-          
         />
       </div>
-      <br/>
+      <br />
       <div>
-      <TextField
+        <TextField
           id="Description"
           label="Description"
           multiline
@@ -40,20 +36,26 @@ const NewPost: React.FunctionComponent = () => {
           rows={4}
           variant="outlined"
           onChange={handleDesc}
-          
         />
-      <input
-      accept="image/*, video/*, .pdf,.doc"
-      id="inputFiles"
-      multiple
-      type="file"
+        <input
+          accept="image/*, video/*, .pdf,.doc"
+          id="inputFiles"
+          multiple
+          type="file"
         />
-    <Button type="submit" variant="contained" onClick={() => { alert(title+desc); }}> Post </Button>
+        <Button
+          type="submit"
+          variant="contained"
+          onClick={() => {
+            alert(title + desc);
+          }}
+        >
+          {" "}
+          Post{" "}
+        </Button>
       </div>
     </form>
-    
   );
-
-}
+};
 
 export default NewPost;

@@ -4,21 +4,31 @@ Yet Another (Distributed) Classroom Management App
 ## Requirements
 * Node >=10
 
-## API aka server aka backend
+## Setting Up
+
+`git clone` the repo then `cd yacma`.
+
+Run `npm run installer` to install all packages for every service.
+
+### Useful Scripts
+
+`npm run dev` will run both the client and the api locally together, but either can be run independently from the root folder with 
+
+`npm run dev:client` or `npm run dev:api`.
+
+`npm run format` will format all `ts/tsx` files in the project.
+
+## api aka server aka backend
 `cd api`
 
-`npm run dev`
-
-The server api will be running at [localhost:8080](http://localhost:8080).
+`npm run dev` to run the server at [localhost:8080](http://localhost:8080).
 
 ## client aka frontend
 `cd client`
 
-`npm start`
+`npm start` to run the client at [localhost:3000](http://localhost:3000).
 
-The client site  will be running at [localhost:3000](http://localhost:3000).
-
-Both frontend and backend will automatically reload whenever the relevant files for each are saved.
+Both scripts have hot reloading so they'll auto rerun when edited.
 
 ## Deploying
 
