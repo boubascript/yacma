@@ -1,19 +1,32 @@
 import React, { useState, useEffect } from "react";
 import { RouteComponentProps } from "react-router";
 import { getCourse, CourseData } from "utils/courses";
+import { getPosts, PostData } from "utils/posts";
+import { Button, Typography } from "@material-ui/core";
 import Navbar from "components/Navbar";
-import { Typography } from "@material-ui/core";
+import Post from "pages/Post";
+import NewPost from "pages/NewPost";
 
 const Course: React.FunctionComponent<RouteComponentProps> = ({
   location: { search },
 }) => {
   const [course, setCourse] = useState<CourseData>();
+  const [posts, setPosts] = useState<PostData[]>([]);
+  const [addingPost, setAddingPost] = useState(false);
+  const courseId = search.substring(1);
 
   const getCourseInfo = async () => {
-    const courseId = search.substring(1);
     // TODO: Add error handling
-    const course = (await getCourse(courseId)) as CourseData;
-    setCourse(course);
+    const courseData = (await getCourse(courseId)) as CourseData;
+    setCourse(courseData);
+
+    // TODO: Add check for get course failure
+    const postsData = (await getPosts(courseId)) as PostData[];
+    setPosts(postsData);
+  };
+
+  const handleNewPost = () => {
+    setAddingPost(true);
   };
 
   useEffect(() => {
@@ -28,6 +41,23 @@ const Course: React.FunctionComponent<RouteComponentProps> = ({
       </Typography>
       <Typography variant="h3">{course?.educator}</Typography>
       <Typography variant="h4">{course?.description}</Typography>
+      {!addingPost ? (
+        <Button variant="contained" color="primary" onClick={handleNewPost}>
+          {" "}
+          Add Post{" "}
+        </Button>
+      ) : (
+        <NewPost />
+      )}
+      <div className="posts">
+        {posts &&
+          posts.map(
+            (doc, index) => (
+              console.log("Post #", index, doc),
+              (<Post /*courseId={courseId}*/ post={doc} />)
+            )
+          )}
+      </div>
     </div>
   );
 };
