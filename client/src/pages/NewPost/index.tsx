@@ -1,8 +1,7 @@
-import React, { useState, useContext } from "react";
-import { Grid, TextField, Button } from "@material-ui/core";
+import React, { useState, useContext, useEffect } from "react";
 import { UserContext } from "utils/auth";
 import { addPost, PostData } from "utils/posts";
-import Navbar from "components/Navbar";
+import { Grid, TextField, Button } from "@material-ui/core";
 
 // TODO: Update links to media object type
 const DEFAULT_POST_DATA: PostData = {
@@ -12,10 +11,18 @@ const DEFAULT_POST_DATA: PostData = {
   links: "",
 };
 
-// TODO: Update with props from passed from Course Page
-const NewPost: React.FunctionComponent = (/*{courseId}*/) => {
+type NewPostProps = { courseId: string; exit: Function; refresh: Function };
+const NewPost: React.FunctionComponent<NewPostProps> = ({
+  courseId,
+  exit,
+  refresh,
+}: NewPostProps) => {
   const { userData } = useContext(UserContext);
   const [postData, setPostData] = useState<PostData>(DEFAULT_POST_DATA);
+
+  const cancel = () => {
+    exit(false);
+  };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setPostData((prevState) => ({
@@ -33,53 +40,59 @@ const NewPost: React.FunctionComponent = (/*{courseId}*/) => {
     };
 
     // TODO: Connect CourseId via Props or Context
-    const post = await addPost(/*courseId,*/ "4", postBody);
+    if (courseId) {
+      const post = await addPost(courseId, postBody);
+      console.log("Post Data", post);
+      // TODO: Find a better way to reload posts
+      refresh(); // Refresh posts in Coursepage
+    }
+    exit(false); // exit New Post form
   };
 
   return (
-    <>
-      <Navbar />
-      <form onSubmit={handleSubmit} noValidate>
-        <Grid container spacing={2} alignItems="center" justify="center">
-          <Grid item xs={12}>
-            <TextField
-              name="title"
-              label="Title"
-              id="Title"
-              multiline
-              fullWidth
-              variant="outlined"
-              onChange={handleChange}
-            />
-          </Grid>
-          <Grid item xs={12}>
-            <TextField
-              name="description"
-              label="Description"
-              id="Description"
-              multiline
-              fullWidth
-              rows={4}
-              variant="outlined"
-              onChange={handleChange}
-            />
-          </Grid>
-          <Grid item xs={12}>
-            <input
-              accept="image/*, video/*, .pdf,.doc"
-              id="inputFiles"
-              multiple
-              type="file"
-            />
-          </Grid>
+    <form onSubmit={handleSubmit} noValidate>
+      <Grid container spacing={2} alignItems="center" justify="center">
+        <Grid item xs={12}>
+          <TextField
+            name="title"
+            label="Title"
+            id="Title"
+            multiline
+            fullWidth
+            variant="outlined"
+            onChange={handleChange}
+          />
         </Grid>
+        <Grid item xs={12}>
+          <TextField
+            name="description"
+            label="Description"
+            id="Description"
+            multiline
+            fullWidth
+            rows={4}
+            variant="outlined"
+            onChange={handleChange}
+          />
+        </Grid>
+        <Grid item xs={12}>
+          <input
+            accept="image/*, video/*, .pdf,.doc"
+            id="inputFiles"
+            multiple
+            type="file"
+          />
+        </Grid>
+      </Grid>
 
-        <br></br>
-        <Button type="submit" variant="contained" color="primary">
-          New Post
-        </Button>
-      </form>
-    </>
+      <br></br>
+      <Button type="submit" variant="contained" color="primary">
+        New Post
+      </Button>
+      <Button variant="contained" color="primary" onClick={cancel}>
+        Cancel
+      </Button>
+    </form>
   );
 };
 

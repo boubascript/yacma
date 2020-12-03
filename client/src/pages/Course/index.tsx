@@ -29,6 +29,17 @@ const Course: React.FunctionComponent<RouteComponentProps> = ({
     setAddingPost(true);
   };
 
+  const toggleNewPost = (exit: boolean) => {
+    setAddingPost(exit);
+  };
+
+  // TODO: Find a better way to do this
+  const refreshPosts = async () => {
+    // TODO: Add check for get course failure
+    const postsData = (await getPosts(courseId)) as PostData[];
+    setPosts(postsData);
+  };
+
   useEffect(() => {
     getCourseInfo();
   }, []);
@@ -47,14 +58,18 @@ const Course: React.FunctionComponent<RouteComponentProps> = ({
           Add Post{" "}
         </Button>
       ) : (
-        <NewPost />
+        <NewPost
+          courseId={courseId}
+          exit={toggleNewPost}
+          refresh={refreshPosts}
+        />
       )}
       <div className="posts">
         {posts &&
           posts.map(
             (doc, index) => (
               console.log("Post #", index, doc),
-              (<Post /*courseId={courseId}*/ post={doc} />)
+              (<Post courseId={courseId} post={doc} />)
             )
           )}
       </div>

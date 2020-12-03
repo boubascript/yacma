@@ -3,12 +3,13 @@ import Container from "@material-ui/core/Container";
 import { PostData } from "utils/posts";
 import { getComments, CommentData } from "utils/comments";
 
-type PostProps = { /*courseId: string, postId: string,*/ post: PostData };
+type PostProps = { courseId: string; /*postId: string,*/ post: PostData };
 const Post: React.FunctionComponent<PostProps> = ({
-  /*courseId, postId,*/ post,
+  courseId,
+  /*postId,*/ post,
 }: PostProps) => {
   const { author, title, description, links } = post;
-  const [comments, setComments] = useState<CommentData[]>([]);
+  // const [comments, setComments] = useState<CommentData[]>([]);
 
   // TODO: ADD RETURN EMPTY FOR NO COMMENTS CASE
   // const getComments = async() => {
