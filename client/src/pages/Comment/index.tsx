@@ -2,7 +2,10 @@ import React from "react";
 import Container from "@material-ui/core/Container";
 import { CommentDataId } from "utils/comments";
 
-type CommentProps = { postId: string; commentData: CommentDataId };
+interface CommentProps {
+  postId: string;
+  commentData: CommentDataId;
+}
 const Comment: React.FunctionComponent<CommentProps> = ({
   commentData,
   postId,

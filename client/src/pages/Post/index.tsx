@@ -1,16 +1,15 @@
 import React, { useState, useEffect } from "react";
-import Container from "@material-ui/core/Container";
 import { PostDataId } from "utils/posts";
 import { getComments, CommentDataId } from "utils/comments";
+import { Button, Container } from "@material-ui/core";
 import Comment from "pages/Comment";
-import { Button } from "@material-ui/core";
 import NewComment from "pages/NewComment";
 
-type PostProps = { courseId: string; post: PostDataId };
-const Post: React.FunctionComponent<PostProps> = ({
-  courseId,
-  post,
-}: PostProps) => {
+interface PostProps {
+  courseId: string;
+  post: PostDataId;
+}
+const Post: React.FunctionComponent<PostProps> = ({ courseId, post }) => {
   const {
     data: { author, title, description, links },
     id,
