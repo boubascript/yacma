@@ -31,10 +31,6 @@ const Course: React.FunctionComponent<RouteComponentProps> = ({
     }
   }, []);
 
-  const handleNewPost = () => {
-    setAddingPost(true);
-  };
-
   const toggleNewPost = (exit: boolean) => {
     setAddingPost(exit);
   };
@@ -54,7 +50,13 @@ const Course: React.FunctionComponent<RouteComponentProps> = ({
       <Typography variant="h3">{course?.educator}</Typography>
       <Typography variant="h4">{course?.description}</Typography>
       {!addingPost ? (
-        <Button variant="contained" color="primary" onClick={handleNewPost}>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={() => {
+            toggleNewPost(true);
+          }}
+        >
           Add Post
         </Button>
       ) : (
