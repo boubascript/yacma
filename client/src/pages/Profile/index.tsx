@@ -1,14 +1,16 @@
 import React, { useState, useEffect, useContext } from "react";
+import { useHistory } from "react-router-dom";
 import { UserContext } from "utils/auth";
-import { Container, Typography, Button } from "@material-ui/core";
-import Navbar from "components/Navbar";
 import { getCourses, CourseData } from "utils/courses";
+import Navbar from "components/Navbar";
+import { Typography, Button } from "@material-ui/core";
 
 const Profile: React.FunctionComponent = () => {
   const { user, userData } = useContext(UserContext);
   const { firstName, lastName, isAdmin, courses } = userData || {};
   const [coursesData, setCoursesData] = useState<CourseData[]>([]);
   const [loadingCourses, setLoadingCourses] = useState(true);
+  const history = useHistory();
   console.log("courses");
   console.log(courses);
   console.log(coursesData);
@@ -27,6 +29,13 @@ const Profile: React.FunctionComponent = () => {
 
     getAsyncCourses();
   }, []);
+
+  const loadCourse = (id: string) => {
+    history.push({
+      pathname: "/coursepage",
+      search: id,
+    });
+  };
 
   return (
     <div>
@@ -52,6 +61,14 @@ const Profile: React.FunctionComponent = () => {
                   <p key="courseDescription"> {description} </p>
                   {!isAdmin && <p key="educator"> Professor {educator} </p>}
                   <hr></hr>
+                  <Button
+                    name={id}
+                    onClick={() => {
+                      loadCourse(id);
+                    }}
+                  >
+                    Go To Course
+                  </Button>
                 </div>
               ))}
           </Typography>
