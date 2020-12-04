@@ -39,36 +39,30 @@ const Post: React.FunctionComponent<PostProps> = ({ courseId, post }) => {
   };
 
   return (
-    <React.Fragment>
-      <Container>
-        <h2>{title}</h2>
-        <p>{author}</p>
-        <p>{description}</p>
-        <div>{links}</div>
-        {!addingComment ? (
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={handleNewComment}
-          >
-            Add Comment
-          </Button>
-        ) : (
-          <NewComment
-            courseId={courseId}
-            postId={id}
-            exit={toggleNewComment}
-            refresh={refreshComments}
-          />
-        )}
-        <div className="comments">
-          {comments &&
-            comments.map((doc, index) => (
-              <Comment key={index} postId={id} commentData={doc} />
-            ))}
-        </div>
-      </Container>
-    </React.Fragment>
+    <Container>
+      <h2>{title}</h2>
+      <p>{author}</p>
+      <p>{description}</p>
+      <div>{links}</div>
+      {!addingComment ? (
+        <Button variant="contained" color="primary" onClick={handleNewComment}>
+          Add Comment
+        </Button>
+      ) : (
+        <NewComment
+          courseId={courseId}
+          postId={id}
+          exit={toggleNewComment}
+          refresh={refreshComments}
+        />
+      )}
+      <div className="comments">
+        {comments &&
+          comments.map((doc, index) => (
+            <Comment key={index} postId={id} commentData={doc} />
+          ))}
+      </div>
+    </Container>
   );
 };
 

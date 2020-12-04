@@ -17,12 +17,10 @@ const Comment: React.FunctionComponent<CommentProps> = ({
 
   /* TODO: Update + delete functions */
   return (
-    <React.Fragment>
-      <Container>
-        <p>{author}</p>
-        <p>{comment}</p>
-      </Container>
-    </React.Fragment>
+    <Container>
+      <p>{author}</p>
+      <p>{comment}</p>
+    </Container>
   );
 };
 
