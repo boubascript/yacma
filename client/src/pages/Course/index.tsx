@@ -67,7 +67,7 @@ const Course: React.FunctionComponent<RouteComponentProps> = ({
         />
       )}
       <div className="posts">
-        {posts.map((doc, index) => (
+        {posts?.map((doc, index) => (
           <Post key={index} courseId={courseId} post={doc} />
         ))}
       </div>

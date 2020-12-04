@@ -51,7 +51,7 @@ const Profile: React.FunctionComponent = () => {
             <b>Your Courses: </b>
             {!loadingCourses &&
               coursesData.map(({ name, id, description, educator }, index) => (
-                <div key="courseData">
+                <div key={`courseData${index}`}>
                   <Typography variant="h3">
                     <p key="courseName">
                       <b>{name}</b>
