@@ -3,14 +3,7 @@ import { db } from "../config/firebase";
 export interface CommentData {
   author: string;
   comment: string;
-}
-
-export interface CommentDataId {
-  data: {
-    author: string;
-    comment: string;
-  };
-  id: string;
+  id?: string;
 }
 
 /**
@@ -34,7 +27,7 @@ export const getComments = async (courseId: string, postId: string) => {
       // Check if comments collection exists
       let commentData: Array<Object> = [];
       commentsSnap.forEach((doc) => {
-        const data = { data: doc.data(), id: doc.id };
+        const data = { ...doc.data(), id: doc.id };
         commentData.push(data);
       });
       return commentData;

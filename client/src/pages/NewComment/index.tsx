@@ -8,12 +8,12 @@ const DEFAULT_COMMENT_DATA: CommentData = {
   comment: "",
 };
 
-type NewCommentProps = {
+interface NewCommentProps {
   courseId: string;
   postId: string;
   exit: Function;
   refresh: Function;
-};
+}
 const NewComment: React.FunctionComponent<NewCommentProps> = ({
   courseId,
   postId,

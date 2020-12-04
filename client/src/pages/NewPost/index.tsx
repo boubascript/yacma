@@ -11,12 +11,16 @@ const DEFAULT_POST_DATA: PostData = {
   links: "",
 };
 
-type NewPostProps = { courseId: string; exit: Function; refresh: Function };
+interface NewPostProps {
+  courseId: string;
+  exit: Function;
+  refresh: Function;
+}
 const NewPost: React.FunctionComponent<NewPostProps> = ({
   courseId,
   exit,
   refresh,
-}: NewPostProps) => {
+}) => {
   const { userData } = useContext(UserContext);
   const [postData, setPostData] = useState<PostData>(DEFAULT_POST_DATA);
 

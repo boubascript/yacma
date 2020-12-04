@@ -1,19 +1,16 @@
 import React from "react";
 import Container from "@material-ui/core/Container";
-import { CommentDataId } from "utils/comments";
+import { CommentData } from "utils/comments";
 
 interface CommentProps {
   postId: string;
-  commentData: CommentDataId;
+  commentData: CommentData;
 }
 const Comment: React.FunctionComponent<CommentProps> = ({
   commentData,
   postId,
 }: CommentProps) => {
-  const {
-    data: { author, comment },
-    id,
-  } = commentData; // id => commentId
+  const { author, comment, id } = commentData; // id => commentId
 
   /* TODO: Update + delete functions */
   return (

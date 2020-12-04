@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { RouteComponentProps } from "react-router";
 import { getCourse, CourseData } from "utils/courses";
-import { getPosts, PostDataId } from "utils/posts";
+import { getPosts, PostData } from "utils/posts";
 import { Button, Typography } from "@material-ui/core";
 import Navbar from "components/Navbar";
 import Post from "pages/Post";
@@ -11,20 +11,25 @@ const Course: React.FunctionComponent<RouteComponentProps> = ({
   location: { search },
 }) => {
   const [course, setCourse] = useState<CourseData>();
-  const [posts, setPosts] = useState<PostDataId[]>([]);
+  const [posts, setPosts] = useState<PostData[]>([]);
   const [addingPost, setAddingPost] = useState(false);
   const courseId = search.substring(1);
 
-  useEffect(() => {
-    (async () => {
-      // TODO: Add error handling
-      const courseData = (await getCourse(courseId)) as CourseData;
-      setCourse(courseData);
+  const getCourseInfo = async () => {
+    // TODO: Add error handling
+    const courseData = (await getCourse(courseId)) as CourseData;
+    setCourse(courseData);
 
-      const postsData = (await getPosts(courseId)) as PostDataId[];
-      setPosts(postsData);
-    })();
-  }, [courseId]);
+    const postsData = (await getPosts(courseId)) as PostData[];
+    setPosts(postsData);
+  };
+
+  // TODO: Add loadin script check
+  useEffect(() => {
+    if (courseId) {
+      getCourseInfo();
+    }
+  }, []);
 
   const handleNewPost = () => {
     setAddingPost(true);
@@ -36,7 +41,7 @@ const Course: React.FunctionComponent<RouteComponentProps> = ({
 
   // TODO: Find a better way to do this
   const refreshPosts = async () => {
-    const postsData = (await getPosts(courseId)) as PostDataId[];
+    const postsData = (await getPosts(courseId)) as PostData[];
     setPosts(postsData);
   };
 
@@ -60,10 +65,9 @@ const Course: React.FunctionComponent<RouteComponentProps> = ({
         />
       )}
       <div className="posts">
-        {posts &&
-          posts.map((doc, index) => (
-            <Post key={index} courseId={courseId} post={doc} />
-          ))}
+        {posts.map((doc, index) => (
+          <Post key={index} courseId={courseId} post={doc} />
+        ))}
       </div>
     </div>
   );
