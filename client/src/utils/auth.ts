@@ -48,7 +48,9 @@ export const registerUser = async (
     .createUserWithEmailAndPassword(userinfo.email, userinfo.password)
     .then(({ user }: UserCredential) => {
       const { password, ...newUserInfo } = userinfo; // submit data without passwords
-      db.collection("users").doc(user!.uid).set(newUserInfo as UserData);
+      db.collection("users")
+        .doc(user!.uid)
+        .set(newUserInfo as UserData);
       return { user: user! };
     })
     .catch((err: AuthError) => {
