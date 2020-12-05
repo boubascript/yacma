@@ -131,6 +131,7 @@ const Courses: React.FunctionComponent = () => {
               id={id}
               description={description}
               educator={educator}
+              key={`courseData${index}`}
             />
           ))}
       </div>
