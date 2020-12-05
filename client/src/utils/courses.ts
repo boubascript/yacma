@@ -126,3 +126,17 @@ export const addCourseStudent = async (courseId: string, uid: string) => {
     console.log("Error checking if course exists");
   }
 };
+
+export const getCourse = async (courseId: string) => {
+  const courseRef = db.collection("courses").doc(courseId);
+  try {
+    const course = await courseRef.get();
+    if (course.exists) {
+      return course.data();
+    } else {
+      console.log("Course does not exist.");
+    }
+  } catch (error) {
+    console.log("Something went wrong, couldn't retrieve course :/");
+  }
+};

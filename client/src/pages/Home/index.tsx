@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Container, Typography } from "@material-ui/core";
+import { Typography } from "@material-ui/core";
 import axios from "axios";
 import Navbar from "components/Navbar";
 
