@@ -51,12 +51,12 @@ const useStyles = makeStyles({
   },
 });
 
-type ClassProps = {
+interface ClassProps {
   name: string;
   id: string;
   description: string;
   educator: string;
-};
+}
 
 const ClassCard: React.FC<ClassProps> = (props) => {
   const classes = useStyles();
