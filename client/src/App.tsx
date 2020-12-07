@@ -8,7 +8,7 @@ import Register from "pages/Register";
 import Profile from "pages/Profile";
 import Courses from "pages/Courses";
 import AddCourseProf from "pages/AddCourseProf";
-import AddCourseStudent from "pages/AddCourseStudent"
+import AddCourseStudent from "pages/AddCourseStudent";
 import { auth, IUser } from "config/firebase";
 import { UserContext, UserData, getUserData } from "utils/auth";
 import NewPost from "pages/NewPost";

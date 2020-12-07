@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { RouteComponentProps } from "react-router";
-import { getCourse, CourseData } from "utils/courses";
+import { CourseData } from "utils/courses";
 import { getPosts, PostData } from "utils/posts";
 import { Button, Typography } from "@material-ui/core";
 import Navbar from "components/Navbar";

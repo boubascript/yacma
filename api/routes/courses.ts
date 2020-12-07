@@ -19,21 +19,17 @@ router.get('/getCourses', async (req: Request, res:Response) => {
         const courseRef = courses.where("code", "in", courseCodes);
       try {
         const courses = await courseRef.get();
+        let ret: CourseData[] = []
         if (!courses.empty) {
-            let ret: CourseData[] = []
             courses.docs.map(doc => ret.push(doc.data() as unknown as CourseData));
-            res.json({
-                courses: ret
-            });
-        } else {
-            return [];
-        }
+           } 
+        res.json({ courses: ret });
         } catch (error) {
             console.log(error);
             console.log("error getting document in getUserData");
         }
     } else {
-        return [];
+        return;
     }
 });
 
@@ -45,7 +41,6 @@ export const addCourseToCourses = async (courseData: CourseData) => {
 
       // It doesn't exit, so add it!
       if (course.empty) {
-
           courses.add(courseData);
         return true;
       } else {
