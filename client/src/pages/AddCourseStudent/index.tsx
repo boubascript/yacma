@@ -26,15 +26,15 @@ const AddCourseStudent: React.FunctionComponent = () => {
 
     // Make sure user is not already enrolled
     if (!(userData!.courses.includes(courseCode))) {
-      const addedCourse = await axios.get("/courses/addCourseStudent", {params: 
+      const addedCourse = await axios.post("/courses/addCourseStudent", {data: 
         {
           courseCode: courseCode,
           uid: user!.uid
         }
       });
-      if (addedCourse) {
+
+      if (addedCourse.data) {
         addCourseContext(courseCode);
-        console.log("pushing");
         history.push("/me");
       } else {
         console.log("Didn't add");

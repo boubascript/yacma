@@ -16,23 +16,23 @@ const AddCourseStudent: React.FunctionComponent = () => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    // Make sure user is not already enrolled
-    if (!userData!.courses.includes(courseCode)) {
-      const addedCourse = await axios.get("/courses/addCourseStudent", {params: 
+     // Make sure user is not already enrolled
+      const addedCourse = await axios.post("/courses/addCourseStudent", {data: 
         {
           courseCode: courseCode,
           uid: user!.uid
         }
-      })
-      if (addedCourse) {
-        addCourseContext(courseCode);
+      });
+
+      //Response is either empty, or passes the document id
+      if (addedCourse.data) {
+        //add id to user contenxt, this doesn't seem to be updating
+        addCourseContext(addedCourse.data);
       } else {
-        console.log("");
+        console.log("Already enrolled.");
       }
-    } else {
-      console.log("Already enrolled. Please enter another course id.");
     }
-  };
+   
 
   return (
     <div>

@@ -44,7 +44,7 @@ const AddCourseProf: React.FunctionComponent = () => {
       }});
 
       if (addedCourse) {
-        addCourseContext(courseData.code);
+        addCourseContext(courseData!.id!);
         history.push("/me");
       } else {
         console.log("");

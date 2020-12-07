@@ -33,23 +33,24 @@ const AddCourseProf: React.FunctionComponent = () => {
       ...courseData,
       educator: userData!.firstName + " " + userData!.lastName,
     });
-    if (!userData?.courses || !userData.courses.includes(courseData.id)) {
-      const addedCourse = await axios.get("/courses/addCourseAdmin", {
-        params: {
-          "courseData": courseData,
-          "uid": user!.uid
-      }});
-      
-      
-      if (addedCourse) {
-        addCourseContext(courseData.id);
-      } else {
-        console.log("");
+
+     // Make sure user is not already enrolled
+     const addedCourse = await axios.post("/courses/addCourseAdmin", {data: 
+      {
+        courseData: {...courseData, educator: userData!.firstName + " " + userData!.lastName},
+        uid: user!.uid
       }
+    });
+
+    //Response is either empty, or passes the document id
+    if (addedCourse.data) {
+      //add id to user contenxt, this doesn't seem to be updating
+      addCourseContext(addedCourse.data);
     } else {
-      console.log("This id is already in your courses.");
+      console.log("Already enrolled.");
     }
-  };
+  }
+
 
   return (
     <form onSubmit={handleSubmit} noValidate>
@@ -59,8 +60,8 @@ const AddCourseProf: React.FunctionComponent = () => {
             variant="outlined"
             required
             fullWidth
-            name="id"
-            label="Course ID"
+            name="code"
+            label="Course Code"
             id="id"
             onChange={handleChange}
           />

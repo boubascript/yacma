@@ -8,7 +8,6 @@ const Home: React.FunctionComponent = () => {
 
   const getMessage = async () => {
     const res = await axios.get(`/api/`);
-    console.log(res.data);
     setMessage(res.data);
   };
 

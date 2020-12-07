@@ -79,7 +79,6 @@ const ClassCard: React.FC<ClassProps> = (props) => {
 
 const Courses: React.FunctionComponent = () => {
   const { user, userData } = useContext(UserContext);
-  const { firstName, lastName, isAdmin, courses } = userData || {};
   const classes = useStyles();
   const [checked, setChecked] = React.useState(false);
   const [coursesData, setCoursesData] = useState<CourseData[]>([]);
@@ -89,11 +88,10 @@ const Courses: React.FunctionComponent = () => {
    //TO DO: set timeout
    const getAsyncCourses = async () => {
     if (user) {
-      const data = await axios.get('/courses/getCourses', {params: {"courseCodes": courses}});
-      // console.log(data.data);
-      if (data.data) {
+      const { data } = await axios.get('/courses/getCourses', {params: {"courseIds": userData!.courses}});
+      if (data) {
         // @ts-ignore
-        setCoursesData(data.data.courses.map(doc => doc as CourseData));
+        setCoursesData(data.courses.map(doc => doc as CourseData));
       }
       setLoadingCourses(false);
     }

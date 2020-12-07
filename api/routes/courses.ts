@@ -1,4 +1,4 @@
-import  { db, FieldValue } from '../config/firebase';
+import  { db, FieldValue, FieldPath } from '../config/firebase';
 import { Router, Request, Response } from 'express';
 
 export interface CourseData {
@@ -13,16 +13,24 @@ const courses = db.collection('courses');
 const users = db.collection('users');
 
 router.get('/getCourses', async (req: Request, res:Response) => {
-    const courseCodes: string[] = req.query.courseCodes as unknown as string[];
+    let courseIds: string[] = req.query.courseIds as unknown as string[];
 
-    if (courseCodes.length > 0) {
-        const courseRef = courses.where("code", "in", courseCodes);
+    // to do: find a workaround
+    if (courseIds.length > 0) {
+        if (courseIds.length > 10) {
+          courseIds = courseIds.slice(1, 10);
+        }
+        //@ts-ignore
+        const query = courses.where(FieldPath.documentId(), 'in', courseIds)
+    
       try {
-        const courses = await courseRef.get();
+        const courses = await query.get();
         let ret: CourseData[] = []
+        console.log("courses: ");
+        console.log(courses);
         if (!courses.empty) {
             courses.docs.map(doc => ret.push(doc.data() as unknown as CourseData));
-           } 
+           }
         res.json({ courses: ret });
         } catch (error) {
             console.log(error);
@@ -35,12 +43,13 @@ router.get('/getCourses', async (req: Request, res:Response) => {
 });
 
 router.get('/getCourse', async (req: Request, res:Response) => {
-  const courseId = req.query.courseCode as unknown as string;
+  const courseId = req.query.courseId as unknown as string;
   if (courseId != "") {
-    const courseRef = courses.where("id", "==", courseId);
+    const courseRef = courses.doc(courseId);
     try {
       const course = await courseRef.get();
-      if (!course.empty){
+      if (course.exists){
+        res.send(course.data);
         console.log(course);
       }
     } catch { }
@@ -57,15 +66,16 @@ export const addCourseToCourses = async (courseData: CourseData) => {
       if (course.empty) {
           try {
             const {id: newId } = await courses.add({...courseData});
-            courses.doc(newId).set({
-              id: newId
+            courses.doc(newId).update({
+                id: newId
             })
+            return newId
           } catch {
             console.log("Couldn't add id to course")
           }
-        return true;
       } else {
         console.log("Course Exists. Please use another id.");
+        return "";
       }
     } catch (e) {
         console.log(e);
@@ -83,26 +93,52 @@ export const addCourseForUser = async (
       const user = await userRef.get();
 
       if (user.exists) {
-        userRef.update({
-          courses: FieldValue.arrayUnion(newCourse),
-        });
-        return true;
+        if (!user.data()!.courses.includes(newCourse)) {
+          userRef.update({
+            courses: FieldValue.arrayUnion(newCourse),
+          });
+          return true;
+        }
+        else{
+          console.log("already enrolled");
+          return false;
+        }
       }
-      return true;
+      else {
+        console.log("no such user")
+      }
     } catch {
       console.log("error updating courses");
     }
-};
+  };
 
-router.get('/addCourseAdmin', async (req: Request, res:Response) => {
-    const courseData: CourseData = JSON.parse(req.query['courseData'] as string) as unknown as CourseData;
-    const uid: string = req.query['uid'] as string;
+export const getIdByCourseCode = async (
+  courseCode: string
+) => {
+  const courseRef = courses.where("code", "==", courseCode);
+  try {
+    const course = await courseRef.get();
+    if (!course.empty) {
+      return course.docs[0].id;
+    }
+    return "";
+  } catch (e) {
+    console.log(e);
+    console.log("Can't get id by course code");
+  }
+}
+
+router.post('/addCourseAdmin', async (req: Request, res:Response) => {
+    const courseData: CourseData = req.body.data.courseData;
+    console.log("coursedata: ");
+    console.log(courseData);
+    const uid: string = req.body.data.uid as string;
     try {
-        const addedToCourses = await addCourseToCourses(courseData);
-        if (addedToCourses) {
+        const newId = await addCourseToCourses(courseData);
+        if (newId != "") {
           try {
-            const addedToUser = await addCourseForUser(courseData.code, uid);
-            return res.send(addedToUser);
+            const addedToUser = await addCourseForUser(newId!, uid);
+            return res.send(newId);
           } catch {
             console.log("Error adding to user");
           }
@@ -113,13 +149,28 @@ router.get('/addCourseAdmin', async (req: Request, res:Response) => {
       }
 });
 
-router.get('/addCourseStudent', async (req: Request, res:Response) => {
-    const courseCode = req.query['courseCode'] as string;
-    const uid: string = req.query['uid'] as string;
-
+router.post('/addCourseStudent', async (req: Request, res:Response) => {
+  console.log(req.body);  
+  const courseCode = req.body.data.courseCode as string;
+  const uid: string = req.body.data.uid as string;
+  console.log(courseCode);
+  console.log(uid);
     try {
-        const addedToUser = await addCourseForUser(courseCode, uid);
-        return res.send(addedToUser);
+        const courseId = await getIdByCourseCode(courseCode);
+        if (courseId && courseId != "") {
+          console.log("pushing id " + courseId + "for user");
+          const addedToUser = await addCourseForUser(courseId!, uid);
+          console.log(addedToUser)
+          if (addedToUser) {
+            res.send(courseId);
+          }
+          else {
+            res.send("");
+          }
+        }
+        else {
+          console.log("couldn't get doc id");
+        }
     } catch (e) {
         console.log(e);
         console.log("Error adding to user");

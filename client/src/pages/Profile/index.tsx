@@ -19,7 +19,6 @@ const Profile: React.FunctionComponent = () => {
     const getAsyncCourses = async () => {
       if (user) {
         const data = await axios.get('/courses/getCourses', {params: {"courseCodes": courses}});
-        console.log(data.data);
         if (data.data) {
           // @ts-ignore
           setCoursesData(data.data.courses.map(doc => doc as CourseData));
