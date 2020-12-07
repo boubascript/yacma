@@ -9,10 +9,11 @@ import {
 import AddCircleIcon from "@material-ui/icons/AddCircle";
 import { makeStyles } from "@material-ui/core/styles";
 import { UserContext } from "utils/auth";
-import { getCourses, CourseData } from "utils/courses";
+import { CourseData } from "utils/courses";
 import Navbar from "components/Navbar";
 import AddCourseStudent from "./AddCourseStudent";
 import AddCourseProf from "./AddCourseProf";
+import axios from "axios";
 
 const useStyles = makeStyles({
   root: {
@@ -53,7 +54,7 @@ const useStyles = makeStyles({
 
 interface ClassProps {
   name: string;
-  id: string;
+  code: string;
   description: string;
   educator: string;
 }
@@ -68,7 +69,7 @@ const ClassCard: React.FC<ClassProps> = (props) => {
           {" "}
           <b>{props.name} </b>
         </Typography>
-        <Typography variant="h5"> Code: {props.id} </Typography>
+        <Typography variant="h5"> Code: {props.code} </Typography>
         <Typography variant="h5">Professor: {props.educator}</Typography>
         <Typography variant="h5">{props.description}</Typography>
       </CardContent>
@@ -85,15 +86,18 @@ const Courses: React.FunctionComponent = () => {
   const [loadingCourses, setLoadingCourses] = useState(true);
 
   useEffect(() => {
-    const getAsyncCourses = async () => {
-      if (user) {
-        const data = await getCourses(courses!);
-        if (data) {
-          setCoursesData(data.map((doc) => doc.data() as CourseData));
-        }
-        setLoadingCourses(false);
+   //TO DO: set timeout
+   const getAsyncCourses = async () => {
+    if (user) {
+      const data = await axios.get('/courses/getCourses', {params: {"courseCodes": courses}});
+      // console.log(data.data);
+      if (data.data) {
+        // @ts-ignore
+        setCoursesData(data.data.courses.map(doc => doc as CourseData));
       }
-    };
+      setLoadingCourses(false);
+    }
+  };
 
     getAsyncCourses();
   }, []);
@@ -125,10 +129,10 @@ const Courses: React.FunctionComponent = () => {
 
       <div className={classes.root}>
         {!loadingCourses &&
-          coursesData.map(({ name, id, description, educator }, index) => (
+          coursesData.map(({ name, id, code, description, educator }, index) => (
             <ClassCard
               name={name}
-              id={id}
+              code={code}
               description={description}
               educator={educator}
               key={`courseData${index}`}

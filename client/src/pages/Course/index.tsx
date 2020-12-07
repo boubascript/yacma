@@ -6,6 +6,7 @@ import { Button, Typography } from "@material-ui/core";
 import Navbar from "components/Navbar";
 import Post from "pages/Post";
 import NewPost from "pages/NewPost";
+import axios from "axios";
 
 const Course: React.FunctionComponent<RouteComponentProps> = ({
   location: { search },
@@ -17,7 +18,11 @@ const Course: React.FunctionComponent<RouteComponentProps> = ({
 
   const getCourseInfo = async () => {
     // TODO: Add error handling
-    const courseData = (await getCourse(courseId)) as CourseData;
+    const courseData = (await axios.get("/getCourse", {
+      params: {
+        "courseId": courseId
+      }})).data as CourseData;
+      
     setCourse(courseData);
 
     const postsData = (await getPosts(courseId)) as PostData[];

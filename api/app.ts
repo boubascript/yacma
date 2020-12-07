@@ -2,6 +2,7 @@ import express from "express";
 import bodyparser from "body-parser";
 import logger from "morgan";
 
+
 const courseRouter = require('./routes/courses');
 
 (async () => {

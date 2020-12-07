@@ -2,7 +2,7 @@ import React, { useState, useEffect, useContext } from "react";
 import { useHistory } from "react-router-dom";
 import { Grid, TextField, Button } from "@material-ui/core";
 import { UserContext } from "utils/auth";
-import { addCourseAdmin } from "utils/courses";
+import axios from "axios";
 
 interface CourseProps {
   id: string;
@@ -34,7 +34,13 @@ const AddCourseProf: React.FunctionComponent = () => {
       educator: userData!.firstName + " " + userData!.lastName,
     });
     if (!userData?.courses || !userData.courses.includes(courseData.id)) {
-      const addedCourse = await addCourseAdmin(courseData, user!.uid);
+      const addedCourse = await axios.get("/courses/addCourseAdmin", {
+        params: {
+          "courseData": courseData,
+          "uid": user!.uid
+      }});
+      
+      
       if (addedCourse) {
         addCourseContext(courseData.id);
       } else {

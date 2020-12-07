@@ -9,6 +9,7 @@ import {
 import { UserContext, UserData } from "utils/auth";
 
 export interface CourseData {
+  id?: string;
   code: string;
   name: string;
   description: string;

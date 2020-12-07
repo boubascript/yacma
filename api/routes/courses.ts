@@ -29,8 +29,22 @@ router.get('/getCourses', async (req: Request, res:Response) => {
             console.log("error getting document in getUserData");
         }
     } else {
+        console.log("No course codes...");
         return;
     }
+});
+
+router.get('/getCourse', async (req: Request, res:Response) => {
+  const courseId = req.query.courseCode as unknown as string;
+  if (courseId != "") {
+    const courseRef = courses.where("id", "==", courseId);
+    try {
+      const course = await courseRef.get();
+      if (!course.empty){
+        console.log(course);
+      }
+    } catch { }
+  }
 });
 
 export const addCourseToCourses = async (courseData: CourseData) => {
@@ -41,7 +55,14 @@ export const addCourseToCourses = async (courseData: CourseData) => {
 
       // It doesn't exit, so add it!
       if (course.empty) {
-          courses.add(courseData);
+          try {
+            const {id: newId } = await courses.add({...courseData});
+            courses.doc(newId).set({
+              id: newId
+            })
+          } catch {
+            console.log("Couldn't add id to course")
+          }
         return true;
       } else {
         console.log("Course Exists. Please use another id.");
