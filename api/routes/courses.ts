@@ -26,8 +26,6 @@ router.get('/getCourses', async (req: Request, res:Response) => {
       try {
         const courses = await query.get();
         let ret: CourseData[] = []
-        console.log("courses: ");
-        console.log(courses);
         if (!courses.empty) {
             courses.docs.map(doc => ret.push(doc.data() as unknown as CourseData));
            }
@@ -50,9 +48,11 @@ router.get('/getCourse', async (req: Request, res:Response) => {
       const course = await courseRef.get();
       if (course.exists){
         res.send(course.data);
-        console.log(course);
       }
-    } catch { }
+    } catch { 
+        console.log("Course donut exist.");
+        res.send([]);
+    }
   }
 });
 
@@ -130,8 +130,6 @@ export const getIdByCourseCode = async (
 
 router.post('/addCourseAdmin', async (req: Request, res:Response) => {
     const courseData: CourseData = req.body.data.courseData;
-    console.log("coursedata: ");
-    console.log(courseData);
     const uid: string = req.body.data.uid as string;
     try {
         const newId = await addCourseToCourses(courseData);
@@ -150,11 +148,9 @@ router.post('/addCourseAdmin', async (req: Request, res:Response) => {
 });
 
 router.post('/addCourseStudent', async (req: Request, res:Response) => {
-  console.log(req.body);  
   const courseCode = req.body.data.courseCode as string;
   const uid: string = req.body.data.uid as string;
-  console.log(courseCode);
-  console.log(uid);
+
     try {
         const courseId = await getIdByCourseCode(courseCode);
         if (courseId && courseId != "") {

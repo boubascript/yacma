@@ -14,6 +14,7 @@ import Navbar from "components/Navbar";
 import AddCourseStudent from "./AddCourseStudent";
 import AddCourseProf from "./AddCourseProf";
 import axios from "axios";
+import { useHistory } from "react-router-dom";
 
 const useStyles = makeStyles({
   root: {
@@ -54,13 +55,21 @@ const useStyles = makeStyles({
 
 interface ClassProps {
   name: string;
+  id: string | undefined;
   code: string;
   description: string;
   educator: string;
 }
 
 const ClassCard: React.FC<ClassProps> = (props) => {
+  const history = useHistory();
   const classes = useStyles();
+  const loadCourse = (id: string) => {
+    history.push({
+      pathname: "/coursepage",
+      search: id,
+    });
+  };
 
   return (
     <Card className={classes.card}>
@@ -72,6 +81,13 @@ const ClassCard: React.FC<ClassProps> = (props) => {
         <Typography variant="h5"> Code: {props.code} </Typography>
         <Typography variant="h5">Professor: {props.educator}</Typography>
         <Typography variant="h5">{props.description}</Typography>
+        <Button
+                      name={props.code}
+                      onClick={() => {
+                        loadCourse(props.id!);
+                      }}>
+                      Go To Course
+            </Button>
       </CardContent>
     </Card>
   );
@@ -83,6 +99,7 @@ const Courses: React.FunctionComponent = () => {
   const [checked, setChecked] = React.useState(false);
   const [coursesData, setCoursesData] = useState<CourseData[]>([]);
   const [loadingCourses, setLoadingCourses] = useState(true);
+  
 
   useEffect(() => {
    //TO DO: set timeout
@@ -128,13 +145,16 @@ const Courses: React.FunctionComponent = () => {
       <div className={classes.root}>
         {!loadingCourses &&
           coursesData.map(({ name, id, code, description, educator }, index) => (
+            <div>
             <ClassCard
               name={name}
+              id = {id}
               code={code}
               description={description}
               educator={educator}
               key={`courseData${index}`}
             />
+            </div>
           ))}
       </div>
     </div>

@@ -50,7 +50,7 @@ const Profile: React.FunctionComponent = () => {
           <Typography variant="h5">
             <b>Your Courses: </b>
             {!loadingCourses
-              && coursesData.map(({ name, code, description, educator }, index) => (
+              && coursesData.map(({ name, id, code, description, educator }, index) => (
                   <div key="courseData">
                     <Typography variant="h3">
                       <p key="courseName">
@@ -61,6 +61,13 @@ const Profile: React.FunctionComponent = () => {
                     <p key="courseDescription"> {description} </p>
                     {!isAdmin &&  <p key="educator"> Professor {educator} </p>}
                     <hr></hr>
+                    <Button
+                      name={id}
+                      onClick={() => {
+                        loadCourse(id!);
+                      }}>
+                      Go To Course
+                    </Button>
                   </div>
                 ))
               }
