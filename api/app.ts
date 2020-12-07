@@ -1,9 +1,13 @@
 import express from "express";
 import bodyparser from "body-parser";
 import logger from "morgan";
+const multer = require('multer');
+
+require('dotenv').config()
 
 
 const courseRouter = require('./routes/courses');
+const fileRouter = require('./routes/file')
 
 export const {GOOGLE_APPLICATION_CREDENTIALS} = process.env;
 
@@ -34,7 +38,15 @@ export const {GOOGLE_APPLICATION_CREDENTIALS} = process.env;
       });
     }
 
+    // image processing setup
+    const multerMid = multer({
+      storage: multer.memoryStorage(),
+    })
+    app.use(multerMid.single('file'))
+
+    // importing routes
     app.use('/courses', courseRouter);
+    app.use('/file', fileRouter);
 
     // Routes
     app.get("/", (req: express.Request, res: express.Response) => {
