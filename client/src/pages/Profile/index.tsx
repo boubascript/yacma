@@ -42,14 +42,14 @@ const Profile: React.FunctionComponent = () => {
           <Typography variant="h5">
             <b>Your Courses: </b>
             {!loadingCourses
-              && coursesData.map(({ name, id, description, educator }, index) => (
+              && coursesData.map(({ name, code, description, educator }, index) => (
                   <div key="courseData">
                     <Typography variant="h3">
                       <p key="courseName">
                         <b>{name}</b>
                       </p>
                     </Typography>
-                    <p key="courseId"> {id} </p>
+                    <p key="courseId"> {code} </p>
                     <p key="courseDescription"> {description} </p>
                     {!isAdmin &&  <p key="educator"> Professor {educator} </p>}
                     <hr></hr>
