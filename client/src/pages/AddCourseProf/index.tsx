@@ -2,6 +2,7 @@ import React, { useState, useEffect, useContext } from "react";
 import { useHistory } from "react-router-dom";
 import { UserContext } from "utils/auth";
 import axios from 'axios';
+import {CourseData} from "utils/courses";
 
 import {
   Container,
@@ -12,12 +13,6 @@ import {
 } from "@material-ui/core";
 import Navbar from "components/Navbar";
 
-interface CourseData {
-  code: string;
-  name: string;
-  description: string;
-  educator: string;
-}
 const DEFAULT_COURSE_DATA: CourseData = {
   code: "",
   name: "",
