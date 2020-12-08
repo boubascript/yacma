@@ -20,7 +20,7 @@ Run `npm run installer` to install all packages for every service.
 
 ## api aka server aka backend
 `cd api`
-
+`export GOOGLE_APPLICATION_CREDENTIALS='<path to service key file>'`
 `npm run dev` to run the server at [localhost:8080](http://localhost:8080).
 
 ## client aka frontend
