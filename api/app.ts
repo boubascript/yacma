@@ -1,6 +1,7 @@
 import express from "express";
 import bodyparser from "body-parser";
 import logger from "morgan";
+import courseRouter from "./routes/courses";
 
 (async () => {
   try {
@@ -8,11 +9,11 @@ import logger from "morgan";
     const app = express();
     const port = Number(process.env.PORT) || 8080;
     app.set("port", port);
-
+    
     // Middleware
     app.use(bodyparser.urlencoded({ extended: false }));
     app.use(bodyparser.json());
-
+    
     if (process.env.NODE_ENV !== "production") {
       app.use(logger("dev"));
       app.use(function (
@@ -28,6 +29,8 @@ import logger from "morgan";
         next();
       });
     }
+
+    app.use('/courses', courseRouter);
 
     // Routes
     app.get("/", (req: express.Request, res: express.Response) => {

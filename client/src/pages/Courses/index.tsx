@@ -9,10 +9,12 @@ import {
 import AddCircleIcon from "@material-ui/icons/AddCircle";
 import { makeStyles } from "@material-ui/core/styles";
 import { UserContext } from "utils/auth";
-import { getCourses, CourseData } from "utils/courses";
+import { CourseData } from "utils/courses";
 import Navbar from "components/Navbar";
 import AddCourseStudent from "./AddCourseStudent";
 import AddCourseProf from "./AddCourseProf";
+import axios from "axios";
+import ClassCard from "./ClassCard";
 
 const useStyles = makeStyles({
   root: {
@@ -51,52 +53,31 @@ const useStyles = makeStyles({
   },
 });
 
-interface ClassProps {
-  name: string;
-  id: string;
-  description: string;
-  educator: string;
-}
-
-const ClassCard: React.FC<ClassProps> = (props) => {
-  const classes = useStyles();
-
-  return (
-    <Card className={classes.card}>
-      <CardContent>
-        <Typography variant="h4">
-          {" "}
-          <b>{props.name} </b>
-        </Typography>
-        <Typography variant="h5"> Code: {props.id} </Typography>
-        <Typography variant="h5">Professor: {props.educator}</Typography>
-        <Typography variant="h5">{props.description}</Typography>
-      </CardContent>
-    </Card>
-  );
-};
 
 const Courses: React.FunctionComponent = () => {
   const { user, userData } = useContext(UserContext);
-  const { firstName, lastName, isAdmin, courses } = userData || {};
   const classes = useStyles();
   const [checked, setChecked] = React.useState(false);
   const [coursesData, setCoursesData] = useState<CourseData[]>([]);
   const [loadingCourses, setLoadingCourses] = useState(true);
+  
 
   useEffect(() => {
-    const getAsyncCourses = async () => {
-      if (user) {
-        const data = await getCourses(courses!);
-        if (data) {
-          setCoursesData(data.map((doc) => doc.data() as CourseData));
-        }
-        setLoadingCourses(false);
+   //TO DO: set timeout
+   const getAsyncCourses = async () => {
+    if (user) {
+      const { data } = await axios.get('/courses/getCourses', {params: {"courseIds": userData!.courses}});
+      if (data) {
+        // @ts-ignore
+        await setCoursesData(data.courses.map(doc => doc as CourseData));
+        console.log(coursesData);
       }
-    };
-
-    getAsyncCourses();
-  }, []);
+      setLoadingCourses(false);
+    }
+  };
+  
+  getAsyncCourses();
+}, []);
 
   const handleClick = () => {
     setChecked((prev) => !prev);
@@ -125,14 +106,17 @@ const Courses: React.FunctionComponent = () => {
 
       <div className={classes.root}>
         {!loadingCourses &&
-          coursesData.map(({ name, id, description, educator }, index) => (
+          coursesData.map(({ name, id, code, description, educator }, index) => (
+            <div>
             <ClassCard
               name={name}
-              id={id}
+              id = {id}
+              code={code}
               description={description}
               educator={educator}
               key={`courseData${index}`}
             />
+            </div>
           ))}
       </div>
     </div>

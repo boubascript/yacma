@@ -10,8 +10,7 @@ import Courses from "pages/Courses";
 import AddCourseProf from "pages/AddCourseProf";
 import AddCourseStudent from "pages/AddCourseStudent";
 import { auth, IUser } from "config/firebase";
-import { UserContext, UserData } from "utils/auth";
-import { getUserData } from "utils/courses";
+import { UserContext, UserData, getUserData } from "utils/auth";
 import NewPost from "pages/NewPost";
 import NewComment from "pages/NewComment";
 import Course from "pages/Course";
@@ -21,8 +20,11 @@ const App: React.FunctionComponent = () => {
   const [userData, setUserData] = useState<UserData | null>(null);
   const [loadingAuthState, setLoadingAuthState] = useState(true);
 
-  const addCourseContext = (newCourse: string) => {
-    setUserData({ ...userData!, courses: [...userData!.courses, newCourse] });
+  const addCourseContext = async (newCourse: string) => {
+
+    await setUserData({ ...userData!, courses: [...userData!.courses, newCourse] });
+    console.log("updated courses in context");
+    console.log(userData!.courses);
   };
 
   useEffect(() => {

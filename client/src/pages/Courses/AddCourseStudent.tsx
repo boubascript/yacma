@@ -2,32 +2,37 @@ import React, { useState, useEffect, useContext } from "react";
 import { useHistory } from "react-router-dom";
 import { Grid, TextField, Button } from "@material-ui/core";
 import { UserContext } from "utils/auth";
-import { addCourseStudent } from "utils/courses";
+import axios from "axios";
 
 const AddCourseStudent: React.FunctionComponent = () => {
   const { user, userData, addCourseContext } = useContext(UserContext);
-  const [courseId, setCourseId] = useState<string>("");
+  const [courseCode, setCourseCode] = useState<string>("");
   const history = useHistory();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setCourseId(e.target.value);
+    setCourseCode(e.target.value);
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    // Make sure user is not already enrolled
-    if (!userData!.courses.includes(courseId)) {
-      const addedCourse = await addCourseStudent(courseId, user!.uid);
-      if (addedCourse) {
-        addCourseContext(courseId);
+     // Make sure user is not already enrolled
+      const addedCourse = await axios.post("/courses/addCourseStudent", {data: 
+        {
+          courseCode: courseCode,
+          uid: user!.uid
+        }
+      });
+
+      //Response is either empty, or passes the document id
+      if (addedCourse.data) {
+        //add id to user contenxt, this doesn't seem to be updating
+        addCourseContext(addedCourse.data);
       } else {
-        console.log("");
+        console.log("Already enrolled.");
       }
-    } else {
-      console.log("Already enrolled. Please enter another course id.");
     }
-  };
+   
 
   return (
     <div>
@@ -38,9 +43,9 @@ const AddCourseStudent: React.FunctionComponent = () => {
               variant="outlined"
               required
               fullWidth
-              name="id"
-              label="Course ID"
-              id="id"
+              name="courseCode"
+              label="Course Code"
+              id="code"
               onChange={handleChange}
             />
           </Grid>
