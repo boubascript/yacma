@@ -8,7 +8,7 @@ const courses = db.collection('courses');
 
 
 router.get('/getCourses', async (req: Request, res:Response) => {
-    let courseIds: string[] = req.query.courseIds as unknown as string[];
+    let courseIds = req.query.courseIds as string[];
 
     // TODO: find a workaround
     if (courseIds.length > 0) {
@@ -38,17 +38,18 @@ router.get('/getCourses', async (req: Request, res:Response) => {
 router.get('/getCourse', async (req: Request, res:Response) => {
   const courseId = req.query.courseId as unknown as string;
   if (courseId) {
-    const courseRef = courses.doc(courseId);
     try {
-      const course = await courseRef.get();
+      const course = await courses.doc(courseId).get();
       if (course.exists){
-        res.send(course.data);
+        console.log(course.data());
+        res.send(course.data());
       }
     } catch { 
         console.log("Course donut exist.");
         res.send([]);
     }
   }
+  
 });
 
 

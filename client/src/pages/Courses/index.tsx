@@ -14,7 +14,7 @@ import Navbar from "components/Navbar";
 import AddCourseStudent from "./AddCourseStudent";
 import AddCourseProf from "./AddCourseProf";
 import axios from "axios";
-import { useHistory } from "react-router-dom";
+import ClassCard from "./ClassCard";
 
 const useStyles = makeStyles({
   root: {
@@ -53,45 +53,6 @@ const useStyles = makeStyles({
   },
 });
 
-interface ClassProps {
-  name: string;
-  id?: string;
-  code: string;
-  description: string;
-  educator: string;
-}
-
-const ClassCard: React.FC<ClassProps> = (props) => {
-  const history = useHistory();
-  const classes = useStyles();
-  const loadCourse = (id: string) => {
-    history.push({
-      pathname: "/coursepage",
-      search: id,
-    });
-  };
-
-  return (
-    <Card className={classes.card}>
-      <CardContent>
-        <Typography variant="h4">
-          {" "}
-          <b>{props.name} </b>
-        </Typography>
-        <Typography variant="h5"> Code: {props.code} </Typography>
-        <Typography variant="h5">Professor: {props.educator}</Typography>
-        <Typography variant="h5">{props.description}</Typography>
-        <Button
-                      name={props.code}
-                      onClick={() => {
-                        loadCourse(props.id!);
-                      }}>
-                      Go To Course
-            </Button>
-      </CardContent>
-    </Card>
-  );
-};
 
 const Courses: React.FunctionComponent = () => {
   const { user, userData } = useContext(UserContext);
@@ -108,14 +69,15 @@ const Courses: React.FunctionComponent = () => {
       const { data } = await axios.get('/courses/getCourses', {params: {"courseIds": userData!.courses}});
       if (data) {
         // @ts-ignore
-        setCoursesData(data.courses.map(doc => doc as CourseData));
+        await setCoursesData(data.courses.map(doc => doc as CourseData));
+        console.log(coursesData);
       }
       setLoadingCourses(false);
     }
   };
-
-    getAsyncCourses();
-  }, []);
+  
+  getAsyncCourses();
+}, []);
 
   const handleClick = () => {
     setChecked((prev) => !prev);

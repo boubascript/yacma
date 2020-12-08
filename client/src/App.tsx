@@ -20,9 +20,11 @@ const App: React.FunctionComponent = () => {
   const [userData, setUserData] = useState<UserData | null>(null);
   const [loadingAuthState, setLoadingAuthState] = useState(true);
 
-  const addCourseContext = (newCourse: string) => {
+  const addCourseContext = async (newCourse: string) => {
 
-    setUserData({ ...userData!, courses: [...userData!.courses, newCourse] });
+    await setUserData({ ...userData!, courses: [...userData!.courses, newCourse] });
+    console.log("updated courses in context");
+    console.log(userData!.courses);
   };
 
   useEffect(() => {

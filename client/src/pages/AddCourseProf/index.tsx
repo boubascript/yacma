@@ -31,10 +31,6 @@ const AddCourseProf: React.FunctionComponent = () => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setCourseData({
-      ...courseData,
-      educator: userData!.firstName + " " + userData!.lastName
-    })
     if (!userData!.courses.includes(courseData.code)) {
 
       const addedCourse = await axios.get("/courses/addCourseAdmin", {
@@ -43,9 +39,9 @@ const AddCourseProf: React.FunctionComponent = () => {
           "uid": user!.uid
       }});
 
-      if (addedCourse) {
-        addCourseContext(courseData!.id!);
-        history.push("/me");
+      if (addedCourse.data) {
+        await addCourseContext(courseData!.id!);
+        window.location.reload();
       } else {
         console.log("");
       }
