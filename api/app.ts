@@ -1,6 +1,7 @@
 import express from "express";
 import bodyparser from "body-parser";
 import logger from "morgan";
+import postsRouter from "./routes/posts";
 
 (async () => {
   try {
@@ -30,6 +31,9 @@ import logger from "morgan";
     }
 
     // Routes
+    // app.use('/courses', postsRouter);
+    app.use("/courses", postsRouter);
+
     app.get("/", (req: express.Request, res: express.Response) => {
       return res.send(`Hello YACMA!`);
     });
