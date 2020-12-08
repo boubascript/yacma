@@ -21,10 +21,8 @@ const App: React.FunctionComponent = () => {
   const [loadingAuthState, setLoadingAuthState] = useState(true);
 
   const addCourseContext = (newCourse: string) => {
-    console.log("updating course context");
+
     setUserData({ ...userData!, courses: [...userData!.courses, newCourse] });
-    console.log("after running setuserdata");
-    console.log(userData!.courses);
   };
 
   useEffect(() => {

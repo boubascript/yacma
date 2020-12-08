@@ -55,7 +55,7 @@ const useStyles = makeStyles({
 
 interface ClassProps {
   name: string;
-  id: string | undefined;
+  id?: string;
   code: string;
   description: string;
   educator: string;

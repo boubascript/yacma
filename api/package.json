@@ -14,7 +14,7 @@
     "dev": "nodemon --exec ts-node -r tsconfig-paths/register app.ts",
     "build": "tsc -p .",
     "gcp-build": "npx tsc -p .",
-    "start": "node dist/app.js && set NODE_ENV=dev",
+    "start": "node dist/app.js",
     "deploy": "gcloud app deploy"
   },
   "devDependencies": {
@@ -26,7 +26,7 @@
     "nodemon": "^2.0.4",
     "prettier": "^2.0.5",
     "ts-node": "^8.10.2",
-    "typescript": "^3.9.6",
+    "typescript": "^3.9.6"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",

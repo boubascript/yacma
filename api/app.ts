@@ -1,9 +1,7 @@
 import express from "express";
 import bodyparser from "body-parser";
 import logger from "morgan";
-
-
-const courseRouter = require('./routes/courses');
+import courseRouter from "./routes/courses";
 
 (async () => {
   try {
