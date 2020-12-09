@@ -1,15 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import Container from "@material-ui/core/Container";
-import { CommentData, deleteComment, updateComment } from "utils/comments";
+import { CommentData } from "utils/comments";
 import NewComment from "../NewComment";
-import {
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
-} from "@material-ui/core";
+import { Button, Dialog, DialogActions, DialogTitle } from "@material-ui/core";
 import axios from "axios";
 
 interface CommentProps {
@@ -52,7 +45,6 @@ const Comment: React.FunctionComponent<CommentProps> = ({
     setDeletingComment(false);
   };
 
-  /* TODO: Delete functions */
   return (
     <>
       {!updatingComment ? (

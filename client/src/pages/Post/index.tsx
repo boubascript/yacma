@@ -5,6 +5,7 @@ import { Button, Container } from "@material-ui/core";
 import Comment from "pages/Comment";
 import NewComment from "pages/NewComment";
 import NewPost from "pages/NewPost";
+import axios from "axios";
 
 interface PostProps {
   courseId: string;
@@ -23,8 +24,15 @@ const Post: React.FunctionComponent<PostProps> = ({
 
   const getAllComments = async () => {
     if (id) {
-      const commentsData = (id &&
-        (await getComments(courseId, id))) as CommentData[];
+      const { data: commentsData } = await axios.get(
+        `comments/${courseId}/posts/${id}/comments`,
+        {
+          params: {
+            courseId: courseId,
+            postId: id,
+          },
+        }
+      );
       setComments(commentsData);
     }
   };
@@ -49,9 +57,7 @@ const Post: React.FunctionComponent<PostProps> = ({
 
   // TODO: Find a better way to do this
   const refreshComments = async () => {
-    const commentsData = (id &&
-      (await getComments(courseId, id))) as CommentData[];
-    setComments(commentsData);
+    getAllComments();
   };
 
   return (

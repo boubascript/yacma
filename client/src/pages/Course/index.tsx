@@ -16,6 +16,17 @@ const Course: React.FunctionComponent<RouteComponentProps> = ({
   const [addingPost, setAddingPost] = useState(false);
   const courseId = search.substring(1);
 
+  const getCoursePosts = async () => {
+    if (courseId) {
+      const { data: postsData } = await axios.get(`/posts/${courseId}/posts`, {
+        params: {
+          courseId: courseId,
+        },
+      });
+      setPosts(postsData);
+    }
+  };
+
   const getCourseInfo = async () => {
     if (courseId) {
       const { data } = await axios.get("/courses/getCourse", {
@@ -26,17 +37,11 @@ const Course: React.FunctionComponent<RouteComponentProps> = ({
 
       const courseData = data as CourseData;
       setCourse(courseData);
-
-      const { data: postsData } = await axios.get(`/posts/${courseId}/posts`, {
-        params: {
-          courseId: courseId,
-        },
-      });
-      setPosts(postsData);
+      await getCoursePosts();
     }
   };
 
-  // TODO: Add loadin script check
+  // TODO: Add loading script check
   useEffect(() => {
     if (courseId) {
       getCourseInfo();
@@ -49,8 +54,7 @@ const Course: React.FunctionComponent<RouteComponentProps> = ({
 
   // TODO: Find a better way to do this
   const refreshPosts = async () => {
-    const postsData = (await getPosts(courseId)) as PostData[];
-    setPosts(postsData);
+    getCoursePosts();
   };
 
   return (

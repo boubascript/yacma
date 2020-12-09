@@ -2,11 +2,11 @@ import { db } from "../config/firebase";
 import { Router, Request, Response } from "express";
 const router = Router();
 
-export interface CommentsData {
+export interface CommentData {
   author: string;
   comment: string;
   id?: string;
-  uid: string; // TODO: Add user ID field
+  uid?: string; // TODO: Add user ID field
   createdAt: FirebaseFirestore.Timestamp;
 }
 
@@ -20,9 +20,9 @@ export interface CommentsData {
 router.get(
   "/:courseId/posts/:postId/comments",
   async (req: Request, res: Response) => {
-    const { userId } = req.body;
-    const { courseId, postId } = req.params;
     try {
+      // const { userId } = req.body;
+      const { courseId, postId } = req.params;
       const commentsRef = db
         .collection("courses")
         .doc(courseId)
@@ -33,12 +33,15 @@ router.get(
       const commentsSnap = await commentsRef.get();
       if (commentsSnap.size > 0) {
         // Check if comments collection exists
-        let commentData: Array<Object> = [];
+        let commentsData: CommentData[] = [];
         commentsSnap.forEach((doc) => {
-          const data = { ...doc.data(), id: doc.id };
-          commentData.push(data);
+          commentsData.push({
+            ...((doc.data() as unknown) as CommentData),
+            id: doc.id,
+          });
         });
-        return res.status(200).json(commentData);
+
+        return res.status(200).json(commentsData);
       } else {
         console.log("There are no comments for this post");
       }
@@ -126,6 +129,7 @@ router.put(
 );
 
 // Delete Comment
+// TODO: Add check to ensure only author can edit their post
 router.delete(
   "/:courseId/posts/:postId/comments/:commentId",
   async (req: Request, res: Response) => {
