@@ -28,7 +28,7 @@ router.get("/:courseId/posts", async (req: Request, res: Response) => {
       .collection("courses")
       .doc(courseId)
       .collection("posts")
-      .orderBy("createdAt", "desc");
+      .orderBy("createdAt", "asc");
     const postsSnap = await postsRef.get();
 
     // Check if posts collection exists

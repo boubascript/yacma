@@ -29,7 +29,7 @@ router.get(
         .collection("posts")
         .doc(postId)
         .collection("comments")
-        .orderBy("createdAt", "desc");
+        .orderBy("createdAt", "asc");
 
       const commentsSnap = await commentsRef.get();
       if (commentsSnap.size > 0) {
