@@ -48,9 +48,27 @@ const NewPost: React.FunctionComponent<NewPostProps> = ({
     if (courseId) {
       if (postId) {
         // TODO: Fix update error, blank title when editing post, and vice versa
-        await updatePost(courseId, postId, postBody);
+        await axios.put(`/posts/${courseId}/posts/${postId}`, {
+          params: {
+            courseId: courseId,
+            postId: postId,
+          },
+          data: {
+            postBody,
+          },
+        });
+        // await updatePost(courseId, postId, postBody);
       } else {
-        await addPost(courseId, postBody);
+        await axios.post(`/posts/${courseId}/posts/`, {
+          params: {
+            courseId: courseId,
+            postId: postId,
+          },
+          data: {
+            postBody,
+          },
+        });
+        // await addPost(courseId, postBody);
       }
       refresh(); // refresh comments in Course Page
     }

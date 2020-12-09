@@ -21,8 +21,8 @@ export interface PostData {
 // Get Posts
 router.get("/:courseId/posts", async (req: Request, res: Response) => {
   try {
-    const { userId } = req.body;
-    const { courseId } = req.params;
+    // const { userId } = req.body; TODO
+    const { courseId } = req.body.params;
     const postsRef = db.collection("courses").doc(courseId).collection("posts");
     const postsSnap = await postsRef.get();
 
@@ -46,12 +46,13 @@ router.get("/:courseId/posts", async (req: Request, res: Response) => {
 // Add Post
 router.post("/:courseId/posts", async (req: Request, res: Response) => {
   try {
-    const { courseId } = req.params;
-    const { postData } = req.body;
+    const { courseId } = req.body.params;
+    const { postBody } = req.body.data;
+    console.log("NIRVANA", courseId, req.body.data);
     const postRef = db.collection("courses").doc(courseId).collection("posts");
 
     // TODO: Clean up check stuff
-    await postRef.add(postData);
+    await postRef.add(postBody);
     return res.status(200).json({ mesage: "Added :)" });
   } catch (e) {
     console.log("There's an error afoot...", e);
@@ -61,7 +62,7 @@ router.post("/:courseId/posts", async (req: Request, res: Response) => {
 // Get Post
 router.get("/:courseId/posts/:postId", async (req: Request, res: Response) => {
   try {
-    const { courseId, postId } = req.params;
+    const { courseId, postId } = req.body.params;
     const postRef = db
       .collection("courses")
       .doc(courseId)
@@ -83,15 +84,15 @@ router.get("/:courseId/posts/:postId", async (req: Request, res: Response) => {
 // Update Post
 router.put("/:courseId/posts/:postId", async (req: Request, res: Response) => {
   try {
-    const { courseId, postId } = req.params;
-    const { postData } = req.body;
+    const { courseId, postId } = req.body.params;
+    const { postBody } = req.body.data;
     const postRef = db
       .collection("courses")
       .doc(courseId)
       .collection("posts")
       .doc(postId);
 
-    await postRef.update(postData);
+    await postRef.update(postBody);
     return res.status(200).json({ mesage: "Updated :)" });
   } catch (e) {
     console.log("There's an error afoot...", e);

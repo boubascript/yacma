@@ -2,6 +2,8 @@ import express from "express";
 import bodyparser from "body-parser";
 import logger from "morgan";
 import courseRouter from "./routes/courses";
+import postsRouter from "./routes/posts";
+import commentsRouter from "./routes/comments";
 
 (async () => {
   try {
@@ -31,6 +33,8 @@ import courseRouter from "./routes/courses";
     }
 
     app.use("/courses", courseRouter);
+    app.use("/posts", postsRouter);
+    app.use("/comments", commentsRouter);
 
     // Routes
     app.get("/", (req: express.Request, res: express.Response) => {

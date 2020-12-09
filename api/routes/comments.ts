@@ -80,8 +80,14 @@ router.post(
   "/:courseId/posts/:postId/comments",
   async (req: Request, res: Response) => {
     try {
-      const { courseId, postId } = req.params;
-      const { postData: commentData } = req.body;
+      const { courseId, postId } = req.body.params;
+
+      // const { commentData } = req.body.data;
+      // console.log(req.body)
+      const { commentBody } = req.body.data;
+      console.log("commentBody", commentBody);
+      console.log("courseId", courseId);
+      console.log("postId", postId);
       const commentRef = db
         .collection("courses")
         .doc(courseId)
@@ -89,7 +95,7 @@ router.post(
         .doc(postId)
         .collection("comments");
 
-      await commentRef.add(commentData);
+      await commentRef.add(commentBody);
       return res.status(200).json({ mesage: "Added :)" });
     } catch (e) {
       console.log("There's an error afoot...", e);
