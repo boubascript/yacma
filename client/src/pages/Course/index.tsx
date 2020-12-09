@@ -23,7 +23,7 @@ const Course: React.FunctionComponent<RouteComponentProps> = ({
           courseId: courseId,
         },
       });
-      setPosts(postsData);
+      await setPosts(postsData);
     }
   };
 
@@ -37,6 +37,7 @@ const Course: React.FunctionComponent<RouteComponentProps> = ({
 
       const courseData = data as CourseData;
       setCourse(courseData);
+      console.log("waiting for get course posts");
       await getCoursePosts();
     }
   };

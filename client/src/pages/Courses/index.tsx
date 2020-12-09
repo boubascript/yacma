@@ -70,9 +70,11 @@ const Courses: React.FunctionComponent = () => {
       const { data } = await axios.get('/courses/getCourses', {params: {"courseIds": userData!.courses}});
       if (data) {
         // @ts-ignore
-        await setCoursesData(data.courses.map(doc => doc as CourseData));
+        setCoursesData(data.courses.map(doc => doc as CourseData));
+        setLoadingCourses(false);
       }
-    };
+    }
+  };
 
     getAsyncCourses();
   }, []);

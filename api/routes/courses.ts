@@ -6,11 +6,9 @@ import CourseData from "../types/courseData";
 const router = Router();
 const courses = db.collection("courses");
 
-router.get("/getCourses", async (req: Request, res: Response) => {
-  let courseIds = req.query.courseIds as string[];
-
 router.get('/getCourses', async (req: Request, res:Response) => {
     let courseIds = req.query.courseIds as string[];
+
     // TODO: find a workaround
     if (courseIds.length > 0) {
         if (courseIds.length > 10) {
@@ -34,11 +32,7 @@ router.get('/getCourses', async (req: Request, res:Response) => {
         console.log("No course codes...");
         return;
     }
-  } else {
-    console.log("No course codes...");
-    return;
-  }
-});
+  });
 
 router.get("/getCourse", async (req: Request, res: Response) => {
   const courseId = (req.query.courseId as unknown) as string;

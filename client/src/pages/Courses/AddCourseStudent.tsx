@@ -37,8 +37,7 @@ const AddCourseStudent: React.FC<IChildProps> = ({
       } else {
         console.log("Already enrolled.");
       }
-    }
-  };
+    };
 
   return (
     <div>
