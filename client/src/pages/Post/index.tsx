@@ -1,18 +1,29 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { PostData } from "utils/posts";
 import { getComments, CommentData } from "utils/comments";
 import { Button, Container } from "@material-ui/core";
 import Comment from "pages/Comment";
 import NewComment from "pages/NewComment";
+import { UserContext } from "utils/auth";
 
-interface PostProps {
+interface PostProps extends PostData {
   courseId: string;
-  post: PostData;
+  onDelete: () => void;
 }
-const Post: React.FunctionComponent<PostProps> = ({ courseId, post }) => {
-  const { author, title, description, links, id } = post;
+
+const Post: React.FunctionComponent<PostProps> = ({
+  courseId,
+  author,
+  title,
+  description,
+  links,
+  id,
+  onDelete,
+}) => {
+  const { user } = useContext(UserContext);
   const [comments, setComments] = useState<CommentData[]>([]);
   const [addingComment, setAddingComment] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   const getAllComments = async () => {
     if (id) {
@@ -20,6 +31,11 @@ const Post: React.FunctionComponent<PostProps> = ({ courseId, post }) => {
         (await getComments(courseId, id))) as CommentData[];
       setComments(commentsData);
     }
+  };
+
+  const remove = async () => {
+    setIsDeleting(true);
+    onDelete();
   };
 
   useEffect(() => {
@@ -45,7 +61,12 @@ const Post: React.FunctionComponent<PostProps> = ({ courseId, post }) => {
 
   return (
     <Container>
-      <h2>{title}</h2>
+      <Container>
+        <h2>{title}</h2>
+        <Button variant="contained" color="secondary" onClick={remove}>
+          {isDeleting ? "Deleting Post..." : "Delete Dis"}
+        </Button>
+      </Container>
       <p>{author}</p>
       <p>{description}</p>
       <div>{links}</div>

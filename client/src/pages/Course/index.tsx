@@ -1,5 +1,7 @@
-import React, { useContext, useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
+import { useHistory } from "react-router-dom";
 import { RouteComponentProps } from "react-router";
+import { functions } from "config/firebase";
 import { CourseData } from "utils/courses";
 import { getPosts, PostData } from "utils/posts";
 import { Button, Typography } from "@material-ui/core";
@@ -8,13 +10,20 @@ import Post from "pages/Post";
 import NewPost from "pages/NewPost";
 import axios from "axios";
 
+import { UserContext } from "utils/auth";
+
+const deleteCourse = functions.httpsCallable("deleteCourse");
+const deletePost = functions.httpsCallable("deletePost");
 
 const Course: React.FunctionComponent<RouteComponentProps> = ({
   location: { search },
 }) => {
+  const history = useHistory();
+  const { userData } = useContext(UserContext);
   const [course, setCourse] = useState<CourseData>();
   const [posts, setPosts] = useState<PostData[]>([]);
   const [addingPost, setAddingPost] = useState(false);
+  const [isDeleting, setisDeleting] = useState(false);
   const courseId = search.substring(1);
   console.log(courseId);
   const getCourseInfo = async () => {
@@ -32,12 +41,43 @@ const Course: React.FunctionComponent<RouteComponentProps> = ({
     setPosts(postsData);
   };
 
+  const removeCourse = async () => {
+    setisDeleting(true);
+    try {
+      const result = await deleteCourse({
+        path: `courses/${courseId}`,
+      });
+      // Read result of the Cloud Function.
+      console.log(result);
+      if (result.data.path) {
+        history.push("/courses");
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const removePost = async (id: string) => {
+    try {
+      const result = await deletePost({
+        path: `courses/${courseId}/posts/${id}`,
+      });
+      // Read result of the Cloud Function.
+      console.log(result);
+      if (result.data.path) {
+        setPosts(posts.filter(({ id: pid }) => pid !== id));
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   // TODO: Add loadin script check
   useEffect(() => {
     if (courseId) {
       getCourseInfo();
     }
-  }, []);
+  }, [courseId]);
 
   const toggleNewPost = (exit: boolean) => {
     setAddingPost(exit);
@@ -49,6 +89,7 @@ const Course: React.FunctionComponent<RouteComponentProps> = ({
     setPosts(postsData);
   };
 
+  console.log(course);
   return (
     <div>
       <Navbar />
@@ -75,10 +116,25 @@ const Course: React.FunctionComponent<RouteComponentProps> = ({
         />
       )}
       <div className="posts">
-        {posts?.map((doc, index) => (
-          <Post key={index} courseId={courseId} post={doc} />
+        {posts?.map(({ id, title, author, description, links }) => (
+          <Post
+            key={id}
+            courseId={courseId}
+            title={title}
+            author={author}
+            description={description}
+            links={links}
+            onDelete={() => {
+              removePost(id!);
+            }}
+          />
         ))}
       </div>
+      {userData?.isAdmin && (
+        <Button variant="contained" color="secondary" onClick={removeCourse}>
+          {isDeleting ? "Deleting Course..." : "Delete Course"}
+        </Button>
+      )}
     </div>
   );
 };
