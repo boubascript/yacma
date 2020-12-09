@@ -61,7 +61,7 @@ const NewComment: React.FunctionComponent<NewCommentProps> = ({
         );
         // await updateComment(courseId, postId, id, commentBody);
       } else {
-        await axios.post(`/comments/${courseId}/posts`, {
+        await axios.post(`/comments/${courseId}/posts/${postId}/comments`, {
           params: {
             courseId: courseId,
             postId: postId,

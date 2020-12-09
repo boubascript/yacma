@@ -79,6 +79,7 @@ router.get(
 router.post(
   "/:courseId/posts/:postId/comments",
   async (req: Request, res: Response) => {
+    console.log("I'M HERE ON THIS CLOVER!!");
     try {
       const { courseId, postId } = req.body.params;
       const { commentBody } = req.body.data;
