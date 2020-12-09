@@ -1,6 +1,6 @@
 import React, { useState, useContext } from "react";
 import { UserContext } from "utils/auth";
-import { addPost, PostData } from "utils/posts";
+import { addPost, updatePost, PostData } from "utils/posts";
 import { Grid, TextField, Button } from "@material-ui/core";
 import axios from "axios";
 
@@ -9,7 +9,7 @@ const DEFAULT_POST_DATA: PostData = {
   title: "",
   author: "",
   description: "",
-  links: "",
+  links: "", // TODO: links might be any array of URLS
   // uid: "",
 };
 
@@ -17,11 +17,15 @@ interface NewPostProps {
   courseId: string;
   exit: Function;
   refresh: Function;
+  postId?: string;
+  post?: PostData;
 }
 const NewPost: React.FunctionComponent<NewPostProps> = ({
   courseId,
   exit,
   refresh,
+  post,
+  postId,
 }) => {
   const { userData } = useContext(UserContext);
   const [postData, setPostData] = useState<PostData>(DEFAULT_POST_DATA);
@@ -42,12 +46,13 @@ const NewPost: React.FunctionComponent<NewPostProps> = ({
     };
 
     if (courseId) {
-      const post = await addPost(courseId, postBody);
-      // const post = await axios.post(`posts/${courseId}/posts`, postBody);
-
-      console.log("Post Data", post);
-      // TODO: Find a better way to reload posts
-      refresh(); // Refresh posts in Course Page
+      if (postId) {
+        // TODO: Fix update error, blank title when editing post, and vice versa
+        await updatePost(courseId, postId, postBody);
+      } else {
+        await addPost(courseId, postBody);
+      }
+      refresh(); // refresh comments in Course Page
     }
     exit(false); // exit New Post form
   };
@@ -64,6 +69,7 @@ const NewPost: React.FunctionComponent<NewPostProps> = ({
             name="title"
             label="Title"
             id="Title"
+            defaultValue={post?.title || ""}
             multiline
             fullWidth
             variant="outlined"
@@ -75,6 +81,7 @@ const NewPost: React.FunctionComponent<NewPostProps> = ({
             name="description"
             label="Description"
             id="Description"
+            defaultValue={post?.description || ""}
             multiline
             fullWidth
             rows={4}
@@ -85,6 +92,7 @@ const NewPost: React.FunctionComponent<NewPostProps> = ({
         <Grid item xs={12}>
           <input
             accept="image/*, video/*, .pdf,.doc"
+            defaultValue={post?.links}
             id="inputFiles"
             multiple
             type="file"
@@ -94,7 +102,7 @@ const NewPost: React.FunctionComponent<NewPostProps> = ({
 
       <br></br>
       <Button type="submit" variant="contained" color="primary">
-        New Post
+        {post ? "Update" : "New Post"}
       </Button>
       <Button variant="contained" color="primary" onClick={cancel}>
         Cancel

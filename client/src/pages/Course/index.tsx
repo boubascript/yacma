@@ -15,16 +15,14 @@ const Course: React.FunctionComponent<RouteComponentProps> = ({
   const [posts, setPosts] = useState<PostData[]>([]);
   const [addingPost, setAddingPost] = useState(false);
   const courseId = search.substring(1);
-  console.log(courseId);
+
   const getCourseInfo = async () => {
-    // TODO: Add error handling
     const { data } = await axios.get("/courses/getCourse", {
       params: {
         courseId: courseId,
       },
     });
-    console.log("response");
-    console.log(data);
+
     const courseData = data as CourseData;
     setCourse(courseData);
 
@@ -76,7 +74,12 @@ const Course: React.FunctionComponent<RouteComponentProps> = ({
       )}
       <div className="posts">
         {posts?.map((doc, index) => (
-          <Post key={index} courseId={courseId} post={doc} />
+          <Post
+            key={index}
+            courseId={courseId}
+            post={doc}
+            refresh={refreshPosts}
+          />
         ))}
       </div>
     </div>

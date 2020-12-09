@@ -23,14 +23,7 @@ const Comment: React.FunctionComponent<CommentProps> = ({
     setUpdatingComment(exit);
   };
 
-  // TODO: Find a better way to do this
-  // const refreshComments = async () => {
-  //   const commentsData = (id &&
-  //     (await getComments(courseId, id))) as CommentData[];
-  //   setComments(commentsData);
-  // };
-
-  /* TODO: Update + delete functions */
+  /* TODO: Delete functions */
   return (
     <>
       {!updatingComment ? (

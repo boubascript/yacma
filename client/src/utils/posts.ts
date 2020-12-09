@@ -100,7 +100,7 @@ export const updatePost = async (
       .collection("posts")
       .doc(postId);
 
-    await postRef.update(postData);
+    await postRef.set(postData, { merge: true });
     return true;
   } catch (e) {
     console.log("Could not edit post.", e);
