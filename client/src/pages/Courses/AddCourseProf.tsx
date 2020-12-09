@@ -20,10 +20,10 @@ const DEFAULT_COURSE_DATA: CourseProps = {
   description: "",
   educator: "",
 };
-const AddCourseProf: React.FC<IChildProps> = (props) => {
-  //@ts-ignore
-  const {refresh} = props;
-
+const AddCourseProf: React.FC<IChildProps> = ({
+  refresh
+}) => {
+  
   const { user, userData, addCourseContext } = useContext(UserContext);
 
   const [courseData, setCourseData] = useState<CourseProps>(
