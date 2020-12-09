@@ -59,7 +59,6 @@ const NewPost: React.FunctionComponent<NewPostProps> = ({
         await axios.post(`/posts/${courseId}/posts/`, {
           params: {
             courseId: courseId,
-            postId: postId,
           },
           data: {
             postBody,

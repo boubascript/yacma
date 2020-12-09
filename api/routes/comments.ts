@@ -81,9 +81,6 @@ router.post(
   async (req: Request, res: Response) => {
     try {
       const { courseId, postId } = req.body.params;
-
-      // const { commentData } = req.body.data;
-      // console.log(req.body)
       const { commentBody } = req.body.data;
       console.log("commentBody", commentBody);
       console.log("courseId", courseId);
@@ -109,8 +106,8 @@ router.put(
   "/:courseId/posts/:postId/comments/:commentId",
   async (req: Request, res: Response) => {
     try {
-      const { courseId, postId, commentId } = req.params;
-      const { commentData } = req.body;
+      const { courseId, postId, commentId } = req.body.params;
+      const { commentBody } = req.body.data;
       const commentRef = db
         .collection("courses")
         .doc(courseId)
@@ -119,7 +116,7 @@ router.put(
         .collection("comments")
         .doc(commentId);
 
-      await commentRef.update(commentData);
+      await commentRef.update(commentBody);
       return res.status(200).json({ mesage: "Updated :)" });
     } catch (e) {
       console.log("There's an error afoot...", e);

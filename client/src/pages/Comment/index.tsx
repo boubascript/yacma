@@ -40,7 +40,7 @@ const Comment: React.FunctionComponent<CommentProps> = ({
           exit={toggleUpdateComment}
           refresh={refresh}
           postId={postId}
-          comment={comment}
+          comment={commentData}
           id={id}
         />
       )}

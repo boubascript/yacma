@@ -14,7 +14,7 @@ interface NewCommentProps {
   postId: string;
   exit: Function;
   refresh: Function;
-  comment?: string;
+  comment?: CommentData;
   id?: string;
 }
 const NewComment: React.FunctionComponent<NewCommentProps> = ({
@@ -23,11 +23,10 @@ const NewComment: React.FunctionComponent<NewCommentProps> = ({
   exit,
   refresh,
   comment,
-  id,
 }) => {
   const { userData } = useContext(UserContext);
   const [commentData, setCommentData] = useState<CommentData>(
-    DEFAULT_COMMENT_DATA
+    comment || DEFAULT_COMMENT_DATA
   );
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -46,21 +45,26 @@ const NewComment: React.FunctionComponent<NewCommentProps> = ({
     };
 
     if (courseId && postId) {
-      if (id && comment) {
-        await axios.put(`/comments/${courseId}/posts/${postId}`, {
-          params: {
-            courseId: courseId,
-            postId: postId,
-            commentId: id,
-          },
-        });
+      if (comment?.id) {
+        await axios.put(
+          `/comments/${courseId}/posts/${postId}/comments/${comment?.id}`,
+          {
+            params: {
+              courseId: courseId,
+              postId: postId,
+              commentId: comment?.id,
+            },
+            data: {
+              commentBody,
+            },
+          }
+        );
         // await updateComment(courseId, postId, id, commentBody);
       } else {
         await axios.post(`/comments/${courseId}/posts`, {
           params: {
             courseId: courseId,
             postId: postId,
-            commentId: id,
           },
           data: {
             commentBody,
@@ -85,7 +89,7 @@ const NewComment: React.FunctionComponent<NewCommentProps> = ({
             name="comment"
             label="Comment"
             id="Comment"
-            defaultValue={comment || ""}
+            defaultValue={commentData.comment}
             multiline
             fullWidth
             variant="outlined"
