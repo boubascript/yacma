@@ -2,6 +2,7 @@ import React, { useState, useContext } from "react";
 import { UserContext } from "utils/auth";
 import { addPost, PostData } from "utils/posts";
 import { Grid, TextField, Button } from "@material-ui/core";
+import axios from "axios";
 
 // TODO: Update links to media object type
 const DEFAULT_POST_DATA: PostData = {
@@ -40,9 +41,11 @@ const NewPost: React.FunctionComponent<NewPostProps> = ({
     };
 
     if (courseId) {
-      const post = await addPost(courseId, postBody);
-      console.log("Post Data", post);
-      // TODO: Find a better way to reload posts
+      const postData = await axios.get(`/courses/${courseId}`, {
+        data: postBody,
+      });
+      console.log("Post Data", postData);
+      // TODO: Find a better aay to reload posts
       refresh(); // Refresh posts in Course Page
     }
     exit(false); // exit New Post form
