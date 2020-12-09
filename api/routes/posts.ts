@@ -22,7 +22,8 @@ export interface PostData {
 router.get("/:courseId/posts", async (req: Request, res: Response) => {
   try {
     // const { userId } = req.body; TODO
-    const { courseId } = req.body.params;
+    console.log(req.query.courseId);
+    const courseId = req.query.courseId as string;
     const postsRef = db.collection("courses").doc(courseId).collection("posts");
     const postsSnap = await postsRef.get();
 
