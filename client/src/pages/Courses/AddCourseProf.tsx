@@ -4,7 +4,6 @@ import { UserContext } from "utils/auth";
 import axios from "axios";
 import { useHistory } from "react-router-dom";
 
-
 interface CourseProps {
   id: string;
   name: string;
@@ -37,14 +36,17 @@ const AddCourseProf: React.FunctionComponent = () => {
       educator: userData!.firstName + " " + userData!.lastName,
     });
 
-     // Make sure user is not already enrolled
-     const addedCourse = await axios.post("/courses/addCourseAdmin", {data: 
-      {
-        courseData: {...courseData, educator: userData!.firstName + " " + userData!.lastName},
-        uid: user!.uid
-      }
+    // Make sure user is not already enrolled
+    const addedCourse = await axios.post("/courses/addCourseAdmin", {
+      data: {
+        courseData: {
+          ...courseData,
+          educator: userData!.firstName + " " + userData!.lastName,
+        },
+        uid: user!.uid,
+      },
     });
-    
+
     //Response is either empty, or passes the document id
     if (addedCourse.data) {
       //add id to user contenxt, this doesn't seem to be updating
@@ -53,8 +55,7 @@ const AddCourseProf: React.FunctionComponent = () => {
     } else {
       console.log("Already enrolled.");
     }
-  }
-
+  };
 
   return (
     <form onSubmit={handleSubmit} noValidate>

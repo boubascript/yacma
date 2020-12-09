@@ -4,8 +4,7 @@ import { UserContext } from "utils/auth";
 import { Container, Typography, Button } from "@material-ui/core";
 import Navbar from "components/Navbar";
 import { CourseData } from "utils/courses";
-import axios from 'axios';
-
+import axios from "axios";
 
 const Profile: React.FunctionComponent = () => {
   const { user, userData } = useContext(UserContext);
@@ -18,10 +17,12 @@ const Profile: React.FunctionComponent = () => {
     //TO DO: set timeout
     const getAsyncCourses = async () => {
       if (user) {
-        const data = await axios.get('/courses/getCourses', {params: {"courseCodes": courses}});
+        const data = await axios.get("/courses/getCourses", {
+          params: { courseCodes: courses },
+        });
         if (data.data) {
           // @ts-ignore
-          setCoursesData(data.data.courses.map(doc => doc as CourseData));
+          setCoursesData(data.data.courses.map((doc) => doc as CourseData));
         }
         setLoadingCourses(false);
       }
@@ -49,8 +50,9 @@ const Profile: React.FunctionComponent = () => {
 
           <Typography variant="h5">
             <b>Your Courses: </b>
-            {!loadingCourses
-              && coursesData.map(({ name, id, code, description, educator }, index) => (
+            {!loadingCourses &&
+              coursesData.map(
+                ({ name, id, code, description, educator }, index) => (
                   <div key="courseData">
                     <Typography variant="h3">
                       <p key="courseName">
@@ -59,18 +61,19 @@ const Profile: React.FunctionComponent = () => {
                     </Typography>
                     <p key="courseId"> {code} </p>
                     <p key="courseDescription"> {description} </p>
-                    {!isAdmin &&  <p key="educator"> Professor {educator} </p>}
+                    {!isAdmin && <p key="educator"> Professor {educator} </p>}
                     <hr></hr>
                     <Button
                       name={id}
                       onClick={() => {
                         loadCourse(id!);
-                      }}>
+                      }}
+                    >
                       Go To Course
                     </Button>
                   </div>
-                ))
-              }
+                )
+              )}
           </Typography>
         </div>
       )}

@@ -10,6 +10,7 @@ const DEFAULT_POST_DATA: PostData = {
   author: "",
   description: "",
   links: "",
+  // uid: "",
 };
 
 interface NewPostProps {

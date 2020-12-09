@@ -8,7 +8,6 @@ import Post from "pages/Post";
 import NewPost from "pages/NewPost";
 import axios from "axios";
 
-
 const Course: React.FunctionComponent<RouteComponentProps> = ({
   location: { search },
 }) => {
@@ -21,11 +20,12 @@ const Course: React.FunctionComponent<RouteComponentProps> = ({
     // TODO: Add error handling
     const { data } = await axios.get("/courses/getCourse", {
       params: {
-        "courseId": courseId
-      }});
+        courseId: courseId,
+      },
+    });
     console.log("response");
     console.log(data);
-    const courseData = data as CourseData;  
+    const courseData = data as CourseData;
     setCourse(courseData);
 
     const postsData = (await getPosts(courseId)) as PostData[];

@@ -65,7 +65,13 @@ const Post: React.FunctionComponent<PostProps> = ({ courseId, post }) => {
         {id &&
           comments &&
           comments.map((doc, index) => (
-            <Comment key={index} postId={id} commentData={doc} />
+            <Comment
+              key={index}
+              courseId={courseId}
+              postId={id}
+              commentData={doc}
+              refresh={refreshComments}
+            />
           ))}
       </div>
     </Container>

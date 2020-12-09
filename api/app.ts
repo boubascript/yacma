@@ -9,11 +9,11 @@ import courseRouter from "./routes/courses";
     const app = express();
     const port = Number(process.env.PORT) || 8080;
     app.set("port", port);
-    
+
     // Middleware
     app.use(bodyparser.urlencoded({ extended: false }));
     app.use(bodyparser.json());
-    
+
     if (process.env.NODE_ENV !== "production") {
       app.use(logger("dev"));
       app.use(function (
@@ -30,7 +30,7 @@ import courseRouter from "./routes/courses";
       });
     }
 
-    app.use('/courses', courseRouter);
+    app.use("/courses", courseRouter);
 
     // Routes
     app.get("/", (req: express.Request, res: express.Response) => {
