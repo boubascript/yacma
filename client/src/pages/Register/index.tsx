@@ -46,7 +46,7 @@ const Register: React.FunctionComponent = () => {
     e.preventDefault();
     const { user, error } = await registerUser(loginData);
     if (user) {
-      history.push("/me");
+      history.push("/courses");
     } else {
       console.log(error);
     }
