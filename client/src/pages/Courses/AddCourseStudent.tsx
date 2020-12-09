@@ -4,10 +4,14 @@ import { Grid, TextField, Button } from "@material-ui/core";
 import { UserContext } from "utils/auth";
 import axios from "axios";
 
-const AddCourseStudent: React.FunctionComponent = () => {
+interface IChildProps {
+  refresh: () => void;
+}
+
+const AddCourseStudent: React.FC<IChildProps> = (props) => {
+  const { refresh } = props;
   const { user, userData, addCourseContext } = useContext(UserContext);
   const [courseCode, setCourseCode] = useState<string>("");
-  const history = useHistory();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setCourseCode(e.target.value);
@@ -24,12 +28,14 @@ const AddCourseStudent: React.FunctionComponent = () => {
       },
     });
 
-    //Response is either empty, or passes the document id
-    if (addedCourse.data) {
-      //add id to user contenxt, this doesn't seem to be updating
-      addCourseContext(addedCourse.data);
-    } else {
-      console.log("Already enrolled.");
+      //Response is either empty, or passes the document id
+      if (addedCourse.data) {
+        //add id to user contenxt, this doesn't seem to be updating
+        await addCourseContext(addedCourse.data);
+        refresh();
+      } else {
+        console.log("Already enrolled.");
+      }
     }
   };
 
