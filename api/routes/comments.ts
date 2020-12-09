@@ -1,4 +1,4 @@
-import { db } from "../config/firebase";
+import { db, FieldValue, FieldPath } from "../config/firebase";
 import { Router, Request, Response } from "express";
 const router = Router();
 
@@ -28,7 +28,8 @@ router.get(
         .doc(courseId)
         .collection("posts")
         .doc(postId)
-        .collection("comments");
+        .collection("comments")
+        .orderBy("createdAt", "desc");
 
       const commentsSnap = await commentsRef.get();
       if (commentsSnap.size > 0) {
@@ -82,13 +83,10 @@ router.get(
 router.post(
   "/:courseId/posts/:postId/comments",
   async (req: Request, res: Response) => {
-    console.log("I'M HERE ON THIS CLOVER!!");
     try {
       const { courseId, postId } = req.body.params;
       const { commentBody } = req.body.data;
-      console.log("commentBody", commentBody);
-      console.log("courseId", courseId);
-      console.log("postId", postId);
+
       const commentRef = db
         .collection("courses")
         .doc(courseId)
@@ -96,8 +94,14 @@ router.post(
         .doc(postId)
         .collection("comments");
 
-      await commentRef.add(commentBody);
-      return res.status(200).json({ mesage: "Added :)" });
+      const timestamp = FieldValue.serverTimestamp();
+      console.log("I've been timestamped", timestamp, {
+        ...commentBody,
+        createdAt: timestamp,
+      });
+
+      await commentRef.add({ ...commentBody, createdAt: timestamp });
+      return res.json({ mesage: "Added :)" });
     } catch (e) {
       console.log("There's an error afoot...", e);
     }
@@ -121,7 +125,7 @@ router.put(
         .doc(commentId);
 
       await commentRef.update(commentBody);
-      return res.status(200).json({ mesage: "Updated :)" });
+      return res.json({ mesage: "Updated :)" });
     } catch (e) {
       console.log("There's an error afoot...", e);
     }
@@ -144,7 +148,7 @@ router.delete(
         .doc(commentId);
 
       await commentRef.delete();
-      return res.status(200).json({ mesage: "Deleted :(" });
+      return res.json({ mesage: "Deleted :(" });
     } catch (e) {
       console.log("There's an error afoot...", e);
     }

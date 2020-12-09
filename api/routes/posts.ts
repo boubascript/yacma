@@ -1,6 +1,5 @@
-import { db } from "../config/firebase";
+import { db, FieldValue, FieldPath } from "../config/firebase";
 import { Router, Request, Response } from "express";
-import CourseData from "../types/courseData";
 const router = Router();
 
 export interface PostData {
@@ -25,7 +24,11 @@ router.get("/:courseId/posts", async (req: Request, res: Response) => {
     // const { userId } = req.body; TODO
     console.log(req.query.courseId);
     const courseId = req.query.courseId as string;
-    const postsRef = db.collection("courses").doc(courseId).collection("posts");
+    const postsRef = db
+      .collection("courses")
+      .doc(courseId)
+      .collection("posts")
+      .orderBy("createdAt", "desc");
     const postsSnap = await postsRef.get();
 
     // Check if posts collection exists
@@ -49,12 +52,16 @@ router.post("/:courseId/posts", async (req: Request, res: Response) => {
   try {
     const { courseId } = req.body.params;
     const { postBody } = req.body.data;
-    console.log("NIRVANA", courseId, req.body.data);
     const postRef = db.collection("courses").doc(courseId).collection("posts");
 
-    // TODO: Clean up check stuff
-    await postRef.add(postBody);
-    return res.status(200).json({ mesage: "Added :)" });
+    const timestamp = FieldValue.serverTimestamp();
+    console.log("I've been timestamped", timestamp, {
+      ...postBody,
+      createdAt: timestamp,
+    });
+
+    await postRef.add({ ...postBody, createdAt: timestamp });
+    return res.status(204).send("Added :)");
   } catch (e) {
     console.log("There's an error afoot...", e);
   }
@@ -94,7 +101,7 @@ router.put("/:courseId/posts/:postId", async (req: Request, res: Response) => {
       .doc(postId);
 
     await postRef.update(postBody);
-    return res.status(200).json({ mesage: "Updated :)" });
+    return res.status(204).send("Updated :)");
   } catch (e) {
     console.log("There's an error afoot...", e);
   }
