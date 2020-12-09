@@ -8,9 +8,10 @@ interface IChildProps {
   refresh: () => void;
 }
 
-const AddCourseStudent: React.FC<IChildProps> = (props) => {
-  const { refresh } = props;
-  const { user, userData, addCourseContext } = useContext(UserContext);
+const AddCourseStudent: React.FC<IChildProps> = ({
+  refresh
+}) => {
+  const { user, addCourseContext } = useContext(UserContext);
   const [courseCode, setCourseCode] = useState<string>("");
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
