@@ -1,5 +1,6 @@
 import { db } from "../config/firebase";
 import { Router, Request, Response } from "express";
+import CourseData from "../types/courseData";
 const router = Router();
 
 export interface PostData {
@@ -8,7 +9,7 @@ export interface PostData {
   links: string;
   author: string;
   id?: string;
-  uid: string; // TODO: Add user ID field
+  uid?: string; // TODO: Add user ID field
   createdAt: FirebaseFirestore.Timestamp;
 }
 
@@ -29,12 +30,11 @@ router.get("/:courseId/posts", async (req: Request, res: Response) => {
 
     // Check if posts collection exists
     if (postsSnap.size > 0) {
-      let postData: Array<Object> = [];
+      let postData: PostData[] = [];
       postsSnap.forEach((doc) => {
-        const data = { ...doc.data(), id: doc.id };
-        postData.push(data);
+        postData.push({ ...((doc.data() as unknown) as PostData), id: doc.id });
       });
-      return res.status(200).json(postData); // return empty array if no posts
+      return res.status(200).send(postData); // return empty array if no posts
     } else {
       return [];
     }

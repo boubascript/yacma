@@ -17,17 +17,23 @@ const Course: React.FunctionComponent<RouteComponentProps> = ({
   const courseId = search.substring(1);
 
   const getCourseInfo = async () => {
-    const { data } = await axios.get("/courses/getCourse", {
-      params: {
-        courseId: courseId,
-      },
-    });
+    if (courseId) {
+      const { data } = await axios.get("/courses/getCourse", {
+        params: {
+          courseId: courseId,
+        },
+      });
 
-    const courseData = data as CourseData;
-    setCourse(courseData);
+      const courseData = data as CourseData;
+      setCourse(courseData);
 
-    const postsData = (await getPosts(courseId)) as PostData[];
-    setPosts(postsData);
+      const { data: postsData } = await axios.get(`/posts/${courseId}/posts`, {
+        params: {
+          courseId: courseId,
+        },
+      });
+      setPosts(postsData);
+    }
   };
 
   // TODO: Add loadin script check
