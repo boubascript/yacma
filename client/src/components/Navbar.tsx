@@ -24,11 +24,6 @@ const Navbar: React.FunctionComponent = () => {
   const history = useHistory();
   const classes = useStyles();
   const { user, userData } = useContext(UserContext);
-  let addCourseLink = "/";
-
-  if (userData != null) {
-    addCourseLink = userData!.isAdmin ? "/addCourseProf" : "/addCourseStudent";
-  }
 
   const logout = async () => {
     const { code: errorCode, message } = (await logoutUser()) || {};
@@ -54,8 +49,8 @@ const Navbar: React.FunctionComponent = () => {
           <div>
             {" "}
             <Button color="inherit">
-              <Link className={classes.navlink} to={addCourseLink}>
-                Add Course
+              <Link className={classes.navlink} to="/courses">
+                Courses
               </Link>
             </Button>
             <Button onClick={logout} color="inherit">

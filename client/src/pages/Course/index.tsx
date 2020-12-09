@@ -33,7 +33,7 @@ const Course: React.FunctionComponent<RouteComponentProps> = ({
           courseId: courseId,
         },
       });
-      setPosts(postsData);
+      await setPosts(postsData);
     }
   };
 
