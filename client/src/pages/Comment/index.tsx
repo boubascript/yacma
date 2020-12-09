@@ -1,8 +1,16 @@
 import React, { useEffect, useState } from "react";
 import Container from "@material-ui/core/Container";
-import { CommentData, updateComment } from "utils/comments";
+import { CommentData, deleteComment, updateComment } from "utils/comments";
 import NewComment from "../NewComment";
-import { Button } from "@material-ui/core";
+import {
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+} from "@material-ui/core";
+import axios from "axios";
 
 interface CommentProps {
   courseId: string;
@@ -18,9 +26,30 @@ const Comment: React.FunctionComponent<CommentProps> = ({
 }: CommentProps) => {
   const { author, comment, id } = commentData; // id => commentId
   const [updatingComment, setUpdatingComment] = useState(false);
+  const [deletingComment, setDeletingComment] = useState(false);
 
   const toggleUpdateComment = (exit: boolean) => {
     setUpdatingComment(exit);
+  };
+
+  const toggleDeleteDialog = (exit: boolean) => {
+    setDeletingComment(exit);
+  };
+  const handleDelete = async (del: boolean) => {
+    if (del) {
+      await axios.delete(
+        `/comments/${courseId}/posts/${postId}/comments/${id}`,
+        {
+          params: {
+            courseId: courseId,
+            postId: postId,
+            commentId: id,
+          },
+        }
+      );
+      refresh(); // refresh comments
+    }
+    setDeletingComment(false);
   };
 
   /* TODO: Delete functions */
@@ -33,6 +62,34 @@ const Comment: React.FunctionComponent<CommentProps> = ({
           <Button color="primary" onClick={() => toggleUpdateComment(true)}>
             Edit
           </Button>
+          {!deletingComment ? (
+            <Button color="primary" onClick={() => toggleDeleteDialog(true)}>
+              Delete
+            </Button>
+          ) : (
+            <Dialog
+              open={deletingComment}
+              onClose={() => toggleDeleteDialog(false)}
+              aria-labelledby="alert-dialog-title"
+              aria-describedby="alert-dialog-description"
+            >
+              <DialogTitle id="alert-dialog-title">
+                {"Delete this comment? :("}
+              </DialogTitle>
+              <DialogActions>
+                <Button onClick={() => handleDelete(false)} color="primary">
+                  Disagree
+                </Button>
+                <Button
+                  onClick={() => handleDelete(true)}
+                  color="primary"
+                  autoFocus
+                >
+                  Agree
+                </Button>
+              </DialogActions>
+            </Dialog>
+          )}
         </Container>
       ) : (
         <NewComment
@@ -41,7 +98,6 @@ const Comment: React.FunctionComponent<CommentProps> = ({
           refresh={refresh}
           postId={postId}
           comment={commentData}
-          id={id}
         />
       )}
     </>
