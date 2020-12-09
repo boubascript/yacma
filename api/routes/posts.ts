@@ -29,14 +29,15 @@ router.get("/:courseId/posts", async (req: Request, res: Response) => {
     const postsSnap = await postsRef.get();
 
     // Check if posts collection exists
-    if (postsSnap.size > 0) {
+    if (!postsSnap.empty) {
+
       let postData: PostData[] = [];
       postsSnap.forEach((doc) => {
         postData.push({ ...((doc.data() as unknown) as PostData), id: doc.id });
       });
-      return res.status(200).send(postData); // return empty array if no posts
+      return res.status(200).json(postData); // return empty array if no posts
     } else {
-      return [];
+      return res.json([]);
     }
   } catch (e) {
     console.log("Could not get posts. There's an error afoot...", e);

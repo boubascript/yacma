@@ -4,6 +4,10 @@ import { UserContext } from "utils/auth";
 import axios from "axios";
 import { useHistory } from "react-router-dom";
 
+interface IChildProps {
+  refresh: () => void;
+}
+
 interface CourseProps {
   id: string;
   name: string;
@@ -16,7 +20,10 @@ const DEFAULT_COURSE_DATA: CourseProps = {
   description: "",
   educator: "",
 };
-const AddCourseProf: React.FunctionComponent = () => {
+const AddCourseProf: React.FC<IChildProps> = ({
+  refresh
+}) => {
+  
   const { user, userData, addCourseContext } = useContext(UserContext);
 
   const [courseData, setCourseData] = useState<CourseProps>(
@@ -51,7 +58,7 @@ const AddCourseProf: React.FunctionComponent = () => {
     if (addedCourse.data) {
       //add id to user contenxt, this doesn't seem to be updating
       await addCourseContext(addedCourse.data);
-      history.push("/courses");
+      refresh();
     } else {
       console.log("Already enrolled.");
     }
