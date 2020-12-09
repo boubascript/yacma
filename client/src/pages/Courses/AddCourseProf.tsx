@@ -55,7 +55,7 @@ const AddCourseProf: React.FC<IChildProps> = ({ refresh }) => {
     if (addedCourse.data) {
       //add id to user contenxt, this doesn't seem to be updating
       await addCourseContext(addedCourse.data);
-      refresh();
+      await refresh();
     } else {
       console.log("Already enrolled.");
     }

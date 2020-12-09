@@ -21,7 +21,7 @@ const Post: React.FunctionComponent<PostProps> = ({
   refresh,
   onDelete,
 }) => {
-  const { user } = useContext(UserContext);
+  const { user, userData } = useContext(UserContext);
   const { author, title, description, links, id } = post;
   const [comments, setComments] = useState<CommentData[]>([]);
   const [addingComment, setAddingComment] = useState(false);
@@ -90,12 +90,17 @@ const Post: React.FunctionComponent<PostProps> = ({
             post={post}
           />
         )}
-        <Button color="primary" onClick={() => toggleUpdatePost(true)}>
-          Edit
-        </Button>
-        <Button variant="contained" color="secondary" onClick={remove}>
-          {isDeleting ? "Deleting Post..." : "Delete Dis"}
-        </Button>
+
+        {userData?.firstName + " " + userData?.lastName === author && (
+          <>
+            <Button color="primary" onClick={() => toggleUpdatePost(true)}>
+              Edit
+            </Button>
+            <Button variant="contained" color="secondary" onClick={remove}>
+              {isDeleting ? "Deleting Post..." : "Delete Dis"}
+            </Button>
+          </>
+        )}
         {!addingComment ? (
           <Button
             variant="contained"

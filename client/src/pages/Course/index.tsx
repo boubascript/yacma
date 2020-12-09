@@ -19,7 +19,7 @@ const Course: React.FunctionComponent<RouteComponentProps> = ({
   location: { search },
 }) => {
   const history = useHistory();
-  const { userData } = useContext(UserContext);
+  const { userData, deleteCourseContext } = useContext(UserContext);
   const [course, setCourse] = useState<CourseData>();
   const [posts, setPosts] = useState<PostData[]>([]);
   const [addingPost, setAddingPost] = useState(false);
@@ -58,6 +58,7 @@ const Course: React.FunctionComponent<RouteComponentProps> = ({
       // Read result of the Cloud Function.
       console.log(result);
       if (result.data.path) {
+        await deleteCourseContext(courseId);
         history.push("/courses");
       }
     } catch (err) {

@@ -10,8 +10,8 @@ router.get("/getCourses", async (req: Request, res: Response) => {
   let courseIds = req.query.courseIds as string[];
 
   // TODO: find a workaround
-  if (courseIds.length > 0) {
-    if (courseIds.length > 10) {
+  if (courseIds?.length > 0) {
+    if (courseIds?.length > 10) {
       courseIds = courseIds.slice(1, 10);
     }
     //@ts-ignore

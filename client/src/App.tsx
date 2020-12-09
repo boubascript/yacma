@@ -18,13 +18,21 @@ const App: React.FunctionComponent = () => {
   const [userData, setUserData] = useState<UserData | null>(null);
   const [loadingAuthState, setLoadingAuthState] = useState(true);
 
-  const addCourseContext = async (newCourse: string) => {
-    await setUserData({
+  const addCourseContext = (newCourse: string) => {
+    console.log(`NEW: ${newCourse}`);
+    setUserData({
       ...userData!,
       courses: [...userData!.courses, newCourse],
     });
-    console.log("updated courses in context");
+    console.log([...userData!.courses, newCourse]);
     console.log(userData!.courses);
+  };
+
+  const deleteCourseContext = (id: string) => {
+    setUserData({
+      ...userData!,
+      courses: userData!.courses.filter((cid) => id !== cid),
+    });
   };
 
   useEffect(() => {
@@ -53,7 +61,9 @@ const App: React.FunctionComponent = () => {
   return (
     <div>
       <BrowserRouter>
-        <UserContext.Provider value={{ user, userData, addCourseContext }}>
+        <UserContext.Provider
+          value={{ user, userData, addCourseContext, deleteCourseContext }}
+        >
           <Switch>
             {/* <ProtectedRoute exact path="/me" component={Profile} /> */}
             <ProtectedRoute exact path="/courses" component={Courses} />

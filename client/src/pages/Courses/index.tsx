@@ -58,31 +58,30 @@ const Courses: React.FunctionComponent = () => {
   const classes = useStyles();
   const [checked, setChecked] = React.useState(false);
   const [coursesData, setCoursesData] = useState<CourseData[]>([]);
-  const [loadingCourses, setLoadingCourses] = useState(true);
 
-  const forceRefresh = () => {
-    window.location.reload();
+  const forceRefresh = async () => {
+    await getAsyncCourses();
+    setChecked(false);
+  };
+
+  const getAsyncCourses = async () => {
+    if (user) {
+      const { data } = await axios.get("/courses/getCourses", {
+        params: { courseIds: userData!.courses },
+      });
+      if (data) {
+        // @ts-ignore
+        setCoursesData(data.courses.map((doc) => doc as CourseData));
+      }
+    }
   };
 
   useEffect(() => {
-    const getAsyncCourses = async () => {
-      if (user) {
-        const { data } = await axios.get("/courses/getCourses", {
-          params: { courseIds: userData!.courses },
-        });
-        if (data) {
-          // @ts-ignore
-          setCoursesData(data.courses.map((doc) => doc as CourseData));
-          setLoadingCourses(false);
-        }
-      }
-    };
-
     getAsyncCourses();
-  }, []);
+  }, [userData]);
 
   const handleClick = () => {
-    setChecked((prev) => !prev);
+    setChecked(!checked);
   };
 
   return (
@@ -111,21 +110,18 @@ const Courses: React.FunctionComponent = () => {
       </Collapse>
 
       <div className={classes.root}>
-        {!loadingCourses &&
-          coursesData.map(
-            ({ name, id, code, description, educator }, index) => (
-              <div>
-                <ClassCard
-                  name={name}
-                  id={id}
-                  code={code}
-                  description={description}
-                  educator={educator}
-                  key={`courseData${index}`}
-                />
-              </div>
-            )
-          )}
+        {coursesData.map(({ name, id, code, description, educator }) => (
+          <div>
+            <ClassCard
+              key={id}
+              name={name}
+              id={id}
+              code={code}
+              description={description}
+              educator={educator}
+            />
+          </div>
+        ))}
       </div>
     </div>
   );

@@ -9,16 +9,15 @@ interface IChildProps {
 }
 
 const AddCourseStudent: React.FC<IChildProps> = ({ refresh }) => {
-  const { user, addCourseContext } = useContext(UserContext);
+  const { user, userData, addCourseContext } = useContext(UserContext);
   const [courseCode, setCourseCode] = useState<string>("");
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     setCourseCode(e.target.value);
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
     // Make sure user is not already enrolled
     const addedCourse = await axios.post("/courses/addCourseStudent", {
       data: {
@@ -31,7 +30,7 @@ const AddCourseStudent: React.FC<IChildProps> = ({ refresh }) => {
     if (addedCourse.data) {
       //add id to user contenxt, this doesn't seem to be updating
       await addCourseContext(addedCourse.data);
-      refresh();
+      await refresh();
     } else {
       console.log("Already enrolled.");
     }
