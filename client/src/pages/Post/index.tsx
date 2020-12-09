@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { PostData } from "utils/posts";
-import { getComments, CommentData } from "utils/comments";
+import { PostData } from "utils/posts"; // TODO: Put Interfaces in single file?
+import { CommentData } from "utils/comments";
 import { Button, Container } from "@material-ui/core";
 import Comment from "pages/Comment";
 import NewComment from "pages/NewComment";

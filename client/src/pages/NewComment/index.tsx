@@ -1,7 +1,7 @@
 import React, { useState, useContext } from "react";
 import { Grid, TextField, Button } from "@material-ui/core";
 import { UserContext } from "utils/auth";
-import { addComment, updateComment, CommentData } from "utils/comments";
+import { CommentData } from "utils/comments";
 import axios from "axios";
 
 const DEFAULT_COMMENT_DATA: CommentData = {
