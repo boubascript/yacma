@@ -114,15 +114,17 @@ const NewPost: React.FunctionComponent<NewPostProps> = ({
             onChange={handleChange}
           />
         </Grid>
-        <Grid item xs={12}>
-          <input
-            accept="image/*, video/*, .pdf,.doc"
-            defaultValue={postData?.links}
-            id="inputFiles"
-            type="file"
-            onChange={handleFileChange}
-          />
-        </Grid>
+        {!postId && (
+          <Grid item xs={12}>
+            <input
+              accept="image/*, video/*, .pdf,.doc"
+              defaultValue={postData?.links}
+              id="inputFiles"
+              type="file"
+              onChange={handleFileChange}
+            />
+          </Grid>
+        )}
       </Grid>
 
       <br></br>

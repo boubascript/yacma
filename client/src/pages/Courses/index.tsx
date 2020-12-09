@@ -71,7 +71,7 @@ const Courses: React.FunctionComponent = () => {
       });
       if (data) {
         // @ts-ignore
-        setCoursesData(data.courses.map((doc) => doc as CourseData));
+        setCoursesData(data.courses?.map((doc) => doc as CourseData));
       }
     }
   };
@@ -110,7 +110,7 @@ const Courses: React.FunctionComponent = () => {
       </Collapse>
 
       <div className={classes.root}>
-        {coursesData.map(({ name, id, code, description, educator }) => (
+        {coursesData?.map(({ name, id, code, description, educator }) => (
           <div>
             <ClassCard
               key={id}
