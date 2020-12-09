@@ -1,7 +1,7 @@
 import React, { useState, useContext } from "react";
 import { Grid, TextField, Button } from "@material-ui/core";
 import { UserContext } from "utils/auth";
-import { addComment, CommentData } from "utils/comments";
+import { addComment, updateComment, CommentData } from "utils/comments";
 
 const DEFAULT_COMMENT_DATA: CommentData = {
   author: "",
@@ -13,12 +13,16 @@ interface NewCommentProps {
   postId: string;
   exit: Function;
   refresh: Function;
+  comment?: string;
+  id?: string;
 }
 const NewComment: React.FunctionComponent<NewCommentProps> = ({
   courseId,
   postId,
   exit,
   refresh,
+  comment,
+  id,
 }) => {
   const { userData } = useContext(UserContext);
   const [commentData, setCommentData] = useState<CommentData>(
@@ -41,7 +45,11 @@ const NewComment: React.FunctionComponent<NewCommentProps> = ({
     };
 
     if (courseId && postId) {
-      await addComment(courseId, postId, commentBody);
+      if (id && comment) {
+        await updateComment(courseId, postId, id, commentBody);
+      } else {
+        await addComment(courseId, postId, commentBody);
+      }
       refresh(); // refresh comments in Course Page
     }
     exit(false); // exit New Comment form
@@ -59,6 +67,7 @@ const NewComment: React.FunctionComponent<NewCommentProps> = ({
             name="comment"
             label="Comment"
             id="Comment"
+            defaultValue={comment || ""}
             multiline
             fullWidth
             variant="outlined"
@@ -69,7 +78,7 @@ const NewComment: React.FunctionComponent<NewCommentProps> = ({
 
       <br></br>
       <Button type="submit" variant="contained" color="primary">
-        New Comment
+        {comment ? "Update" : "New Comment"}
       </Button>
       <Button variant="contained" color="primary" onClick={cancel}>
         Cancel
