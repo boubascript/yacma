@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useContext } from "react";
 import { useHistory } from "react-router-dom";
 import { UserContext } from "utils/auth";
-import axios from 'axios';
-import {CourseData} from "utils/courses";
+import axios from "axios";
+import { CourseData } from "utils/courses";
 
 import {
   Container,
@@ -32,12 +32,15 @@ const AddCourseProf: React.FunctionComponent = () => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!userData!.courses.includes(courseData.code)) {
-
       const addedCourse = await axios.get("/courses/addCourseAdmin", {
         params: {
-          "courseData": {...courseData, educator: userData!.firstName + " " + userData!.lastName},
-          "uid": user!.uid
-      }});
+          courseData: {
+            ...courseData,
+            educator: userData!.firstName + " " + userData!.lastName,
+          },
+          uid: user!.uid,
+        },
+      });
 
       if (addedCourse.data) {
         await addCourseContext(courseData!.id!);
@@ -45,8 +48,7 @@ const AddCourseProf: React.FunctionComponent = () => {
       } else {
         console.log("");
       }
-    }
-    else {
+    } else {
       console.log("This course code is already in your courses.");
     }
   };

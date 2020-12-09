@@ -3,7 +3,7 @@ import { useHistory } from "react-router-dom";
 import { RouteComponentProps } from "react-router";
 import { functions } from "config/firebase";
 import { CourseData } from "utils/courses";
-import { getPosts, PostData } from "utils/posts";
+import { PostData } from "utils/posts";
 import { Button, Typography } from "@material-ui/core";
 import Navbar from "components/Navbar";
 import Post from "pages/Post";
@@ -25,20 +25,28 @@ const Course: React.FunctionComponent<RouteComponentProps> = ({
   const [addingPost, setAddingPost] = useState(false);
   const [isDeleting, setisDeleting] = useState(false);
   const courseId = search.substring(1);
-  console.log(courseId);
-  const getCourseInfo = async () => {
-    // TODO: Add error handling
-    const { data } = await axios.get("/courses/getCourse", {
-      params: {
-        "courseId": courseId
-      }});
-    console.log("response");
-    console.log(data);
-    const courseData = data as CourseData;  
-    setCourse(courseData);
 
-    const postsData = (await getPosts(courseId)) as PostData[];
-    setPosts(postsData);
+  const getCoursePosts = async () => {
+    if (courseId) {
+      const { data: postsData } = await axios.get(`/posts/${courseId}/posts`, {
+        params: {
+          courseId: courseId,
+        },
+      });
+      setPosts(postsData);
+    }
+  };
+
+  const getCourseInfo = async () => {
+    if (courseId) {
+      const { data } = await axios.get("/courses/getCourse", {
+        params: {
+          courseId: courseId,
+        },
+      });
+      setCourse(data as CourseData);
+      await getCoursePosts();
+    }
   };
 
   const removeCourse = async () => {
@@ -85,11 +93,9 @@ const Course: React.FunctionComponent<RouteComponentProps> = ({
 
   // TODO: Find a better way to do this
   const refreshPosts = async () => {
-    const postsData = (await getPosts(courseId)) as PostData[];
-    setPosts(postsData);
+    getCoursePosts();
   };
 
-  console.log(course);
   return (
     <div>
       <Navbar />
@@ -116,16 +122,14 @@ const Course: React.FunctionComponent<RouteComponentProps> = ({
         />
       )}
       <div className="posts">
-        {posts?.map(({ id, title, author, description, links }) => (
+        {posts?.map((doc, index) => (
           <Post
-            key={id}
+            key={index}
             courseId={courseId}
-            title={title}
-            author={author}
-            description={description}
-            links={links}
+            post={doc}
+            refresh={refreshPosts}
             onDelete={() => {
-              removePost(id!);
+              removePost(doc.id!);
             }}
           />
         ))}

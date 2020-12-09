@@ -1,7 +1,8 @@
 import React, { useState, useContext } from "react";
 import { Grid, TextField, Button } from "@material-ui/core";
 import { UserContext } from "utils/auth";
-import { addComment, CommentData } from "utils/comments";
+import { CommentData } from "utils/comments";
+import axios from "axios";
 
 const DEFAULT_COMMENT_DATA: CommentData = {
   author: "",
@@ -13,16 +14,18 @@ interface NewCommentProps {
   postId: string;
   exit: Function;
   refresh: Function;
+  comment?: CommentData;
 }
 const NewComment: React.FunctionComponent<NewCommentProps> = ({
   courseId,
   postId,
   exit,
   refresh,
+  comment,
 }) => {
-  const { userData } = useContext(UserContext);
+  const { user, userData } = useContext(UserContext);
   const [commentData, setCommentData] = useState<CommentData>(
-    DEFAULT_COMMENT_DATA
+    comment || DEFAULT_COMMENT_DATA
   );
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -41,7 +44,33 @@ const NewComment: React.FunctionComponent<NewCommentProps> = ({
     };
 
     if (courseId && postId) {
-      await addComment(courseId, postId, commentBody);
+      if (comment?.id) {
+        await axios.put(
+          `/comments/${courseId}/posts/${postId}/comments/${comment?.id}`,
+          {
+            params: {
+              courseId: courseId,
+              postId: postId,
+              commentId: comment?.id,
+              uid: user!.uid,
+            },
+            data: {
+              commentBody,
+            },
+          }
+        );
+      } else {
+        await axios.post(`/comments/${courseId}/posts/${postId}/comments`, {
+          params: {
+            courseId: courseId,
+            postId: postId,
+            uid: user!.uid,
+          },
+          data: {
+            commentBody,
+          },
+        });
+      }
       refresh(); // refresh comments in Course Page
     }
     exit(false); // exit New Comment form
@@ -59,6 +88,7 @@ const NewComment: React.FunctionComponent<NewCommentProps> = ({
             name="comment"
             label="Comment"
             id="Comment"
+            defaultValue={commentData.comment}
             multiline
             fullWidth
             variant="outlined"
@@ -69,7 +99,7 @@ const NewComment: React.FunctionComponent<NewCommentProps> = ({
 
       <br></br>
       <Button type="submit" variant="contained" color="primary">
-        New Comment
+        {comment ? "Update" : "New Comment"}
       </Button>
       <Button variant="contained" color="primary" onClick={cancel}>
         Cancel
