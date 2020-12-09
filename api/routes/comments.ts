@@ -1,4 +1,4 @@
-import { db, FieldValue, FieldPath } from "../config/firebase";
+import { db, FieldValue } from "../config/firebase";
 import { Router, Request, Response } from "express";
 const router = Router();
 
@@ -6,7 +6,7 @@ export interface CommentData {
   author: string;
   comment: string;
   id?: string;
-  uid?: string; // TODO: Add user ID field
+  uid: string; // TODO: Add user ID field
   createdAt: FirebaseFirestore.Timestamp;
 }
 
@@ -15,13 +15,11 @@ export interface CommentData {
  * @return Array of all comments
  * @cost One DB call
  */
-// TODO: sort return by timestamp
 // Get Comments
 router.get(
   "/:courseId/posts/:postId/comments",
   async (req: Request, res: Response) => {
     try {
-      // const { userId } = req.body;
       const { courseId, postId } = req.params;
       const commentsRef = db
         .collection("courses")
@@ -70,7 +68,7 @@ router.get(
       if (!comment.exists) {
         console.log("No such comment exists. *raises eyebrow*");
       } else {
-        return res.status(200).json(comment.data());
+        return res.status(200).json({ ...comment.data(), id: commentId });
       }
     } catch (e) {
       console.log("Could not add comment.");
@@ -78,7 +76,6 @@ router.get(
   }
 );
 
-// TODO: Add timestamp field
 // Add Comment
 router.post(
   "/:courseId/posts/:postId/comments",
@@ -95,26 +92,23 @@ router.post(
         .collection("comments");
 
       const timestamp = FieldValue.serverTimestamp();
-      console.log("I've been timestamped", timestamp, {
-        ...commentBody,
-        createdAt: timestamp,
-      });
-
-      await commentRef.add({ ...commentBody, createdAt: timestamp });
+      const d = await commentRef.add({ ...commentBody, createdAt: timestamp });
+      console.log("WHATS HAPPENING? ", d);
       return res.json({ mesage: "Added :)" });
     } catch (e) {
+      return res.json({ message: e });
       console.log("There's an error afoot...", e);
     }
   }
 );
 
 // Update Comment
-// TODO: Add check to ensure only author can edit their post
+// Two calls to check if user owns post
 router.put(
   "/:courseId/posts/:postId/comments/:commentId",
   async (req: Request, res: Response) => {
     try {
-      const { courseId, postId, commentId } = req.body.params;
+      const { courseId, postId, commentId, uid } = req.body.params;
       const { commentBody } = req.body.data;
       const commentRef = db
         .collection("courses")
@@ -124,8 +118,15 @@ router.put(
         .collection("comments")
         .doc(commentId);
 
-      await commentRef.update(commentBody);
-      return res.json({ mesage: "Updated :)" });
+      const getComment = await commentRef.get();
+      if (uid === getComment.data()?.uid) {
+        await commentRef.update(commentBody);
+        return res.send("Updated :)");
+      } else {
+        return res.send(
+          "Nice Try. Can't update other peeps comments *shakes head*"
+        );
+      }
     } catch (e) {
       console.log("There's an error afoot...", e);
     }
@@ -133,12 +134,12 @@ router.put(
 );
 
 // Delete Comment
-// TODO: Add check to ensure only author can edit their post
+// Two calls to check if user owns post
 router.delete(
   "/:courseId/posts/:postId/comments/:commentId",
   async (req: Request, res: Response) => {
     try {
-      const { courseId, postId, commentId } = req.params;
+      const { courseId, postId, commentId, uid } = req.params;
       const commentRef = db
         .collection("courses")
         .doc(courseId)
@@ -147,8 +148,15 @@ router.delete(
         .collection("comments")
         .doc(commentId);
 
-      await commentRef.delete();
-      return res.json({ mesage: "Deleted :(" });
+      const getComment = await commentRef.get();
+      if (uid === getComment.data()?.uid) {
+        await commentRef.delete();
+        return res.send("Deleted :(");
+      } else {
+        return res.send(
+          "Nice Try. Can't delete other peeps comments *shakes head*"
+        );
+      }
     } catch (e) {
       console.log("There's an error afoot...", e);
     }

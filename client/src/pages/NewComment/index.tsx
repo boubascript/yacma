@@ -23,7 +23,7 @@ const NewComment: React.FunctionComponent<NewCommentProps> = ({
   refresh,
   comment,
 }) => {
-  const { userData } = useContext(UserContext);
+  const { user, userData } = useContext(UserContext);
   const [commentData, setCommentData] = useState<CommentData>(
     comment || DEFAULT_COMMENT_DATA
   );
@@ -52,6 +52,7 @@ const NewComment: React.FunctionComponent<NewCommentProps> = ({
               courseId: courseId,
               postId: postId,
               commentId: comment?.id,
+              uid: user!.uid,
             },
             data: {
               commentBody,
@@ -63,6 +64,7 @@ const NewComment: React.FunctionComponent<NewCommentProps> = ({
           params: {
             courseId: courseId,
             postId: postId,
+            uid: user!.uid,
           },
           data: {
             commentBody,

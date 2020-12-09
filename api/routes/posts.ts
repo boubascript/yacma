@@ -1,4 +1,4 @@
-import { db, FieldValue, FieldPath } from "../config/firebase";
+import { db, FieldValue } from "../config/firebase";
 import { Router, Request, Response } from "express";
 const router = Router();
 
@@ -8,7 +8,7 @@ export interface PostData {
   links: string;
   author: string;
   id?: string;
-  uid?: string; // TODO: Add user ID field
+  uid: string; // TODO: Add user ID field
   createdAt: FirebaseFirestore.Timestamp;
 }
 
@@ -17,12 +17,9 @@ export interface PostData {
  * @return Array of all posts
  * @cost One DB call
  */
-// TODO: sort return by timestamp
 // Get Posts
 router.get("/:courseId/posts", async (req: Request, res: Response) => {
   try {
-    // const { userId } = req.body; TODO
-    console.log(req.query.courseId);
     const courseId = req.query.courseId as string;
     const postsRef = db
       .collection("courses")
@@ -46,21 +43,16 @@ router.get("/:courseId/posts", async (req: Request, res: Response) => {
   }
 });
 
-// TODO: Add timestamp field
 // Add Post
 router.post("/:courseId/posts", async (req: Request, res: Response) => {
   try {
-    const { courseId } = req.body.params;
+    const { courseId, uid } = req.body.params;
     const { postBody } = req.body.data;
     const postRef = db.collection("courses").doc(courseId).collection("posts");
 
     const timestamp = FieldValue.serverTimestamp();
-    console.log("I've been timestamped", timestamp, {
-      ...postBody,
-      createdAt: timestamp,
-    });
-
-    await postRef.add({ ...postBody, createdAt: timestamp });
+    console.log("GET POST", postBody);
+    await postRef.add({ ...postBody, createdAt: timestamp, uid: uid });
     return res.status(204).send("Added :)");
   } catch (e) {
     console.log("There's an error afoot...", e);
@@ -88,11 +80,11 @@ router.get("/:courseId/posts/:postId", async (req: Request, res: Response) => {
   }
 });
 
-// TODO: Two calls, need to check author owns post to update
 // Update Post
+// Two calls to check if user owns post
 router.put("/:courseId/posts/:postId", async (req: Request, res: Response) => {
   try {
-    const { courseId, postId } = req.body.params;
+    const { courseId, postId, uid } = req.body.params;
     const { postBody } = req.body.data;
     const postRef = db
       .collection("courses")
@@ -100,8 +92,15 @@ router.put("/:courseId/posts/:postId", async (req: Request, res: Response) => {
       .collection("posts")
       .doc(postId);
 
-    await postRef.update(postBody);
-    return res.status(204).send("Updated :)");
+    const getPost = await postRef.get();
+    if (uid === getPost.data()?.uid) {
+      await postRef.update(postBody);
+      return res.status(204).send("Updated :)");
+    } else {
+      return res
+        .status(304)
+        .send("Nice Try. Can't update other peeps posts *shakes head*");
+    }
   } catch (e) {
     console.log("There's an error afoot...", e);
   }

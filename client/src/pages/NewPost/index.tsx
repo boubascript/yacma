@@ -26,7 +26,7 @@ const NewPost: React.FunctionComponent<NewPostProps> = ({
   post,
   postId,
 }) => {
-  const { userData } = useContext(UserContext);
+  const { user, userData } = useContext(UserContext);
   const [postData, setPostData] = useState<PostData>(post || DEFAULT_POST_DATA);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -50,6 +50,7 @@ const NewPost: React.FunctionComponent<NewPostProps> = ({
           params: {
             courseId: courseId,
             postId: postId,
+            uid: user!.uid,
           },
           data: {
             postBody,
@@ -59,13 +60,14 @@ const NewPost: React.FunctionComponent<NewPostProps> = ({
         await axios.post(`/posts/${courseId}/posts/`, {
           params: {
             courseId: courseId,
+            uid: user!.uid,
           },
           data: {
             postBody,
           },
         });
       }
-      refresh(); // refresh comments in Course Page
+      // refresh(); // refresh comments in Course Page
     }
     exit(false); // exit New Post form
   };

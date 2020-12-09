@@ -91,12 +91,14 @@ const Post: React.FunctionComponent<PostProps> = ({
             Add Comment
           </Button>
         ) : (
-          <NewComment
-            courseId={courseId}
-            postId={id || ""}
-            exit={toggleNewComment}
-            refresh={refreshComments}
-          />
+          id && (
+            <NewComment
+              courseId={courseId}
+              postId={id}
+              exit={toggleNewComment}
+              refresh={refreshComments}
+            />
+          )
         )}
         <div className="comments">
           {id &&
