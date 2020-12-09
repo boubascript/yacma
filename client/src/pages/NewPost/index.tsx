@@ -29,11 +29,19 @@ const NewPost: React.FunctionComponent<NewPostProps> = ({
   const { user, userData } = useContext(UserContext);
   const [postData, setPostData] = useState<PostData>(post || DEFAULT_POST_DATA);
 
+  const [selectedFile, setSelectedFile] = useState<File>();
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setPostData((prevState) => ({
       ...prevState,
       [e.target.name]: e.target.value,
     }));
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    var files = e.target.files || [];
+    setSelectedFile(files[0]);
+    console.log(selectedFile);
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -57,15 +65,17 @@ const NewPost: React.FunctionComponent<NewPostProps> = ({
           },
         });
       } else {
-        await axios.post(`/posts/${courseId}/posts/`, {
-          params: {
-            courseId: courseId,
-            uid: user!.uid,
-          },
-          data: {
-            postBody,
-          },
-        });
+        const formData = new FormData();
+        if (selectedFile) {
+          formData.append("file", selectedFile);
+        }
+        for (var key in postBody) {
+          // @ts-ignore
+          formData.append(key, postBody[key]);
+        }
+        formData.append("courseId", courseId);
+        formData.append("uid", user!.uid);
+        await axios.post(`/posts/${courseId}/posts/`, formData);
       }
       refresh(); // refresh comments in Course Page
     }
@@ -109,8 +119,8 @@ const NewPost: React.FunctionComponent<NewPostProps> = ({
             accept="image/*, video/*, .pdf,.doc"
             defaultValue={postData?.links}
             id="inputFiles"
-            multiple
             type="file"
+            onChange={handleFileChange}
           />
         </Grid>
       </Grid>

@@ -7,6 +7,7 @@ import Comment from "pages/Comment";
 import NewComment from "pages/NewComment";
 import NewPost from "pages/NewPost";
 import { UserContext } from "utils/auth";
+import "App.css";
 
 interface PostProps {
   courseId: string;
@@ -79,7 +80,7 @@ const Post: React.FunctionComponent<PostProps> = ({
             <h2>{title}</h2>
             <p>{author}</p>
             <p>{description}</p>
-            <div>{links}</div>
+            {links != "" ? <img src={links} title={`image${links}`}></img> : ""}
           </>
         ) : (
           <NewPost
