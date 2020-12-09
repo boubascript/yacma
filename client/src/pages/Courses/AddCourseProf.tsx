@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useContext } from "react";
-import { useHistory } from "react-router-dom";
 import { Grid, TextField, Button } from "@material-ui/core";
 import { UserContext } from "utils/auth";
 import axios from "axios";
+import { useHistory } from "react-router-dom";
+
 
 interface CourseProps {
   id: string;
@@ -23,6 +24,8 @@ const AddCourseProf: React.FunctionComponent = () => {
     DEFAULT_COURSE_DATA
   );
 
+  const history = useHistory();
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setCourseData({ ...courseData, [e.target.name!]: e.target.value });
   };
@@ -41,11 +44,12 @@ const AddCourseProf: React.FunctionComponent = () => {
         uid: user!.uid
       }
     });
-
+    
     //Response is either empty, or passes the document id
     if (addedCourse.data) {
       //add id to user contenxt, this doesn't seem to be updating
-      addCourseContext(addedCourse.data);
+      await addCourseContext(addedCourse.data);
+      history.push("/courses");
     } else {
       console.log("Already enrolled.");
     }
