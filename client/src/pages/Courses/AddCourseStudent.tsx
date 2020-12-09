@@ -8,9 +8,7 @@ interface IChildProps {
   refresh: () => void;
 }
 
-const AddCourseStudent: React.FC<IChildProps> = ({
-  refresh
-}) => {
+const AddCourseStudent: React.FC<IChildProps> = ({ refresh }) => {
   const { user, addCourseContext } = useContext(UserContext);
   const [courseCode, setCourseCode] = useState<string>("");
 
@@ -29,15 +27,15 @@ const AddCourseStudent: React.FC<IChildProps> = ({
       },
     });
 
-      //Response is either empty, or passes the document id
-      if (addedCourse.data) {
-        //add id to user contenxt, this doesn't seem to be updating
-        await addCourseContext(addedCourse.data);
-        refresh();
-      } else {
-        console.log("Already enrolled.");
-      }
-    };
+    //Response is either empty, or passes the document id
+    if (addedCourse.data) {
+      //add id to user contenxt, this doesn't seem to be updating
+      await addCourseContext(addedCourse.data);
+      refresh();
+    } else {
+      console.log("Already enrolled.");
+    }
+  };
 
   return (
     <div>

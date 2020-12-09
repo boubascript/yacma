@@ -59,22 +59,24 @@ const Courses: React.FunctionComponent = () => {
   const [checked, setChecked] = React.useState(false);
   const [coursesData, setCoursesData] = useState<CourseData[]>([]);
   const [loadingCourses, setLoadingCourses] = useState(true);
-  
+
   const forceRefresh = () => {
     window.location.reload();
-  }
+  };
 
   useEffect(() => {
-   const getAsyncCourses = async () => {
-    if (user) {
-      const { data } = await axios.get('/courses/getCourses', {params: {"courseIds": userData!.courses}});
-      if (data) {
-        // @ts-ignore
-        setCoursesData(data.courses.map(doc => doc as CourseData));
-        setLoadingCourses(false);
+    const getAsyncCourses = async () => {
+      if (user) {
+        const { data } = await axios.get("/courses/getCourses", {
+          params: { courseIds: userData!.courses },
+        });
+        if (data) {
+          // @ts-ignore
+          setCoursesData(data.courses.map((doc) => doc as CourseData));
+          setLoadingCourses(false);
+        }
       }
-    }
-  };
+    };
 
     getAsyncCourses();
   }, []);
@@ -100,7 +102,11 @@ const Courses: React.FunctionComponent = () => {
       </Button>
       <Collapse in={checked}>
         <Card className={classes.addCard}>
-          {userData?.isAdmin ? <AddCourseProf refresh={forceRefresh} /> : <AddCourseStudent refresh={forceRefresh} />}
+          {userData?.isAdmin ? (
+            <AddCourseProf refresh={forceRefresh} />
+          ) : (
+            <AddCourseStudent refresh={forceRefresh} />
+          )}
         </Card>
       </Collapse>
 

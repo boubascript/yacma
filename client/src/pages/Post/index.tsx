@@ -68,7 +68,7 @@ const Post: React.FunctionComponent<PostProps> = ({
             <h2>{title}</h2>
             <p>{author}</p>
             <p>{description}</p>
-            <div>{links}</div>
+            {links != "" ? <div><iframe src={links} title={`image${links}`}></iframe></div> : ""}
           </>
         ) : (
           <NewPost
