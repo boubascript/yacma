@@ -7,8 +7,6 @@ import Login from "pages/Login";
 import Register from "pages/Register";
 import Profile from "pages/Profile";
 import Courses from "pages/Courses";
-import AddCourseProf from "pages/AddCourseProf";
-import AddCourseStudent from "pages/AddCourseStudent";
 import { auth, IUser } from "config/firebase";
 import { UserContext, UserData, getUserData } from "utils/auth";
 import NewPost from "pages/NewPost";
@@ -59,8 +57,6 @@ const App: React.FunctionComponent = () => {
             <ProtectedRoute exact path="/courses" component={Courses} />
             <Route path="/register" component={Register} />
             <Route path="/login" component={Login} />
-            <Route path="/addCourseProf" component={AddCourseProf} />
-            <Route path="/addCourseStudent" component={AddCourseStudent} />
             <Route path="/addPost" component={NewPost} />
             <Route path="/addComment" component={NewComment} />
             <Route path="/coursepage" component={Course} />

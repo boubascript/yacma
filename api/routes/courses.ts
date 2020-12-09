@@ -9,7 +9,6 @@ const courses = db.collection('courses');
 
 router.get('/getCourses', async (req: Request, res:Response) => {
     let courseIds = req.query.courseIds as string[];
-
     // TODO: find a workaround
     if (courseIds.length > 0) {
         if (courseIds.length > 10) {
@@ -27,7 +26,7 @@ router.get('/getCourses', async (req: Request, res:Response) => {
         res.json({ courses: ret });
         } catch (error) {
             console.log(error);
-            console.log("error getting document in getUserData");
+            console.log("error getting document in getCourses");
         }
     } else {
         console.log("No course codes...");
