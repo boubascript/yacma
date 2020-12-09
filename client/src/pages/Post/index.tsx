@@ -1,23 +1,38 @@
 import React, { useState, useEffect } from "react";
-import { PostData } from "utils/posts";
-import { getComments, CommentData } from "utils/comments";
+import { PostData } from "utils/posts"; // TODO: Put Interfaces in single file?
+import { CommentData } from "utils/comments";
 import { Button, Container } from "@material-ui/core";
 import Comment from "pages/Comment";
 import NewComment from "pages/NewComment";
+import NewPost from "pages/NewPost";
+import axios from "axios";
 
 interface PostProps {
   courseId: string;
   post: PostData;
+  refresh: Function;
 }
-const Post: React.FunctionComponent<PostProps> = ({ courseId, post }) => {
+const Post: React.FunctionComponent<PostProps> = ({
+  courseId,
+  post,
+  refresh,
+}) => {
   const { author, title, description, links, id } = post;
   const [comments, setComments] = useState<CommentData[]>([]);
   const [addingComment, setAddingComment] = useState(false);
+  const [updatingPost, setUpdatingPost] = useState(false);
 
   const getAllComments = async () => {
     if (id) {
-      const commentsData = (id &&
-        (await getComments(courseId, id))) as CommentData[];
+      const { data: commentsData } = await axios.get(
+        `comments/${courseId}/posts/${id}/comments`,
+        {
+          params: {
+            courseId: courseId,
+            postId: id,
+          },
+        }
+      );
       setComments(commentsData);
     }
   };
@@ -32,43 +47,74 @@ const Post: React.FunctionComponent<PostProps> = ({ courseId, post }) => {
     setAddingComment(true);
   };
 
+  const toggleUpdatePost = (exit: boolean) => {
+    setUpdatingPost(exit);
+  };
+
   const toggleNewComment = (exit: boolean) => {
     setAddingComment(exit);
   };
 
   // TODO: Find a better way to do this
   const refreshComments = async () => {
-    const commentsData = (id &&
-      (await getComments(courseId, id))) as CommentData[];
-    setComments(commentsData);
+    getAllComments();
   };
 
   return (
-    <Container>
-      <h2>{title}</h2>
-      <p>{author}</p>
-      <p>{description}</p>
-      <div>{links}</div>
-      {!addingComment ? (
-        <Button variant="contained" color="primary" onClick={handleNewComment}>
-          Add Comment
+    <>
+      <Container>
+        {!updatingPost ? (
+          <>
+            <h2>{title}</h2>
+            <p>{author}</p>
+            <p>{description}</p>
+            <div>{links}</div>
+          </>
+        ) : (
+          <NewPost
+            courseId={courseId}
+            exit={toggleUpdatePost}
+            refresh={refresh}
+            postId={id}
+            post={post}
+          />
+        )}
+        <Button color="primary" onClick={() => toggleUpdatePost(true)}>
+          Edit
         </Button>
-      ) : (
-        <NewComment
-          courseId={courseId}
-          postId={id || ""}
-          exit={toggleNewComment}
-          refresh={refreshComments}
-        />
-      )}
-      <div className="comments">
-        {id &&
-          comments &&
-          comments.map((doc, index) => (
-            <Comment key={index} postId={id} commentData={doc} />
-          ))}
-      </div>
-    </Container>
+        {!addingComment ? (
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={handleNewComment}
+          >
+            Add Comment
+          </Button>
+        ) : (
+          id && (
+            <NewComment
+              courseId={courseId}
+              postId={id}
+              exit={toggleNewComment}
+              refresh={refreshComments}
+            />
+          )
+        )}
+        <div className="comments">
+          {id &&
+            comments &&
+            comments.map((doc, index) => (
+              <Comment
+                key={index}
+                courseId={courseId}
+                postId={id}
+                commentData={doc}
+                refresh={refreshComments}
+              />
+            ))}
+        </div>
+      </Container>
+    </>
   );
 };
 

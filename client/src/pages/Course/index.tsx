@@ -1,13 +1,12 @@
-import React, { useContext, useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { RouteComponentProps } from "react-router";
 import { CourseData } from "utils/courses";
-import { getPosts, PostData } from "utils/posts";
+import { PostData } from "utils/posts";
 import { Button, Typography } from "@material-ui/core";
 import Navbar from "components/Navbar";
 import Post from "pages/Post";
 import NewPost from "pages/NewPost";
 import axios from "axios";
-
 
 const Course: React.FunctionComponent<RouteComponentProps> = ({
   location: { search },
@@ -16,23 +15,33 @@ const Course: React.FunctionComponent<RouteComponentProps> = ({
   const [posts, setPosts] = useState<PostData[]>([]);
   const [addingPost, setAddingPost] = useState(false);
   const courseId = search.substring(1);
-  console.log(courseId);
-  const getCourseInfo = async () => {
-    // TODO: Add error handling
-    const { data } = await axios.get("/courses/getCourse", {
-      params: {
-        "courseId": courseId
-      }});
-    console.log("response");
-    console.log(data);
-    const courseData = data as CourseData;  
-    setCourse(courseData);
 
-    const postsData = (await getPosts(courseId)) as PostData[];
-    setPosts(postsData);
+  const getCoursePosts = async () => {
+    if (courseId) {
+      const { data: postsData } = await axios.get(`/posts/${courseId}/posts`, {
+        params: {
+          courseId: courseId,
+        },
+      });
+      setPosts(postsData);
+    }
   };
 
-  // TODO: Add loadin script check
+  const getCourseInfo = async () => {
+    if (courseId) {
+      const { data } = await axios.get("/courses/getCourse", {
+        params: {
+          courseId: courseId,
+        },
+      });
+
+      const courseData = data as CourseData;
+      setCourse(courseData);
+      await getCoursePosts();
+    }
+  };
+
+  // TODO: Add loading script check
   useEffect(() => {
     if (courseId) {
       getCourseInfo();
@@ -45,8 +54,7 @@ const Course: React.FunctionComponent<RouteComponentProps> = ({
 
   // TODO: Find a better way to do this
   const refreshPosts = async () => {
-    const postsData = (await getPosts(courseId)) as PostData[];
-    setPosts(postsData);
+    getCoursePosts();
   };
 
   return (
@@ -76,7 +84,12 @@ const Course: React.FunctionComponent<RouteComponentProps> = ({
       )}
       <div className="posts">
         {posts?.map((doc, index) => (
-          <Post key={index} courseId={courseId} post={doc} />
+          <Post
+            key={index}
+            courseId={courseId}
+            post={doc}
+            refresh={refreshPosts}
+          />
         ))}
       </div>
     </div>

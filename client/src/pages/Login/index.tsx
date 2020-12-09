@@ -30,7 +30,7 @@ const Login: React.FunctionComponent = () => {
     e.preventDefault();
     const { user, error } = await loginUser(loginData);
     if (user) {
-      history.push("/me");
+      history.push("/courses");
     } else {
       console.log(error);
     }

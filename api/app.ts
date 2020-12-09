@@ -8,6 +8,8 @@ require('dotenv').config()
 
 
 import courseRouter from "./routes/courses";
+import postsRouter from "./routes/posts";
+import commentsRouter from "./routes/comments";
 import fileRouter from './routes/file';
 
 (async () => {
@@ -16,11 +18,11 @@ import fileRouter from './routes/file';
     const app = express();
     const port = Number(process.env.PORT) || 8080;
     app.set("port", port);
-    
+
     // Middleware
     app.use(bodyparser.urlencoded({ extended: false }));
     app.use(bodyparser.json());
-    
+
     if (process.env.NODE_ENV !== "production") {
       app.use(logger("dev"));
       app.use(function (
@@ -45,6 +47,9 @@ import fileRouter from './routes/file';
 
     // importing routes
     app.use('/courses', courseRouter);
+    app.use("/comments", commentsRouter);
+    app.use("/posts", postsRouter);
+    
     app.use('/file', fileRouter);
 
     // Routes

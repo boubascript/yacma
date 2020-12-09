@@ -28,7 +28,6 @@ const Navbar: React.FunctionComponent = () => {
 
   if (userData != null) {
     addCourseLink = userData!.isAdmin ? "/addCourseProf" : "/addCourseStudent";
-
   }
 
   const logout = async () => {
