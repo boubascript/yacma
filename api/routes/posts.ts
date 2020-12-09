@@ -20,9 +20,9 @@ export interface PostData {
 // TODO: sort return by timestamp
 // Get Posts
 router.get("/:courseId/posts", async (req: Request, res: Response) => {
-  const { userId } = req.body;
-  const { courseId } = req.params;
   try {
+    const { userId } = req.body;
+    const { courseId } = req.params;
     const postsRef = db.collection("courses").doc(courseId).collection("posts");
     const postsSnap = await postsRef.get();
 
@@ -33,7 +33,7 @@ router.get("/:courseId/posts", async (req: Request, res: Response) => {
         const data = { ...doc.data(), id: doc.id };
         postData.push(data);
       });
-      return postData; // return empty array if no posts
+      return res.status(200).json(postData); // return empty array if no posts
     } else {
       return [];
     }
@@ -52,7 +52,7 @@ router.post("/:courseId/posts", async (req: Request, res: Response) => {
 
     // TODO: Clean up check stuff
     await postRef.add(postData);
-    return true;
+    return res.status(200).json({ mesage: "Added :)" });
   } catch (e) {
     console.log("There's an error afoot...", e);
   }
@@ -70,7 +70,7 @@ router.get("/:courseId/posts/:postId", async (req: Request, res: Response) => {
 
     const post = await postRef.get();
     if (post.exists) {
-      return { ...post.data(), id: post.id };
+      return res.status(200).json({ ...post.data(), id: post.id });
     } else {
       console.log("No such post exists. *raises eyebrow*");
     }
@@ -92,7 +92,7 @@ router.put("/:courseId/posts/:postId", async (req: Request, res: Response) => {
       .doc(postId);
 
     await postRef.update(postData);
-    return true;
+    return res.status(200).json({ mesage: "Updated :)" });
   } catch (e) {
     console.log("There's an error afoot...", e);
   }

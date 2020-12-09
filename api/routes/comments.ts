@@ -38,7 +38,7 @@ router.get(
           const data = { ...doc.data(), id: doc.id };
           commentData.push(data);
         });
-        return commentData;
+        return res.status(200).json(commentData);
       } else {
         console.log("There are no comments for this post");
       }
@@ -66,7 +66,7 @@ router.get(
       if (!comment.exists) {
         console.log("No such comment exists. *raises eyebrow*");
       } else {
-        return comment.data();
+        return res.status(200).json(comment.data());
       }
     } catch (e) {
       console.log("Could not add comment.");
@@ -74,6 +74,7 @@ router.get(
   }
 );
 
+// TODO: Add timestamp field
 // Add Comment
 router.post(
   "/:courseId/posts/:postId/comments",
@@ -88,12 +89,8 @@ router.post(
         .doc(postId)
         .collection("comments");
 
-      if (!commentData) throw new Error("Course is null");
-
       await commentRef.add(commentData);
-
-      return true;
-      // TODO: return something
+      return res.status(200).json({ mesage: "Added :)" });
     } catch (e) {
       console.log("There's an error afoot...", e);
     }
@@ -117,7 +114,7 @@ router.put(
         .doc(commentId);
 
       await commentRef.update(commentData);
-      return true;
+      return res.status(200).json({ mesage: "Updated :)" });
     } catch (e) {
       console.log("There's an error afoot...", e);
     }
@@ -139,7 +136,7 @@ router.delete(
         .doc(commentId);
 
       await commentRef.delete();
-      return true;
+      return res.status(200).json({ mesage: "Deleted :(" });
     } catch (e) {
       console.log("There's an error afoot...", e);
     }
