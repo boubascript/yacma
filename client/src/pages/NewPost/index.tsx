@@ -10,7 +10,6 @@ const DEFAULT_POST_DATA: PostData = {
   author: "",
   description: "",
   links: "", // TODO: links might be any array of URLS
-  // uid: "",
 };
 
 interface NewPostProps {
@@ -28,7 +27,7 @@ const NewPost: React.FunctionComponent<NewPostProps> = ({
   postId,
 }) => {
   const { userData } = useContext(UserContext);
-  const [postData, setPostData] = useState<PostData>(DEFAULT_POST_DATA);
+  const [postData, setPostData] = useState<PostData>(post || DEFAULT_POST_DATA);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setPostData((prevState) => ({
@@ -47,7 +46,6 @@ const NewPost: React.FunctionComponent<NewPostProps> = ({
 
     if (courseId) {
       if (postId) {
-        // TODO: Fix update error, blank title when editing post, and vice versa
         await axios.put(`/posts/${courseId}/posts/${postId}`, {
           params: {
             courseId: courseId,
@@ -57,7 +55,6 @@ const NewPost: React.FunctionComponent<NewPostProps> = ({
             postBody,
           },
         });
-        // await updatePost(courseId, postId, postBody);
       } else {
         await axios.post(`/posts/${courseId}/posts/`, {
           params: {
@@ -68,7 +65,6 @@ const NewPost: React.FunctionComponent<NewPostProps> = ({
             postBody,
           },
         });
-        // await addPost(courseId, postBody);
       }
       refresh(); // refresh comments in Course Page
     }
@@ -87,7 +83,7 @@ const NewPost: React.FunctionComponent<NewPostProps> = ({
             name="title"
             label="Title"
             id="Title"
-            defaultValue={post?.title || ""}
+            defaultValue={postData.title}
             multiline
             fullWidth
             variant="outlined"
@@ -99,7 +95,7 @@ const NewPost: React.FunctionComponent<NewPostProps> = ({
             name="description"
             label="Description"
             id="Description"
-            defaultValue={post?.description || ""}
+            defaultValue={postData.description}
             multiline
             fullWidth
             rows={4}
@@ -110,7 +106,7 @@ const NewPost: React.FunctionComponent<NewPostProps> = ({
         <Grid item xs={12}>
           <input
             accept="image/*, video/*, .pdf,.doc"
-            defaultValue={post?.links}
+            defaultValue={postData?.links}
             id="inputFiles"
             multiple
             type="file"
