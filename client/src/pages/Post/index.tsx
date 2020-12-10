@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useContext } from "react";
 import axios from "axios";
-import { PostData } from "utils/posts"; // TODO: Put Interfaces in single file?
-import { CommentData } from "utils/comments";
+import { PostData, CommentData } from "utils/types";
 import { Button, Container } from "@material-ui/core";
 import Comment from "pages/Comment";
 import NewComment from "pages/NewComment";

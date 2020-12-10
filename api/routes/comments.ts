@@ -96,8 +96,8 @@ router.post(
       console.log("WHATS HAPPENING? ", d);
       return res.json({ mesage: "Added :)" });
     } catch (e) {
-      return res.json({ message: e });
       console.log("There's an error afoot...", e);
+      return res.json({ message: e });
     }
   }
 );

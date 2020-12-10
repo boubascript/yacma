@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useContext } from "react";
 import { useHistory } from "react-router-dom";
 import { UserContext } from "utils/auth";
-import { Container, Typography, Button } from "@material-ui/core";
+import { CourseData } from "utils/types";
+import { Typography, Button } from "@material-ui/core";
 import Navbar from "components/Navbar";
-import { CourseData } from "utils/courses";
 import axios from "axios";
 
 const Profile: React.FunctionComponent = () => {

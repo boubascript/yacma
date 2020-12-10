@@ -1,15 +1,9 @@
 import React, { useState, useEffect, useContext } from "react";
-import {
-  Collapse,
-  Card,
-  CardContent,
-  Typography,
-  Button,
-} from "@material-ui/core";
+import { Collapse, Card, Typography, Button } from "@material-ui/core";
 import AddCircleIcon from "@material-ui/icons/AddCircle";
 import { makeStyles } from "@material-ui/core/styles";
 import { UserContext } from "utils/auth";
-import { CourseData } from "utils/courses";
+import { CourseData } from "utils/types";
 import Navbar from "components/Navbar";
 import AddCourseStudent from "./AddCourseStudent";
 import AddCourseProf from "./AddCourseProf";

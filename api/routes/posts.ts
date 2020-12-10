@@ -1,6 +1,5 @@
 import { db, FieldValue } from "../config/firebase";
 import { Router, Request, Response } from "express";
-import axios from "axios";
 const router = Router();
 
 const { Storage } = require("@google-cloud/storage");
@@ -9,6 +8,7 @@ const storage = new Storage({
   keyFilename: process.env.GOOGLE_APPLICATION_CREDENTIALS,
   projectId: process.env.GOOGLE_CLOUD_PROJECT,
 });
+
 const bucket = storage.bucket(process.env.GOOGLE_CLOUD_BUCKET);
 
 export interface PostData {
@@ -26,7 +26,6 @@ export interface PostData {
  * @return Array of all posts
  * @cost One DB call
  */
-// Get Posts
 router.get("/:courseId/posts", async (req: Request, res: Response) => {
   try {
     const courseId = req.query.courseId as string;

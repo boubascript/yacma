@@ -1,6 +1,6 @@
 import React, { useState, useContext } from "react";
 import { UserContext } from "utils/auth";
-import { PostData } from "utils/posts";
+import { PostData } from "utils/types";
 import { Grid, TextField, Button } from "@material-ui/core";
 import axios from "axios";
 

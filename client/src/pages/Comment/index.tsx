@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import Container from "@material-ui/core/Container";
-import { CommentData } from "utils/comments";
+import { CommentData } from "utils/types";
 import NewComment from "../NewComment";
 import { Button, Dialog, DialogActions, DialogTitle } from "@material-ui/core";
 import axios from "axios";
