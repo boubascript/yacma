@@ -32,7 +32,7 @@ const Post: React.FunctionComponent<PostProps> = ({
   const getAllComments = async () => {
     if (id) {
       const { data: commentsData } = await axios.get(
-        `comments/${courseId}/posts/${id}/comments`,
+        `api/comments/${courseId}/posts/${id}/comments`,
         {
           params: {
             courseId: courseId,
@@ -72,6 +72,9 @@ const Post: React.FunctionComponent<PostProps> = ({
     getAllComments();
   };
 
+  if (links) {
+    console.log(links);
+  }
   return (
     <>
       <Container>
@@ -80,7 +83,11 @@ const Post: React.FunctionComponent<PostProps> = ({
             <h2>{title}</h2>
             <p>{author}</p>
             <p>{description}</p>
-            {links != "" ? <img src={links} title={`image${links}`}></img> : ""}
+            {links && /(jpg|gif|png|jpeg)$/i.test(links) ? (
+              <img src={links} title={`image${links}`}></img>
+            ) : (
+              <a href={links}>{links.split("/").pop()}</a>
+            )}
           </>
         ) : (
           <NewPost

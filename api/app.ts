@@ -45,11 +45,11 @@ import fileRouter from "./routes/file";
     app.use(multerMid.single("file"));
 
     // importing routes
-    app.use("/courses", courseRouter);
-    app.use("/comments", commentsRouter);
-    app.use("/posts", postsRouter);
+    app.use("/api/courses", courseRouter);
+    app.use("/api/comments", commentsRouter);
+    app.use("/api/posts", postsRouter);
 
-    app.use("/file", fileRouter);
+    app.use("/api/file", fileRouter);
 
     // Routes
     app.get("/", (req: express.Request, res: express.Response) => {

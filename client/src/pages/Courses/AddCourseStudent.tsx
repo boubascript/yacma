@@ -19,7 +19,7 @@ const AddCourseStudent: React.FC<IChildProps> = ({ refresh }) => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     // Make sure user is not already enrolled
-    const addedCourse = await axios.post("/courses/addCourseStudent", {
+    const addedCourse = await axios.post("api/courses/addCourseStudent", {
       data: {
         courseCode: courseCode,
         uid: user!.uid,

@@ -66,8 +66,8 @@ const Courses: React.FunctionComponent = () => {
 
   const getAsyncCourses = async () => {
     if (user) {
-      const { data } = await axios.get("/courses/getCourses", {
-        params: { courseIds: userData!.courses },
+      const { data } = await axios.get("api/courses/getCourses", {
+        params: { courseIds: userData?.courses },
       });
       if (data) {
         // @ts-ignore

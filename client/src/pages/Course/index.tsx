@@ -28,18 +28,21 @@ const Course: React.FunctionComponent<RouteComponentProps> = ({
 
   const getCoursePosts = async () => {
     if (courseId) {
-      const { data: postsData } = await axios.get(`/posts/${courseId}/posts`, {
-        params: {
-          courseId: courseId,
-        },
-      });
+      const { data: postsData } = await axios.get(
+        `api/posts/${courseId}/posts`,
+        {
+          params: {
+            courseId: courseId,
+          },
+        }
+      );
       await setPosts(postsData);
     }
   };
 
   const getCourseInfo = async () => {
     if (courseId) {
-      const { data } = await axios.get("/courses/getCourse", {
+      const { data } = await axios.get("api/courses/getCourse", {
         params: {
           courseId: courseId,
         },

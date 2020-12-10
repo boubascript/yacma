@@ -17,7 +17,7 @@ const Profile: React.FunctionComponent = () => {
     //TO DO: set timeout
     const getAsyncCourses = async () => {
       if (user) {
-        const data = await axios.get("/courses/getCourses", {
+        const data = await axios.get("api/courses/getCourses", {
           params: { courseCodes: courses },
         });
         if (data.data) {

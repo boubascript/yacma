@@ -31,7 +31,7 @@ const Comment: React.FunctionComponent<CommentProps> = ({
   const handleDelete = async (del: boolean) => {
     if (del) {
       await axios.delete(
-        `/comments/${courseId}/posts/${postId}/comments/${id}`,
+        `api/comments/${courseId}/posts/${postId}/comments/${id}`,
         {
           params: {
             courseId: courseId,
