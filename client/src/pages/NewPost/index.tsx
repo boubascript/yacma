@@ -2,7 +2,16 @@ import React, { useState, useContext } from "react";
 import { UserContext } from "utils/auth";
 import { PostData } from "utils/posts";
 import { Grid, TextField, Button } from "@material-ui/core";
+import { makeStyles } from "@material-ui/core/styles";
 import axios from "axios";
+
+const useStyles = makeStyles({
+  button: {
+    marginLeft: '15%',
+    marginRight: '15%',
+    marginTop:'20px'
+  }
+})
 
 // TODO: Update links to media object type
 const DEFAULT_POST_DATA: PostData = {
@@ -28,6 +37,7 @@ const NewPost: React.FunctionComponent<NewPostProps> = ({
 }) => {
   const { user, userData } = useContext(UserContext);
   const [postData, setPostData] = useState<PostData>(post || DEFAULT_POST_DATA);
+  const classes = useStyles();
 
   const [selectedFile, setSelectedFile] = useState<File>();
 
@@ -128,11 +138,11 @@ const NewPost: React.FunctionComponent<NewPostProps> = ({
       </Grid>
 
       <br></br>
-      <Button type="submit" variant="contained" color="primary">
-        {post ? "Update" : "New Post"}
-      </Button>
-      <Button variant="contained" color="primary" onClick={cancel}>
+      <Button variant="contained" color="primary" className={classes.button} onClick={cancel}>
         Cancel
+      </Button>
+      <Button type="submit" variant="contained" className={classes.button} color="primary">
+        {post ? "Update" : "Create Post"}
       </Button>
     </form>
   );
