@@ -7,9 +7,9 @@ import { Button, Typography } from "@material-ui/core";
 import Navbar from "components/Navbar";
 import Post from "pages/Post";
 import NewPost from "pages/NewPost";
-import axios from "axios";
 
 import { UserContext } from "utils/auth";
+import { getCourse, getPosts } from "utils/services";
 
 const deleteCourse = functions.httpsCallable("deleteCourse");
 const deletePost = functions.httpsCallable("deletePost");
@@ -22,37 +22,20 @@ const Course: React.FunctionComponent<RouteComponentProps> = ({
   const [course, setCourse] = useState<CourseData>();
   const [posts, setPosts] = useState<PostData[]>([]);
   const [addingPost, setAddingPost] = useState(false);
-  const [isDeleting, setisDeleting] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
   const courseId = search.substring(1);
-
-  const getCoursePosts = async () => {
-    if (courseId) {
-      const { data: postsData } = await axios.get(
-        `api/posts/${courseId}/posts`,
-        {
-          params: {
-            courseId: courseId,
-          },
-        }
-      );
-      await setPosts(postsData);
-    }
-  };
 
   const getCourseInfo = async () => {
     if (courseId) {
-      const { data } = await axios.get("api/courses/getCourse", {
-        params: {
-          courseId: courseId,
-        },
-      });
-      setCourse(data as CourseData);
-      await getCoursePosts();
+      const courseData = await getCourse(courseId);
+      setCourse(courseData as CourseData);
+      const postsData = await getPosts(courseId);
+      setPosts(postsData);
     }
   };
 
   const removeCourse = async () => {
-    setisDeleting(true);
+    setIsDeleting(true);
     try {
       const result = await deleteCourse({
         path: `courses/${courseId}`,
@@ -94,10 +77,7 @@ const Course: React.FunctionComponent<RouteComponentProps> = ({
     setAddingPost(exit);
   };
 
-  // TODO: Find a better way to do this
-  const refreshPosts = async () => {
-    getCoursePosts();
-  };
+  const refreshPosts = async () => {};
 
   return (
     <div>

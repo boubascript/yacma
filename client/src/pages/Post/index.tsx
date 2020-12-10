@@ -7,6 +7,7 @@ import NewComment from "pages/NewComment";
 import NewPost from "pages/NewPost";
 import { UserContext } from "utils/auth";
 import "App.css";
+import { getComments } from "utils/services";
 
 interface PostProps {
   courseId: string;
@@ -30,15 +31,7 @@ const Post: React.FunctionComponent<PostProps> = ({
 
   const getAllComments = async () => {
     if (id) {
-      const { data: commentsData } = await axios.get(
-        `api/comments/${courseId}/posts/${id}/comments`,
-        {
-          params: {
-            courseId: courseId,
-            postId: id,
-          },
-        }
-      );
+      const commentsData = await getComments(courseId, id);
       setComments(commentsData);
     }
   };
@@ -83,7 +76,7 @@ const Post: React.FunctionComponent<PostProps> = ({
             <p>{author}</p>
             <p>{description}</p>
             {links && /(jpg|gif|png|jpeg)$/i.test(links) ? (
-              <img src={links} title={`image${links}`}></img>
+              <img src={links} alt="" title={`image${links}`} />
             ) : (
               <a href={links}>{links.split("/").pop()}</a>
             )}

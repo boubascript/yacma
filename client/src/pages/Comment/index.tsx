@@ -1,9 +1,14 @@
 import React, { useState } from "react";
-import Container from "@material-ui/core/Container";
+import { deleteComment } from "utils/services";
 import { CommentData } from "utils/types";
 import NewComment from "../NewComment";
-import { Button, Dialog, DialogActions, DialogTitle } from "@material-ui/core";
-import axios from "axios";
+import {
+  Button,
+  Dialog,
+  DialogActions,
+  DialogTitle,
+  Container,
+} from "@material-ui/core";
 
 interface CommentProps {
   courseId: string;
@@ -17,50 +22,41 @@ const Comment: React.FunctionComponent<CommentProps> = ({
   courseId,
   refresh,
 }: CommentProps) => {
-  const { author, comment, id } = commentData; // id => commentId
-  const [updatingComment, setUpdatingComment] = useState(false);
-  const [deletingComment, setDeletingComment] = useState(false);
+  const { author, comment, id } = commentData;
+  const [isUpdating, setIsUpdating] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   const toggleUpdateComment = (exit: boolean) => {
-    setUpdatingComment(exit);
+    setIsUpdating(exit);
   };
 
   const toggleDeleteDialog = (exit: boolean) => {
-    setDeletingComment(exit);
+    setIsDeleting(exit);
   };
   const handleDelete = async (del: boolean) => {
-    if (del) {
-      await axios.delete(
-        `api/comments/${courseId}/posts/${postId}/comments/${id}`,
-        {
-          params: {
-            courseId: courseId,
-            postId: postId,
-            commentId: id,
-          },
-        }
-      );
+    if (del && id) {
+      await deleteComment(courseId, postId, id);
       refresh(); // refresh comments
     }
-    setDeletingComment(false);
+    setIsDeleting(false);
   };
 
   return (
     <>
-      {!updatingComment ? (
+      {!isUpdating ? (
         <Container>
           <h5>{author}</h5>
           <p>{comment}</p>
           <Button color="primary" onClick={() => toggleUpdateComment(true)}>
             Edit
           </Button>
-          {!deletingComment ? (
+          {!isDeleting ? (
             <Button color="primary" onClick={() => toggleDeleteDialog(true)}>
               Delete
             </Button>
           ) : (
             <Dialog
-              open={deletingComment}
+              open={isDeleting}
               onClose={() => toggleDeleteDialog(false)}
               aria-labelledby="alert-dialog-title"
               aria-describedby="alert-dialog-description"

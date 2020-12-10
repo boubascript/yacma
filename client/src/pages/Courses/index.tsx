@@ -7,8 +7,8 @@ import { CourseData } from "utils/types";
 import Navbar from "components/Navbar";
 import AddCourseStudent from "./AddCourseStudent";
 import AddCourseProf from "./AddCourseProf";
-import axios from "axios";
 import ClassCard from "./ClassCard";
+import { getCourses } from "utils/services";
 
 const useStyles = makeStyles({
   root: {
@@ -48,7 +48,7 @@ const useStyles = makeStyles({
 });
 
 const Courses: React.FunctionComponent = () => {
-  const { user, userData } = useContext(UserContext);
+  const { userData } = useContext(UserContext);
   const classes = useStyles();
   const [checked, setChecked] = React.useState(false);
   const [coursesData, setCoursesData] = useState<CourseData[]>([]);
@@ -59,10 +59,8 @@ const Courses: React.FunctionComponent = () => {
   };
 
   const getAsyncCourses = async () => {
-    if (user) {
-      const { data } = await axios.get("api/courses/getCourses", {
-        params: { courseIds: userData?.courses },
-      });
+    if (userData) {
+      const data = await getCourses(userData?.courses);
       if (data) {
         // @ts-ignore
         setCoursesData(data.courses?.map((doc) => doc as CourseData));

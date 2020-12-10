@@ -2,13 +2,14 @@ import React, { useState, useContext } from "react";
 import { Grid, TextField, Button } from "@material-ui/core";
 import { UserContext } from "utils/auth";
 import axios from "axios";
+import { addCourseStudent } from "utils/services";
 
 interface IChildProps {
   refresh: () => void;
 }
 
 const AddCourseStudent: React.FC<IChildProps> = ({ refresh }) => {
-  const { user, userData, addCourseContext } = useContext(UserContext);
+  const { user, addCourseContext } = useContext(UserContext);
   const [courseCode, setCourseCode] = useState<string>("");
 
   const handleChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -18,18 +19,13 @@ const AddCourseStudent: React.FC<IChildProps> = ({ refresh }) => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     // Make sure user is not already enrolled
-    const addedCourse = await axios.post("api/courses/addCourseStudent", {
-      data: {
-        courseCode: courseCode,
-        uid: user!.uid,
-      },
-    });
+    const addedCourse = await addCourseStudent(courseCode, user!.uid);
 
     //Response is either empty, or passes the document id
-    if (addedCourse.data) {
+    if (addedCourse) {
       //add id to user contenxt, this doesn't seem to be updating
-      await addCourseContext(addedCourse.data);
-      await refresh();
+      addCourseContext(addedCourse);
+      refresh();
     } else {
       console.log("Already enrolled.");
     }

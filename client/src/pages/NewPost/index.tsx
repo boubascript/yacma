@@ -2,7 +2,7 @@ import React, { useState, useContext } from "react";
 import { UserContext } from "utils/auth";
 import { PostData } from "utils/types";
 import { Grid, TextField, Button } from "@material-ui/core";
-import axios from "axios";
+import { addPost, updatePost } from "utils/services";
 
 // TODO: Update links to media object type
 const DEFAULT_POST_DATA: PostData = {
@@ -54,16 +54,7 @@ const NewPost: React.FunctionComponent<NewPostProps> = ({
 
     if (courseId) {
       if (postId) {
-        await axios.put(`api/posts/${courseId}/posts/${postId}`, {
-          params: {
-            courseId: courseId,
-            postId: postId,
-            uid: user!.uid,
-          },
-          data: {
-            postBody,
-          },
-        });
+        await updatePost(courseId, postId, user!.uid, postBody);
       } else {
         const formData = new FormData();
         if (selectedFile) {
@@ -75,7 +66,7 @@ const NewPost: React.FunctionComponent<NewPostProps> = ({
         }
         formData.append("courseId", courseId);
         formData.append("uid", user!.uid);
-        await axios.post(`api/posts/${courseId}/posts/`, formData);
+        await addPost(courseId, formData);
       }
       refresh(); // refresh comments in Course Page
     }
@@ -86,6 +77,7 @@ const NewPost: React.FunctionComponent<NewPostProps> = ({
     exit(false);
   };
 
+  // TODO: Look into useRef Solution for auto appending FormData
   return (
     <form onSubmit={handleSubmit} noValidate>
       <Grid container spacing={2} alignItems="center" justify="center">
