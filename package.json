@@ -26,5 +26,6 @@
     "url": "git+https://github.com/boubascript/yacma.git"
   },
   "author": "yacma youth",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {}
 }

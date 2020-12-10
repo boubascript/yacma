@@ -20,10 +20,7 @@ const DEFAULT_COURSE_DATA: CourseProps = {
   description: "",
   educator: "",
 };
-const AddCourseProf: React.FC<IChildProps> = ({
-  refresh
-}) => {
-  
+const AddCourseProf: React.FC<IChildProps> = ({ refresh }) => {
   const { user, userData, addCourseContext } = useContext(UserContext);
 
   const [courseData, setCourseData] = useState<CourseProps>(
@@ -44,7 +41,7 @@ const AddCourseProf: React.FC<IChildProps> = ({
     });
 
     // Make sure user is not already enrolled
-    const addedCourse = await axios.post("/courses/addCourseAdmin", {
+    const addedCourse = await axios.post("api/courses/addCourseAdmin", {
       data: {
         courseData: {
           ...courseData,
@@ -58,7 +55,7 @@ const AddCourseProf: React.FC<IChildProps> = ({
     if (addedCourse.data) {
       //add id to user contenxt, this doesn't seem to be updating
       await addCourseContext(addedCourse.data);
-      refresh();
+      await refresh();
     } else {
       console.log("Already enrolled.");
     }

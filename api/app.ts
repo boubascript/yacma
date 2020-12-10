@@ -2,15 +2,14 @@ import express from "express";
 import bodyparser from "body-parser";
 import logger from "morgan";
 
-const multer = require('multer');
+const multer = require("multer");
 
-require('dotenv').config()
-
+require("dotenv").config();
 
 import courseRouter from "./routes/courses";
 import postsRouter from "./routes/posts";
 import commentsRouter from "./routes/comments";
-import fileRouter from './routes/file';
+import fileRouter from "./routes/file";
 
 (async () => {
   try {
@@ -42,15 +41,15 @@ import fileRouter from './routes/file';
     // image processing setup
     const multerMid = multer({
       storage: multer.memoryStorage(),
-    })
-    app.use(multerMid.single('file'))
+    });
+    app.use(multerMid.single("file"));
 
     // importing routes
-    app.use('/courses', courseRouter);
-    app.use("/comments", commentsRouter);
-    app.use("/posts", postsRouter);
-    
-    app.use('/file', fileRouter);
+    app.use("/api/courses", courseRouter);
+    app.use("/api/comments", commentsRouter);
+    app.use("/api/posts", postsRouter);
+
+    app.use("/api/file", fileRouter);
 
     // Routes
     app.get("/", (req: express.Request, res: express.Response) => {

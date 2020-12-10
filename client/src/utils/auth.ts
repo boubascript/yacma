@@ -6,12 +6,14 @@ export interface AuthContext {
   user: IUser | null;
   userData: UserData | null;
   addCourseContext: (newCourse: string) => void;
+  deleteCourseContext: (id: string) => void;
 }
 
 export const UserContext = createContext<AuthContext>({
   user: null,
   userData: null,
   addCourseContext: () => {},
+  deleteCourseContext: () => {},
 });
 
 interface AuthResult {

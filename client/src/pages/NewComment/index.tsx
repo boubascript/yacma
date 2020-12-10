@@ -46,7 +46,7 @@ const NewComment: React.FunctionComponent<NewCommentProps> = ({
     if (courseId && postId) {
       if (comment?.id) {
         await axios.put(
-          `/comments/${courseId}/posts/${postId}/comments/${comment?.id}`,
+          `api/comments/${courseId}/posts/${postId}/comments/${comment?.id}`,
           {
             params: {
               courseId: courseId,
@@ -60,7 +60,7 @@ const NewComment: React.FunctionComponent<NewCommentProps> = ({
           }
         );
       } else {
-        await axios.post(`/comments/${courseId}/posts/${postId}/comments`, {
+        await axios.post(`api/comments/${courseId}/posts/${postId}/comments`, {
           params: {
             courseId: courseId,
             postId: postId,

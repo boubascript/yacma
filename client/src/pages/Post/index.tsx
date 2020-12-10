@@ -1,31 +1,38 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
+import axios from "axios";
 import { PostData } from "utils/posts"; // TODO: Put Interfaces in single file?
 import { CommentData } from "utils/comments";
 import { Button, Container } from "@material-ui/core";
 import Comment from "pages/Comment";
 import NewComment from "pages/NewComment";
 import NewPost from "pages/NewPost";
-import axios from "axios";
+import { UserContext } from "utils/auth";
+import "App.css";
 
 interface PostProps {
   courseId: string;
   post: PostData;
   refresh: Function;
+  onDelete: () => void;
 }
+
 const Post: React.FunctionComponent<PostProps> = ({
   courseId,
   post,
   refresh,
+  onDelete,
 }) => {
+  const { user, userData } = useContext(UserContext);
   const { author, title, description, links, id } = post;
   const [comments, setComments] = useState<CommentData[]>([]);
   const [addingComment, setAddingComment] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
   const [updatingPost, setUpdatingPost] = useState(false);
 
   const getAllComments = async () => {
     if (id) {
       const { data: commentsData } = await axios.get(
-        `comments/${courseId}/posts/${id}/comments`,
+        `api/comments/${courseId}/posts/${id}/comments`,
         {
           params: {
             courseId: courseId,
@@ -35,6 +42,11 @@ const Post: React.FunctionComponent<PostProps> = ({
       );
       setComments(commentsData);
     }
+  };
+
+  const remove = async () => {
+    setIsDeleting(true);
+    onDelete();
   };
 
   useEffect(() => {
@@ -60,6 +72,9 @@ const Post: React.FunctionComponent<PostProps> = ({
     getAllComments();
   };
 
+  if (links) {
+    console.log(links);
+  }
   return (
     <>
       <Container>
@@ -68,7 +83,11 @@ const Post: React.FunctionComponent<PostProps> = ({
             <h2>{title}</h2>
             <p>{author}</p>
             <p>{description}</p>
-            <div>{links}</div>
+            {links && /(jpg|gif|png|jpeg)$/i.test(links) ? (
+              <img src={links} title={`image${links}`}></img>
+            ) : (
+              <a href={links}>{links.split("/").pop()}</a>
+            )}
           </>
         ) : (
           <NewPost
@@ -79,9 +98,17 @@ const Post: React.FunctionComponent<PostProps> = ({
             post={post}
           />
         )}
-        <Button color="primary" onClick={() => toggleUpdatePost(true)}>
-          Edit
-        </Button>
+
+        {userData?.firstName + " " + userData?.lastName === author && (
+          <>
+            <Button color="primary" onClick={() => toggleUpdatePost(true)}>
+              Edit
+            </Button>
+            <Button variant="contained" color="secondary" onClick={remove}>
+              {isDeleting ? "Deleting Post..." : "Delete Dis"}
+            </Button>
+          </>
+        )}
         {!addingComment ? (
           <Button
             variant="contained"

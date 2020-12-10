@@ -6,33 +6,35 @@ import CourseData from "../types/courseData";
 const router = Router();
 const courses = db.collection("courses");
 
-router.get('/getCourses', async (req: Request, res:Response) => {
-    let courseIds = req.query.courseIds as string[];
+router.get("/getCourses", async (req: Request, res: Response) => {
+  let courseIds = req.query.courseIds as string[];
 
-    // TODO: find a workaround
-    if (courseIds.length > 0) {
-        if (courseIds.length > 10) {
-          courseIds = courseIds.slice(1, 10);
-        }
-        //@ts-ignore
-        const query = courses.where(FieldPath.documentId(), 'in', courseIds)
-    
-      try {
-        const courses = await query.get();
-        let ret: CourseData[] = []
-        if (!courses.empty) {
-            courses.docs.map(doc => ret.push(doc.data() as unknown as CourseData));
-           }
-        res.json({ courses: ret });
-        } catch (error) {
-            console.log(error);
-            console.log("error getting document in getCourses");
-        }
-    } else {
-        console.log("No course codes...");
-        return;
+  // TODO: find a workaround
+  if (courseIds?.length > 0) {
+    if (courseIds?.length > 10) {
+      courseIds = courseIds.slice(1, 10);
     }
-  });
+    //@ts-ignore
+    const query = courses.where(FieldPath.documentId(), "in", courseIds);
+
+    try {
+      const courses = await query.get();
+      let ret: CourseData[] = [];
+      if (!courses.empty) {
+        courses.docs.map((doc) =>
+          ret.push((doc.data() as unknown) as CourseData)
+        );
+      }
+      res.json({ courses: ret });
+    } catch (error) {
+      console.log(error);
+      console.log("error getting document in getCourses");
+    }
+  } else {
+    console.log("No course codes...");
+    return;
+  }
+});
 
 router.get("/getCourse", async (req: Request, res: Response) => {
   const courseId = (req.query.courseId as unknown) as string;

@@ -29,11 +29,19 @@ const NewPost: React.FunctionComponent<NewPostProps> = ({
   const { user, userData } = useContext(UserContext);
   const [postData, setPostData] = useState<PostData>(post || DEFAULT_POST_DATA);
 
+  const [selectedFile, setSelectedFile] = useState<File>();
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setPostData((prevState) => ({
       ...prevState,
       [e.target.name]: e.target.value,
     }));
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    var files = e.target.files || [];
+    setSelectedFile(files[0]);
+    console.log(selectedFile);
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -46,7 +54,7 @@ const NewPost: React.FunctionComponent<NewPostProps> = ({
 
     if (courseId) {
       if (postId) {
-        await axios.put(`/posts/${courseId}/posts/${postId}`, {
+        await axios.put(`api/posts/${courseId}/posts/${postId}`, {
           params: {
             courseId: courseId,
             postId: postId,
@@ -57,17 +65,19 @@ const NewPost: React.FunctionComponent<NewPostProps> = ({
           },
         });
       } else {
-        await axios.post(`/posts/${courseId}/posts/`, {
-          params: {
-            courseId: courseId,
-            uid: user!.uid,
-          },
-          data: {
-            postBody,
-          },
-        });
+        const formData = new FormData();
+        if (selectedFile) {
+          formData.append("file", selectedFile);
+        }
+        for (var key in postBody) {
+          // @ts-ignore
+          formData.append(key, postBody[key]);
+        }
+        formData.append("courseId", courseId);
+        formData.append("uid", user!.uid);
+        await axios.post(`api/posts/${courseId}/posts/`, formData);
       }
-      // refresh(); // refresh comments in Course Page
+      refresh(); // refresh comments in Course Page
     }
     exit(false); // exit New Post form
   };
@@ -104,15 +114,17 @@ const NewPost: React.FunctionComponent<NewPostProps> = ({
             onChange={handleChange}
           />
         </Grid>
-        <Grid item xs={12}>
-          <input
-            accept="image/*, video/*, .pdf,.doc"
-            defaultValue={postData?.links}
-            id="inputFiles"
-            multiple
-            type="file"
-          />
-        </Grid>
+        {!postId && (
+          <Grid item xs={12}>
+            <input
+              accept="image/*, video/*, .pdf,.doc"
+              defaultValue={postData?.links}
+              id="inputFiles"
+              type="file"
+              onChange={handleFileChange}
+            />
+          </Grid>
+        )}
       </Grid>
 
       <br></br>
