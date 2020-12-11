@@ -52,7 +52,7 @@ const Post: React.FunctionComponent<PostProps> = ({
   const getAllComments = async () => {
     if (id) {
       const { data: commentsData } = await axios.get(
-        `comments/${courseId}/posts/${id}/comments`,
+        `api/comments/${courseId}/posts/${id}/comments`,
         {
           params: {
             courseId: courseId,
@@ -132,7 +132,6 @@ const Post: React.FunctionComponent<PostProps> = ({
       </>
     )
   }
-
 
   return (
     <>

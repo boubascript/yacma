@@ -38,6 +38,7 @@ const Course: React.FunctionComponent<RouteComponentProps> = ({
 }) => {
   const history = useHistory();
   const classes = useStyles();
+
   const { userData, deleteCourseContext } = useContext(UserContext);
   const [course, setCourse] = useState<CourseData>();
   const [posts, setPosts] = useState<PostData[]>([]);
@@ -47,18 +48,21 @@ const Course: React.FunctionComponent<RouteComponentProps> = ({
 
   const getCoursePosts = async () => {
     if (courseId) {
-      const { data: postsData } = await axios.get(`/posts/${courseId}/posts`, {
-        params: {
-          courseId: courseId,
-        },
-      });
+      const { data: postsData } = await axios.get(
+        `api/posts/${courseId}/posts`,
+        {
+          params: {
+            courseId: courseId,
+          },
+        }
+      );
       await setPosts(postsData);
     }
   };
 
   const getCourseInfo = async () => {
     if (courseId) {
-      const { data } = await axios.get("/courses/getCourse", {
+      const { data } = await axios.get("api/courses/getCourse", {
         params: {
           courseId: courseId,
         },
@@ -163,6 +167,11 @@ const Course: React.FunctionComponent<RouteComponentProps> = ({
           />
         ))}
       </div>
+      {userData?.isAdmin && (
+        <Button variant="contained" color="secondary" onClick={removeCourse}>
+          {isDeleting ? "Deleting Course..." : "Delete Course"}
+        </Button>
+      )}
     </div>
   );
 };

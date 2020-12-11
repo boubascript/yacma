@@ -66,27 +66,34 @@ router.post("/:courseId/posts", async (req: Request, res: Response) => {
     };
 
     const file = (req as any).file;
-    let newName = file.originalname.split(".");
-    newName[newName.length - 2] += "_" + Date.now();
-    newName = newName.join(".");
-    const blob = bucket.file(newName);
-    const blobStream = blob.createWriteStream();
+    if (file) {
+      let newName = file.originalname.split(".");
+      newName[newName.length - 2] += "_" + Date.now();
+      newName = newName.join(".");
+      const blob = bucket.file(newName);
+      const blobStream = blob.createWriteStream();
 
-    blobStream.on("error", (err: any) => {
-      console.log("There was error");
-    });
+      blobStream.on("error", (err: any) => {
+        console.log("There was error");
+      });
 
-    blobStream.on("finish", async () => {
-      // The public URL can be used to directly access the file via HTTP.
-      const publicUrl = `https://storage.googleapis.com/${bucket.name}/${blob.name}`;
-      const timestamp = FieldValue.serverTimestamp();
-      postBody["links"] = publicUrl;
+      blobStream.on("finish", async () => {
+        // The public URL can be used to directly access the file via HTTP.
+        const publicUrl = `https://storage.googleapis.com/${bucket.name}/${blob.name}`;
+        const timestamp = FieldValue.serverTimestamp();
+        postBody["links"] = publicUrl;
+        console.log("Make POST", postBody);
+        await postRef.add({ ...postBody, createdAt: timestamp, uid: uid });
+        return res.status(204).send("Added :)");
+      });
+
+      blobStream.end(file.buffer);
+    } else {
       console.log("Make POST", postBody);
+      const timestamp = FieldValue.serverTimestamp();
       await postRef.add({ ...postBody, createdAt: timestamp, uid: uid });
       return res.status(204).send("Added :)");
-    });
-
-    blobStream.end(file.buffer);
+    }
   } catch (e) {
     console.log("There's an error afoot...", e);
   }

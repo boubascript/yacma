@@ -48,6 +48,8 @@ const NewPost: React.FunctionComponent<NewPostProps> = ({
 
   const [selectedFile, setSelectedFile] = useState<File>();
 
+  const [selectedFile, setSelectedFile] = useState<File>();
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setPostData((prevState) => ({
       ...prevState,
@@ -71,7 +73,7 @@ const NewPost: React.FunctionComponent<NewPostProps> = ({
 
     if (courseId) {
       if (postId) {
-        await axios.put(`/posts/${courseId}/posts/${postId}`, {
+        await axios.put(`api/posts/${courseId}/posts/${postId}`, {
           params: {
             courseId: courseId,
             postId: postId,
@@ -92,7 +94,7 @@ const NewPost: React.FunctionComponent<NewPostProps> = ({
         }
         formData.append("courseId", courseId);
         formData.append("uid", user!.uid);
-        await axios.post(`/posts/${courseId}/posts/`, formData);
+        await axios.post(`api/posts/${courseId}/posts/`, formData);
       }
       refresh(); // refresh comments in Course Page
     }

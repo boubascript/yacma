@@ -41,7 +41,7 @@ const AddCourseProf: React.FC<IChildProps> = ({ refresh }) => {
     });
 
     // Make sure user is not already enrolled
-    const addedCourse = await axios.post("/courses/addCourseAdmin", {
+    const addedCourse = await axios.post("api/courses/addCourseAdmin", {
       data: {
         courseData: {
           ...courseData,

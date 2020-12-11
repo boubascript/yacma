@@ -7,7 +7,7 @@ const Home: React.FunctionComponent = () => {
   const [message, setMessage] = useState("");
 
   const getMessage = async () => {
-    const res = await axios.get(`/api/`);
+    const res = await axios.get(`/api`);
     setMessage(res.data);
   };
 
