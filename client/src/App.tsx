@@ -56,7 +56,6 @@ const App: React.FunctionComponent = () => {
     );
   }
 
-  console.log("apped");
   return (
     <div>
       <BrowserRouter>

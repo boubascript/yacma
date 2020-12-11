@@ -53,7 +53,7 @@ export const addCourseStudent = async (courseCode: string, uid: string) => {
 
 export const getPosts = async (courseId: string) => {
   try {
-    const { data } = await axios.get(`api/posts/${courseId}/posts`, {
+    const { data } = await axios.get("/api/posts/getPosts", {
       params: {
         courseId: courseId,
       },
@@ -67,7 +67,7 @@ export const getPosts = async (courseId: string) => {
 
 export const addPost = async (courseId: string, formData: FormData) => {
   try {
-    await axios.post(`api/posts/${courseId}/posts/`, formData);
+    await axios.post("/api/posts/addPost", formData);
     return true;
   } catch (e) {
     console.log(`Can't add post :(`);
@@ -82,7 +82,8 @@ export const updatePost = async (
   postBody: PostData
 ) => {
   try {
-    await axios.put(`api/posts/${courseId}/posts/${postId}`, {
+    console.log(`Update post`, postBody);
+    await axios.put("/api/posts/updatePost", {
       params: {
         courseId: courseId,
         postId: postId,
@@ -101,15 +102,12 @@ export const updatePost = async (
 
 export const getComments = async (courseId: string, postId: string) => {
   try {
-    const { data } = await axios.get(
-      `api/comments/${courseId}/posts/${postId}/comments`,
-      {
-        params: {
-          courseId: courseId,
-          postId: postId,
-        },
-      }
-    );
+    const { data } = await axios.get("/api/comments/getComments", {
+      params: {
+        courseId: courseId,
+        postId: postId,
+      },
+    });
     return data;
   } catch (e) {
     console.log(`Can't get comments :(`);
@@ -124,7 +122,7 @@ export const addComment = async (
   commentBody: CommentData
 ) => {
   try {
-    await axios.post(`api/comments/${courseId}/posts/${postId}/comments`, {
+    await axios.post("/api/comments/addComment", {
       params: {
         courseId: courseId,
         postId: postId,
@@ -149,20 +147,17 @@ export const updateComment = async (
   commentBody: CommentData
 ) => {
   try {
-    await axios.put(
-      `api/comments/${courseId}/posts/${postId}/comments/${commentId}`,
-      {
-        params: {
-          courseId: courseId,
-          postId: postId,
-          commentId: commentId,
-          uid: uid,
-        },
-        data: {
-          commentBody,
-        },
-      }
-    );
+    await axios.put("/api/comments/updateComment", {
+      params: {
+        courseId: courseId,
+        postId: postId,
+        commentId: commentId,
+        uid: uid,
+      },
+      data: {
+        commentBody,
+      },
+    });
 
     console.log(` Update comment :(`);
     return true;
@@ -179,7 +174,7 @@ export const deleteComment = async (
   uid: string
 ) => {
   try {
-    await axios.delete(`/deleteComment`, {
+    await axios.delete("/api/comments/deleteComment", {
       params: {
         courseId: courseId,
         postId: postId,
