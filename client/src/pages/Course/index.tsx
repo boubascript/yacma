@@ -4,7 +4,9 @@ import { RouteComponentProps } from "react-router";
 import { functions } from "config/firebase";
 import { CourseData } from "utils/courses";
 import { PostData } from "utils/posts";
-import { Button, Typography } from "@material-ui/core";
+import { Button, Card, Collapse, Typography } from "@material-ui/core";
+import { makeStyles } from "@material-ui/core/styles";
+import CourseHeader from './CourseHeader';
 import Navbar from "components/Navbar";
 import Post from "pages/Post";
 import NewPost from "pages/NewPost";
@@ -15,10 +17,28 @@ import { UserContext } from "utils/auth";
 const deleteCourse = functions.httpsCallable("deleteCourse");
 const deletePost = functions.httpsCallable("deletePost");
 
+const useStyles = makeStyles({
+  root: {
+    justifyContent: "center",
+    alignItems: "center",
+    textAlign: "center",
+    backgroundColor: "#eceef8",
+  },
+  newPostCard: {
+    width:'80%',
+    minWidth: 350,
+    margin:'auto',
+    marginTop: '25px',
+    padding:'30px'
+  },
+})
+
 const Course: React.FunctionComponent<RouteComponentProps> = ({
   location: { search },
 }) => {
   const history = useHistory();
+  const classes = useStyles();
+
   const { userData, deleteCourseContext } = useContext(UserContext);
   const [course, setCourse] = useState<CourseData>();
   const [posts, setPosts] = useState<PostData[]>([]);
@@ -91,8 +111,8 @@ const Course: React.FunctionComponent<RouteComponentProps> = ({
     }
   }, [courseId]);
 
-  const toggleNewPost = (exit: boolean) => {
-    setAddingPost(exit);
+  const toggleNewPost = () => {
+    setAddingPost(!addingPost);
   };
 
   // TODO: Find a better way to do this
@@ -101,30 +121,39 @@ const Course: React.FunctionComponent<RouteComponentProps> = ({
   };
 
   return (
-    <div>
+    <div className={classes.root}>
       <Navbar />
-      <Typography variant="h2">
-        Course: {course?.name} #{course?.code}
-      </Typography>
-      <Typography variant="h3">{course?.educator}</Typography>
-      <Typography variant="h4">{course?.description}</Typography>
-      {!addingPost ? (
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={() => {
-            toggleNewPost(true);
-          }}
-        >
-          Add Post
-        </Button>
-      ) : (
-        <NewPost
-          courseId={courseId}
-          exit={toggleNewPost}
-          refresh={refreshPosts}
-        />
+      {userData?.isAdmin && (
+        <div style={{marginTop:'10px'}}>
+          <Button variant="contained" color="secondary" onClick={removeCourse}>
+            {isDeleting ? "Deleting Course..." : "Delete Course"}
+          </Button>
+        </div>
       )}
+      <CourseHeader
+          name={(course && course?.name) || ""}
+          code={(course && course?.code) || ""}
+          educator={(course && course?.educator) || ""}
+          description={(course && course?.description) || ""}
+      />
+      <div>
+        <Button
+            variant="contained"
+            color="primary"
+            onClick={() => {
+              toggleNewPost();
+            }}
+          >
+            Add Post
+        </Button>
+      </div>
+      <Collapse in={addingPost}>
+          <NewPost
+            courseId={courseId}
+            exit={toggleNewPost}
+            refresh={refreshPosts}
+          />
+      </Collapse>
       <div className="posts">
         {posts?.map((doc, index) => (
           <Post
@@ -138,11 +167,6 @@ const Course: React.FunctionComponent<RouteComponentProps> = ({
           />
         ))}
       </div>
-      {userData?.isAdmin && (
-        <Button variant="contained" color="secondary" onClick={removeCourse}>
-          {isDeleting ? "Deleting Course..." : "Delete Course"}
-        </Button>
-      )}
     </div>
   );
 };

@@ -1,8 +1,24 @@
 import React, { useState, useContext } from "react";
 import { UserContext } from "utils/auth";
 import { PostData } from "utils/posts";
-import { Grid, TextField, Button } from "@material-ui/core";
+import { Grid, TextField, Button, Card } from "@material-ui/core";
+import { makeStyles } from "@material-ui/core/styles";
 import axios from "axios";
+
+const useStyles = makeStyles({
+  button: {
+    marginLeft: '15%',
+    marginRight: '15%',
+    marginTop:'20px'
+  },
+  newPostCard: {
+    width:'80%',
+    minWidth: 350,
+    margin:'auto',
+    marginTop: '25px',
+    padding:'30px'
+  },
+})
 
 // TODO: Update links to media object type
 const DEFAULT_POST_DATA: PostData = {
@@ -28,8 +44,10 @@ const NewPost: React.FunctionComponent<NewPostProps> = ({
 }) => {
   const { user, userData } = useContext(UserContext);
   const [postData, setPostData] = useState<PostData>(post || DEFAULT_POST_DATA);
+  const classes = useStyles();
 
   const [selectedFile, setSelectedFile] = useState<File>();
+
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setPostData((prevState) => ({
@@ -87,54 +105,56 @@ const NewPost: React.FunctionComponent<NewPostProps> = ({
   };
 
   return (
-    <form onSubmit={handleSubmit} noValidate>
-      <Grid container spacing={2} alignItems="center" justify="center">
-        <Grid item xs={12}>
-          <TextField
-            name="title"
-            label="Title"
-            id="Title"
-            defaultValue={postData.title}
-            multiline
-            fullWidth
-            variant="outlined"
-            onChange={handleChange}
-          />
-        </Grid>
-        <Grid item xs={12}>
-          <TextField
-            name="description"
-            label="Description"
-            id="Description"
-            defaultValue={postData.description}
-            multiline
-            fullWidth
-            rows={4}
-            variant="outlined"
-            onChange={handleChange}
-          />
-        </Grid>
-        {!postId && (
+    <Card className={classes.newPostCard}>
+      <form onSubmit={handleSubmit} noValidate>
+        <Grid container spacing={2} alignItems="center" justify="center">
           <Grid item xs={12}>
-            <input
-              accept="image/*, video/*, .pdf,.doc"
-              defaultValue={postData?.links}
-              id="inputFiles"
-              type="file"
-              onChange={handleFileChange}
+            <TextField
+              name="title"
+              label="Title"
+              id="Title"
+              defaultValue={postData.title}
+              multiline
+              fullWidth
+              variant="outlined"
+              onChange={handleChange}
             />
           </Grid>
-        )}
-      </Grid>
+          <Grid item xs={12}>
+            <TextField
+              name="description"
+              label="Content"
+              id="Description"
+              defaultValue={postData.description}
+              multiline
+              fullWidth
+              rows={4}
+              variant="outlined"
+              onChange={handleChange}
+            />
+          </Grid>
+          {!postId && (
+            <Grid item xs={12}>
+              <input
+                accept="image/*, video/*, .pdf,.doc"
+                defaultValue={postData?.links}
+                id="inputFiles"
+                type="file"
+                onChange={handleFileChange}
+              />
+            </Grid>
+          )}
+        </Grid>
 
-      <br></br>
-      <Button type="submit" variant="contained" color="primary">
-        {post ? "Update" : "New Post"}
-      </Button>
-      <Button variant="contained" color="primary" onClick={cancel}>
-        Cancel
-      </Button>
-    </form>
+        <br></br>
+        <Button variant="contained" color="primary" className={classes.button} onClick={cancel}>
+          Cancel
+        </Button>
+        <Button type="submit" variant="contained" className={classes.button} color="primary">
+          {post ? "Update" : "Create Post"}
+        </Button>
+      </form>
+    </Card>
   );
 };
 

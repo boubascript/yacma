@@ -45,6 +45,7 @@ import fileRouter from "./routes/file";
     app.use(multerMid.single("file"));
 
     // importing routes
+
     app.use("/api/courses", courseRouter);
     app.use("/api/comments", commentsRouter);
     app.use("/api/posts", postsRouter);
