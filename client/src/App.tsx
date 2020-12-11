@@ -1,17 +1,15 @@
 import React, { useState, useEffect } from "react";
-import "./App.css";
 import { BrowserRouter, Switch, Route } from "react-router-dom";
+import "./App.css";
 import ProtectedRoute from "components/ProtectedRoute";
+import { auth, IUser } from "config/firebase";
+import { UserContext, UserData, getUserData } from "utils/auth";
 import Home from "pages/Home";
 import Login from "pages/Login";
 import Register from "pages/Register";
-import Profile from "pages/Profile";
 import Courses from "pages/Courses";
-import { auth, IUser } from "config/firebase";
-import { UserContext, UserData, getUserData } from "utils/auth";
-import NewPost from "pages/NewPost";
-import NewComment from "pages/NewComment";
 import Course from "pages/Course";
+// import Profile from "pages/Profile";
 
 const App: React.FunctionComponent = () => {
   const [user, setUser] = useState<IUser | null>(auth.currentUser);
@@ -66,11 +64,9 @@ const App: React.FunctionComponent = () => {
         >
           <Switch>
             {/* <ProtectedRoute exact path="/me" component={Profile} /> */}
-            <ProtectedRoute exact path="/courses" component={Courses} />
             <Route path="/register" component={Register} />
             <Route path="/login" component={Login} />
-            <Route path="/addPost" component={NewPost} />
-            <Route path="/addComment" component={NewComment} />
+            <ProtectedRoute exact path="/courses" component={Courses} />
             <Route path="/coursepage" component={Course} />
             <Route component={Home} />
           </Switch>

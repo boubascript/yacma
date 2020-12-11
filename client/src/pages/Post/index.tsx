@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from "react";
+import { UserContext } from "utils/auth";
+import { PostData, CommentData } from "utils/types";
 import axios from "axios";
-import { PostData } from "utils/posts"; // TODO: Put Interfaces in single file?
-import { CommentData } from "utils/comments";
 import { Button, Card, CardHeader, Container, IconButton, Typography} from "@material-ui/core";
 import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
@@ -9,8 +9,8 @@ import {makeStyles} from '@material-ui/core/styles';
 import Comment from "pages/Comment";
 import NewComment from "pages/NewComment";
 import NewPost from "pages/NewPost";
-import { UserContext } from "utils/auth";
-import "App.css";
+// import "App.css";
+import { getComments } from "utils/services";
 
 const useStyles = makeStyles({
   button: {
@@ -51,15 +51,7 @@ const Post: React.FunctionComponent<PostProps> = ({
 
   const getAllComments = async () => {
     if (id) {
-      const { data: commentsData } = await axios.get(
-        `api/comments/${courseId}/posts/${id}/comments`,
-        {
-          params: {
-            courseId: courseId,
-            postId: id,
-          },
-        }
-      );
+      const commentsData = await getComments(courseId, id);
       setComments(commentsData);
     }
   };
@@ -70,10 +62,10 @@ const Post: React.FunctionComponent<PostProps> = ({
   };
 
   useEffect(() => {
-    if (id) {
-      getAllComments();
-    }
-  }, [id]);
+    // if (id) {
+    getAllComments();
+    // }
+  }, []);
 
   const handleNewComment = () => {
     setAddingComment(true);

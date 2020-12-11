@@ -10,52 +10,64 @@ export interface CommentData {
   createdAt: FirebaseFirestore.Timestamp;
 }
 
+/* Comment Collection Path Parameter Interface */
+interface CommentPathParams {
+  courseId: string;
+  postId: string;
+  commentId?: string;
+  uid?: string;
+}
+
 /**
  * @desc Get all comments
  * @return Array of all comments
  * @cost One DB call
  */
-// Get Comments
-router.get(
-  "/:courseId/posts/:postId/comments",
-  async (req: Request, res: Response) => {
-    try {
-      const { courseId, postId } = req.params;
-      const commentsRef = db
-        .collection("courses")
-        .doc(courseId)
-        .collection("posts")
-        .doc(postId)
-        .collection("comments")
-        .orderBy("createdAt", "asc");
+router.get("/getComments", async (req: Request, res: Response) => {
+  try {
+    const { courseId, postId } = (req.query as unknown) as CommentPathParams;
 
-      const commentsSnap = await commentsRef.get();
-      if (commentsSnap.size > 0) {
-        // Check if comments collection exists
-        let commentsData: CommentData[] = [];
-        commentsSnap.forEach((doc) => {
-          commentsData.push({
-            ...((doc.data() as unknown) as CommentData),
-            id: doc.id,
-          });
+    const commentsRef = db
+      .collection("courses")
+      .doc(courseId)
+      .collection("posts")
+      .doc(postId)
+      .collection("comments")
+      .orderBy("createdAt", "asc");
+
+    const commentsSnap = await commentsRef.get();
+    if (commentsSnap.size > 0) {
+      // Check if comments collection exists
+      let commentsData: CommentData[] = [];
+      commentsSnap.forEach((doc) => {
+        commentsData.push({
+          ...((doc.data() as unknown) as CommentData),
+          id: doc.id,
         });
+      });
 
-        return res.status(200).json(commentsData);
-      } else {
-        console.log("There are no comments for this post");
-      }
-    } catch (e) {
-      console.log("Could not get comments. There's an error afoot...", e);
+      return res.status(200).json(commentsData);
+    } else {
+      console.log("There are no comments for this post");
     }
+  } catch (e) {
+    console.log("Could not get comments. There's an error afoot...", e);
   }
-);
+});
 
-// Get Comment
-router.get(
-  "/:courseId/posts/:postId/comments/:commentId",
-  async (req: Request, res: Response) => {
-    try {
-      const { courseId, postId, commentId } = req.params;
+/**
+ * @desc Get a comment
+ * @return CommentData object
+ * @cost One DB call
+ */
+router.get("/getComment", async (req: Request, res: Response) => {
+  try {
+    const {
+      courseId,
+      postId,
+      commentId,
+    } = (req.query as unknown) as CommentPathParams;
+    if (commentId) {
       const commentRef = db
         .collection("courses")
         .doc(courseId)
@@ -68,48 +80,55 @@ router.get(
       if (!comment.exists) {
         console.log("No such comment exists. *raises eyebrow*");
       } else {
-        return res.status(200).json({ ...comment.data(), id: commentId });
+        return res.status(200).json({ ...comment.data(), id: comment.id });
       }
-    } catch (e) {
-      console.log("Could not add comment.");
     }
+  } catch (e) {
+    console.log("Could not add comment.");
   }
-);
+});
 
-// Add Comment
-router.post(
-  "/:courseId/posts/:postId/comments",
-  async (req: Request, res: Response) => {
-    try {
-      const { courseId, postId } = req.body.params;
-      const { commentBody } = req.body.data;
+/**
+ * @desc Add Comment
+ * @cost One DB call
+ */
+router.post("/addComment", async (req: Request, res: Response) => {
+  try {
+    const { courseId, postId, uid } = req.body.params;
+    const { commentBody } = req.body.data;
 
-      const commentRef = db
-        .collection("courses")
-        .doc(courseId)
-        .collection("posts")
-        .doc(postId)
-        .collection("comments");
+    const commentRef = db
+      .collection("courses")
+      .doc(courseId)
+      .collection("posts")
+      .doc(postId)
+      .collection("comments");
 
-      const timestamp = FieldValue.serverTimestamp();
-      const d = await commentRef.add({ ...commentBody, createdAt: timestamp });
-      console.log("WHATS HAPPENING? ", d);
-      return res.json({ mesage: "Added :)" });
-    } catch (e) {
-      return res.json({ message: e });
-      console.log("There's an error afoot...", e);
-    }
+    await commentRef.add({
+      ...commentBody,
+      createdAt: FieldValue.serverTimestamp(),
+      uid: uid,
+    });
+    return res.json({ mesage: "Added :)" });
+  } catch (e) {
+    console.log("There's an error afoot...", e);
+    return res.json({ message: e });
   }
-);
+});
 
-// Update Comment
-// Two calls to check if user owns post
-router.put(
-  "/:courseId/posts/:postId/comments/:commentId",
-  async (req: Request, res: Response) => {
-    try {
-      const { courseId, postId, commentId, uid } = req.body.params;
-      const { commentBody } = req.body.data;
+/**
+ * @desc Update Comment
+ * @cost Two DB calls
+ */
+router.put("/updateComment", async (req: Request, res: Response) => {
+  try {
+    const { courseId, postId, commentId, uid } = req.body.params;
+    const { commentBody } = req.body.data;
+    console.log("c REQ ", req.body.params);
+    console.log("courseId", courseId);
+    console.log("postId", postId);
+
+    if (commentId) {
       const commentRef = db
         .collection("courses")
         .doc(courseId)
@@ -120,26 +139,37 @@ router.put(
 
       const getComment = await commentRef.get();
       if (uid === getComment.data()?.uid) {
-        await commentRef.update(commentBody);
-        return res.send("Updated :)");
+        await commentRef.update({
+          ...commentBody,
+          createdAt: getComment.data()?.createdAt,
+          uid: uid,
+        });
+        return res.status(204).send("Updated :)");
       } else {
-        return res.send(
-          "Nice Try. Can't update other peeps comments *shakes head*"
-        );
+        return res
+          .status(304)
+          .send("Nice Try. Can't update other peeps comments *shakes head*");
       }
-    } catch (e) {
-      console.log("There's an error afoot...", e);
     }
+  } catch (e) {
+    console.log("There's an error afoot...", e);
   }
-);
+});
 
-// Delete Comment
-// Two calls to check if user owns post
-router.delete(
-  "/:courseId/posts/:postId/comments/:commentId",
-  async (req: Request, res: Response) => {
-    try {
-      const { courseId, postId, commentId, uid } = req.params;
+/**
+ * @desc Delete Comment
+ * @cost Two DB calls
+ */
+router.delete("/deleteComment", async (req: Request, res: Response) => {
+  console.log("IMHERERER");
+  try {
+    const {
+      courseId,
+      postId,
+      commentId,
+      uid,
+    } = (req.query as unknown) as CommentPathParams;
+    if (commentId) {
       const commentRef = db
         .collection("courses")
         .doc(courseId)
@@ -148,19 +178,28 @@ router.delete(
         .collection("comments")
         .doc(commentId);
 
+      console.log(
+        "courseId, postId, commentId, uid",
+        courseId,
+        postId,
+        commentId,
+        uid
+      );
       const getComment = await commentRef.get();
+      console.log("comment's user Id", getComment.id);
+
       if (uid === getComment.data()?.uid) {
         await commentRef.delete();
-        return res.send("Deleted :(");
+        return res.status(204).send("Deleted :(");
       } else {
-        return res.send(
-          "Nice Try. Can't delete other peeps comments *shakes head*"
-        );
+        return res
+          .status(304)
+          .send("Nice Try. Can't delete other peeps comments *shakes head*");
       }
-    } catch (e) {
-      console.log("There's an error afoot...", e);
     }
+  } catch (e) {
+    console.log("There's an error afoot...", e);
   }
-);
+});
 
 export default router;

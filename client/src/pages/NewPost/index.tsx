@@ -1,6 +1,7 @@
 import React, { useState, useContext } from "react";
 import { UserContext } from "utils/auth";
-import { PostData } from "utils/posts";
+import { PostData } from "utils/types";
+import { addPost, updatePost } from "utils/services";
 import { Grid, TextField, Button, Card } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import axios from "axios";
@@ -72,16 +73,7 @@ const NewPost: React.FunctionComponent<NewPostProps> = ({
 
     if (courseId) {
       if (postId) {
-        await axios.put(`api/posts/${courseId}/posts/${postId}`, {
-          params: {
-            courseId: courseId,
-            postId: postId,
-            uid: user!.uid,
-          },
-          data: {
-            postBody,
-          },
-        });
+        await updatePost(courseId, postId, user!.uid, postBody);
       } else {
         const formData = new FormData();
         if (selectedFile) {
@@ -93,9 +85,9 @@ const NewPost: React.FunctionComponent<NewPostProps> = ({
         }
         formData.append("courseId", courseId);
         formData.append("uid", user!.uid);
-        await axios.post(`api/posts/${courseId}/posts/`, formData);
+        await addPost(courseId, formData);
       }
-      refresh(); // refresh comments in Course Page
+      refresh(); // refresh posts in Course Page
     }
     exit(false); // exit New Post form
   };
@@ -104,6 +96,7 @@ const NewPost: React.FunctionComponent<NewPostProps> = ({
     exit(false);
   };
 
+  // TODO: Look into useRef Solution for auto appending FormData
   return (
     <Card className={classes.newPostCard}>
       <form onSubmit={handleSubmit} noValidate>

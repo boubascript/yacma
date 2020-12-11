@@ -1,8 +1,8 @@
 import React, { useState, useContext } from "react";
 import { Grid, TextField, Button } from "@material-ui/core";
 import { UserContext } from "utils/auth";
-import { CommentData } from "utils/comments";
-import axios from "axios";
+import { CommentData } from "utils/types";
+import { addComment, updateComment } from "utils/services";
 
 const DEFAULT_COMMENT_DATA: CommentData = {
   author: "",
@@ -45,31 +45,15 @@ const NewComment: React.FunctionComponent<NewCommentProps> = ({
 
     if (courseId && postId) {
       if (comment?.id) {
-        await axios.put(
-          `api/comments/${courseId}/posts/${postId}/comments/${comment?.id}`,
-          {
-            params: {
-              courseId: courseId,
-              postId: postId,
-              commentId: comment?.id,
-              uid: user!.uid,
-            },
-            data: {
-              commentBody,
-            },
-          }
+        await updateComment(
+          courseId,
+          postId,
+          comment?.id,
+          user!.uid,
+          commentBody
         );
       } else {
-        await axios.post(`api/comments/${courseId}/posts/${postId}/comments`, {
-          params: {
-            courseId: courseId,
-            postId: postId,
-            uid: user!.uid,
-          },
-          data: {
-            commentBody,
-          },
-        });
+        await addComment(courseId, postId, user!.uid, commentBody);
       }
       refresh(); // refresh comments in Course Page
     }

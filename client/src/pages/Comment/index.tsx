@@ -1,8 +1,10 @@
-import React, { useState } from "react";
-import Container from "@material-ui/core/Container";
-import { CommentData } from "utils/comments";
+import React, { useState, useContext } from "react";
+import { UserContext } from "utils/auth";
+import { deleteComment } from "utils/services";
+import { CommentData } from "utils/types";
 import NewComment from "../NewComment";
-import { Button, Dialog, DialogActions, DialogTitle, Typography, IconButton } from "@material-ui/core";
+
+import { Button, Container, Dialog, DialogActions, DialogTitle, Typography, IconButton } from "@material-ui/core";
 import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
 import axios from "axios";
@@ -19,38 +21,31 @@ const Comment: React.FunctionComponent<CommentProps> = ({
   courseId,
   refresh,
 }: CommentProps) => {
-  const { author, comment, id } = commentData; // id => commentId
-  const [updatingComment, setUpdatingComment] = useState(false);
-  const [deletingComment, setDeletingComment] = useState(false);
+  const { user, userData } = useContext(UserContext);
+  const { author, comment, id } = commentData;
+  const [isUpdating, setIsUpdating] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   const toggleUpdateComment = (exit: boolean) => {
-    setUpdatingComment(exit);
+    setIsUpdating(exit);
   };
 
   const toggleDeleteDialog = (exit: boolean) => {
-    setDeletingComment(exit);
+    setIsDeleting(exit);
   };
+
   const handleDelete = async (del: boolean) => {
-    if (del) {
-      await axios.delete(
-        `api/comments/${courseId}/posts/${postId}/comments/${id}`,
-        {
-          params: {
-            courseId: courseId,
-            postId: postId,
-            commentId: id,
-          },
-        }
-      );
+    if (del && id) {
+      await deleteComment(courseId, postId, id, user!.uid);
       refresh(); // refresh comments
     }
-    setDeletingComment(false);
+    setIsDeleting(false);
   };
 
   return (
     <>
       <div style={{borderTop:'1px solid rgb(217, 217, 217)'}}>
-      {!updatingComment ? (
+      {!isUpdating ? (
         <Container>
           <div>
               <div style={{marginTop:'5px', marginLeft:'10px'}}>
@@ -64,13 +59,13 @@ const Comment: React.FunctionComponent<CommentProps> = ({
               <IconButton aria-label="settings" onClick={() => toggleUpdateComment(true)}>
                 <EditIcon />
               </IconButton>
-              {!deletingComment ? (
+              {!isDeleting ? (
                 <IconButton aria-label="settings"  onClick={() => toggleDeleteDialog(true)}>
                   <DeleteIcon />
                 </IconButton>
               ) : (
                 <Dialog
-                  open={deletingComment}
+                  open={isDeleting}
                   onClose={() => toggleDeleteDialog(false)}
                   aria-labelledby="alert-dialog-title"
                   aria-describedby="alert-dialog-description"

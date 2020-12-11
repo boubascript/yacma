@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useContext } from "react";
 import { useHistory } from "react-router-dom";
 import { UserContext } from "utils/auth";
+import { CourseData } from "utils/types";
 import { Container, Typography, Button } from "@material-ui/core";
 import Navbar from "components/Navbar";
-import { CourseData } from "utils/courses";
-import axios from "axios";
 
+// TODO: Give Profile Page a purpose
 const Profile: React.FunctionComponent = () => {
   const { user, userData } = useContext(UserContext);
   const { firstName, lastName, isAdmin, courses } = userData || {};
@@ -17,13 +17,13 @@ const Profile: React.FunctionComponent = () => {
     //TO DO: set timeout
     const getAsyncCourses = async () => {
       if (user) {
-        const data = await axios.get("api/courses/getCourses", {
-          params: { courseCodes: courses },
-        });
-        if (data.data) {
-          // @ts-ignore
-          setCoursesData(data.data.courses.map((doc) => doc as CourseData));
-        }
+        // const data = await axios.get("api/courses/getCourses", {
+        //   params: { courseCodes: courses },
+        // });
+        // if (data.data) {
+        //   // @ts-ignore
+        //   setCoursesData(data.data.courses.map((doc) => doc as CourseData));
+        // }
         setLoadingCourses(false);
       }
     };
@@ -47,7 +47,6 @@ const Profile: React.FunctionComponent = () => {
             Welcome,{" "}
             {`${isAdmin ? "Professor" : ""} ${firstName} ${lastName} !`}
           </Typography>
-
           <Typography variant="h5">
             <b>Your Courses: </b>
             {!loadingCourses &&
