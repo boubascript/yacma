@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { BrowserRouter, Switch, Route } from "react-router-dom";
+import "./App.css";
 import ProtectedRoute from "components/ProtectedRoute";
 import { auth, IUser } from "config/firebase";
 import { UserContext, UserData, getUserData } from "utils/auth";
