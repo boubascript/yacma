@@ -77,7 +77,10 @@ const Course: React.FunctionComponent<RouteComponentProps> = ({
     setAddingPost(exit);
   };
 
-  const refreshPosts = async () => {};
+  const refreshPosts = async () => {
+    const postsData = await getPosts(courseId);
+    setPosts(postsData);
+  };
 
   return (
     <div>

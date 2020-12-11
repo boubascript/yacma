@@ -8,7 +8,6 @@ import Login from "pages/Login";
 import Register from "pages/Register";
 import Courses from "pages/Courses";
 import Course from "pages/Course";
-import "./App.css";
 // import Profile from "pages/Profile";
 
 const App: React.FunctionComponent = () => {
@@ -56,6 +55,7 @@ const App: React.FunctionComponent = () => {
     );
   }
 
+  console.log("apped");
   return (
     <div>
       <BrowserRouter>
@@ -64,11 +64,11 @@ const App: React.FunctionComponent = () => {
         >
           <Switch>
             {/* <ProtectedRoute exact path="/me" component={Profile} /> */}
-            <Route component={Home} />
             <Route path="/register" component={Register} />
             <Route path="/login" component={Login} />
             <ProtectedRoute exact path="/courses" component={Courses} />
             <Route path="/coursepage" component={Course} />
+            <Route component={Home} />
           </Switch>
         </UserContext.Provider>
       </BrowserRouter>

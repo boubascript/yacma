@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
+import { UserContext } from "utils/auth";
 import { deleteComment } from "utils/services";
 import { CommentData } from "utils/types";
 import NewComment from "../NewComment";
@@ -22,6 +23,7 @@ const Comment: React.FunctionComponent<CommentProps> = ({
   courseId,
   refresh,
 }: CommentProps) => {
+  const { user, userData } = useContext(UserContext);
   const { author, comment, id } = commentData;
   const [isUpdating, setIsUpdating] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
@@ -33,9 +35,10 @@ const Comment: React.FunctionComponent<CommentProps> = ({
   const toggleDeleteDialog = (exit: boolean) => {
     setIsDeleting(exit);
   };
+
   const handleDelete = async (del: boolean) => {
     if (del && id) {
-      await deleteComment(courseId, postId, id);
+      await deleteComment(courseId, postId, id, user!.uid);
       refresh(); // refresh comments
     }
     setIsDeleting(false);

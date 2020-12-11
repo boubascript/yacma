@@ -1,12 +1,11 @@
 import React, { useState, useEffect, useContext } from "react";
-import axios from "axios";
+import { UserContext } from "utils/auth";
 import { PostData, CommentData } from "utils/types";
 import { Button, Container } from "@material-ui/core";
 import Comment from "pages/Comment";
 import NewComment from "pages/NewComment";
 import NewPost from "pages/NewPost";
-import { UserContext } from "utils/auth";
-import "App.css";
+// import "App.css";
 import { getComments } from "utils/services";
 
 interface PostProps {
@@ -115,7 +114,7 @@ const Post: React.FunctionComponent<PostProps> = ({
               courseId={courseId}
               postId={id}
               exit={toggleNewComment}
-              refresh={refreshComments}
+              refresh={refresh}
             />
           )
         )}

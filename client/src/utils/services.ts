@@ -163,6 +163,8 @@ export const updateComment = async (
         },
       }
     );
+
+    console.log(` Update comment :(`);
     return true;
   } catch (e) {
     console.log(`Can't update comment :(`);
@@ -173,19 +175,19 @@ export const updateComment = async (
 export const deleteComment = async (
   courseId: string,
   postId: string,
-  commentId: string
+  commentId: string,
+  uid: string
 ) => {
   try {
-    await axios.delete(
-      `/comments/${courseId}/posts/${postId}/comments/${commentId}`,
-      {
-        params: {
-          courseId: courseId,
-          postId: postId,
-          commentId: commentId,
-        },
-      }
-    );
+    await axios.delete(`/deleteComment`, {
+      params: {
+        courseId: courseId,
+        postId: postId,
+        commentId: commentId,
+        uid: uid,
+      },
+    });
+    console.log(` Delete comment :(`);
     return true;
   } catch (e) {
     console.log(`Can't delete comment :(`);

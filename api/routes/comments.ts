@@ -68,7 +68,7 @@ router.get(
       if (!comment.exists) {
         console.log("No such comment exists. *raises eyebrow*");
       } else {
-        return res.status(200).json({ ...comment.data(), id: commentId });
+        return res.status(200).json({ ...comment.data(), id: comment.id });
       }
     } catch (e) {
       console.log("Could not add comment.");
@@ -81,7 +81,7 @@ router.post(
   "/:courseId/posts/:postId/comments",
   async (req: Request, res: Response) => {
     try {
-      const { courseId, postId } = req.body.params;
+      const { courseId, postId, uid } = req.body.params;
       const { commentBody } = req.body.data;
 
       const commentRef = db
@@ -92,7 +92,11 @@ router.post(
         .collection("comments");
 
       const timestamp = FieldValue.serverTimestamp();
-      const d = await commentRef.add({ ...commentBody, createdAt: timestamp });
+      const d = await commentRef.add({
+        ...commentBody,
+        createdAt: timestamp,
+        uid: uid,
+      });
       return res.json({ mesage: "Added :)" });
     } catch (e) {
       console.log("There's an error afoot...", e);
@@ -107,8 +111,10 @@ router.put(
   "/:courseId/posts/:postId/comments/:commentId",
   async (req: Request, res: Response) => {
     try {
+      console.log("UPDATE SERVER");
       const { courseId, postId, commentId, uid } = req.body.params;
       const { commentBody } = req.body.data;
+
       const commentRef = db
         .collection("courses")
         .doc(courseId)
@@ -134,32 +140,39 @@ router.put(
 
 // Delete Comment
 // Two calls to check if user owns post
-router.delete(
-  "/:courseId/posts/:postId/comments/:commentId",
-  async (req: Request, res: Response) => {
-    try {
-      const { courseId, postId, commentId, uid } = req.params;
-      const commentRef = db
-        .collection("courses")
-        .doc(courseId)
-        .collection("posts")
-        .doc(postId)
-        .collection("comments")
-        .doc(commentId);
+router.delete("/deleteComment", async (req: Request, res: Response) => {
+  console.log("IMHERERER");
+  try {
+    const { courseId, postId, commentId, uid } = req.params;
+    const commentRef = db
+      .collection("courses")
+      .doc(courseId)
+      .collection("posts")
+      .doc(postId)
+      .collection("comments")
+      .doc(commentId);
 
-      const getComment = await commentRef.get();
-      if (uid === getComment.data()?.uid) {
-        await commentRef.delete();
-        return res.send("Deleted :(");
-      } else {
-        return res.send(
-          "Nice Try. Can't delete other peeps comments *shakes head*"
-        );
-      }
-    } catch (e) {
-      console.log("There's an error afoot...", e);
+    console.log(
+      "courseId, postId, commentId, uid",
+      courseId,
+      postId,
+      commentId,
+      uid
+    );
+    const getComment = await commentRef.get();
+    console.log("comment's user Id", getComment.id);
+
+    if (uid === getComment.data()?.uid) {
+      await commentRef.delete();
+      return res.send("Deleted :(");
+    } else {
+      return res.send(
+        "Nice Try. Can't delete other peeps comments *shakes head*"
+      );
     }
+  } catch (e) {
+    console.log("There's an error afoot...", e);
   }
-);
+});
 
 export default router;
