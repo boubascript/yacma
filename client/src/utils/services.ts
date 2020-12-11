@@ -182,7 +182,6 @@ export const deleteComment = async (
         uid: uid,
       },
     });
-    console.log(` Delete comment :(`);
     return true;
   } catch (e) {
     console.log(`Can't delete comment :(`);

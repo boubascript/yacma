@@ -3,7 +3,6 @@ import { useHistory } from "react-router-dom";
 import { RouteComponentProps } from "react-router";
 import { functions } from "config/firebase";
 import { CourseData, PostData } from "utils/types";
-import { PostData } from "utils/posts";
 import { Button, Card, Collapse, Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import CourseHeader from './CourseHeader';

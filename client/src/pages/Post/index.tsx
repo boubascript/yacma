@@ -2,7 +2,6 @@ import React, { useState, useEffect, useContext } from "react";
 import { UserContext } from "utils/auth";
 import { PostData, CommentData } from "utils/types";
 import axios from "axios";
-import { CommentData } from "utils/comments";
 import { Button, Card, CardHeader, Container, IconButton, Typography} from "@material-ui/core";
 import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';

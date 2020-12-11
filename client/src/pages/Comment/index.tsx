@@ -45,7 +45,7 @@ const Comment: React.FunctionComponent<CommentProps> = ({
   return (
     <>
       <div style={{borderTop:'1px solid rgb(217, 217, 217)'}}>
-      {!updatingComment ? (
+      {!isUpdating ? (
         <Container>
           <div>
               <div style={{marginTop:'5px', marginLeft:'10px'}}>
@@ -59,13 +59,13 @@ const Comment: React.FunctionComponent<CommentProps> = ({
               <IconButton aria-label="settings" onClick={() => toggleUpdateComment(true)}>
                 <EditIcon />
               </IconButton>
-              {!deletingComment ? (
+              {!isDeleting ? (
                 <IconButton aria-label="settings"  onClick={() => toggleDeleteDialog(true)}>
                   <DeleteIcon />
                 </IconButton>
               ) : (
                 <Dialog
-                  open={deletingComment}
+                  open={isDeleting}
                   onClose={() => toggleDeleteDialog(false)}
                   aria-labelledby="alert-dialog-title"
                   aria-describedby="alert-dialog-description"
