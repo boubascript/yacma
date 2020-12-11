@@ -31,7 +31,7 @@ const CourseHeader: React.FC<ClassProps> = (props) => {
         </Typography>
         <Typography variant="h5"> Code: {props.code} </Typography>
         <Typography variant="h5">Professor: {props.educator}</Typography>
-        <Typography variant="h5">{props.description}</Typography>
+        <Typography variant="h5" color="textSecondary">{props.description}</Typography>
       </CardContent>
     </Card>
   );

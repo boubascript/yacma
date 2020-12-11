@@ -2,12 +2,32 @@ import React, { useState, useEffect, useContext } from "react";
 import axios from "axios";
 import { PostData } from "utils/posts"; // TODO: Put Interfaces in single file?
 import { CommentData } from "utils/comments";
-import { Button, Container } from "@material-ui/core";
+import { Button, Card, CardHeader, Container, IconButton, Typography} from "@material-ui/core";
+import DeleteIcon from '@material-ui/icons/Delete';
+import EditIcon from '@material-ui/icons/Edit';
+import {makeStyles} from '@material-ui/core/styles';
 import Comment from "pages/Comment";
 import NewComment from "pages/NewComment";
 import NewPost from "pages/NewPost";
 import { UserContext } from "utils/auth";
 import "App.css";
+
+const useStyles = makeStyles({
+  button: {
+    marginLeft: '15%',
+    marginRight: '15%',
+    marginTop:'20px'
+  },
+  postCard: {
+    width:'80%',
+    minWidth: 350,
+    margin:'auto',
+    marginTop: '25px',
+    padding:'30px',
+    paddingTop:'10px',
+    textAlign:'left'
+  },
+})
 
 interface PostProps {
   courseId: string;
@@ -72,15 +92,71 @@ const Post: React.FunctionComponent<PostProps> = ({
     getAllComments();
   };
 
+  const classes = useStyles();
+
   return (
     <>
       <Container>
         {!updatingPost ? (
           <>
-            <h2>{title}</h2>
-            <p>{author}</p>
-            <p>{description}</p>
-            {links != "" ? <img src={links} title={`image${links}`}></img> : ""}
+            <Card className={classes.postCard}>
+              <div style={{marginTop: '20px', borderColor:'#3f51b5', borderStyle:'solid', borderWidth:'2px', borderRadius:'5px', height:'50px'}}>
+                  <div style={{float:'left', display:'flex', marginTop:'5px', marginLeft:'10px'}}>
+                    <Typography variant="h4">
+                      {title}
+                    </Typography>
+                    <Typography style={{marginTop:'13px', marginLeft:'10px'}} variant="subtitle1" color="textSecondary">
+                      By {author}
+                    </Typography>
+                  </div>
+                  {userData?.firstName + " " + userData?.lastName === author && (
+                    <>
+                      <IconButton aria-label="settings"  onClick={remove} style={{float:'right'}}>
+                        <DeleteIcon />
+                      </IconButton>
+                      <IconButton aria-label="settings" onClick={() => toggleUpdatePost(true)}style={{float:'right'}}>
+                        <EditIcon />
+                      </IconButton>
+                    </>
+                  )}
+              </div>
+              <p>{description}</p>
+              {links != "" ? <img src={links} title={`image${links}`}></img> : ""}
+
+              <div className="comments">
+                {id &&
+                  comments &&
+                  comments.map((doc, index) => (
+                    <Comment
+                      key={index}
+                      courseId={courseId}
+                      postId={id}
+                      commentData={doc}
+                      refresh={refreshComments}
+                    />
+                  ))}
+              </div>
+              {!addingComment ? (
+                <div style={{textAlign:'center'}}>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={handleNewComment}
+                  >
+                    Add Comment
+                  </Button>
+                </div>
+              ) : (
+                id && (
+                  <NewComment
+                    courseId={courseId}
+                    postId={id}
+                    exit={toggleNewComment}
+                    refresh={refreshComments}
+                  />
+                )
+              )}
+            </Card>
           </>
         ) : (
           <NewPost
@@ -91,48 +167,6 @@ const Post: React.FunctionComponent<PostProps> = ({
             post={post}
           />
         )}
-
-        {userData?.firstName + " " + userData?.lastName === author && (
-          <>
-            <Button color="primary" onClick={() => toggleUpdatePost(true)}>
-              Edit
-            </Button>
-            <Button variant="contained" color="secondary" onClick={remove}>
-              {isDeleting ? "Deleting Post..." : "Delete Dis"}
-            </Button>
-          </>
-        )}
-        {!addingComment ? (
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={handleNewComment}
-          >
-            Add Comment
-          </Button>
-        ) : (
-          id && (
-            <NewComment
-              courseId={courseId}
-              postId={id}
-              exit={toggleNewComment}
-              refresh={refreshComments}
-            />
-          )
-        )}
-        <div className="comments">
-          {id &&
-            comments &&
-            comments.map((doc, index) => (
-              <Comment
-                key={index}
-                courseId={courseId}
-                postId={id}
-                commentData={doc}
-                refresh={refreshComments}
-              />
-            ))}
-        </div>
       </Container>
     </>
   );

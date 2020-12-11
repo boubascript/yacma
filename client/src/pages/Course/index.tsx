@@ -119,11 +119,18 @@ const Course: React.FunctionComponent<RouteComponentProps> = ({
   return (
     <div className={classes.root}>
       <Navbar />
+      {userData?.isAdmin && (
+        <div style={{marginTop:'10px'}}>
+          <Button variant="contained" color="secondary" onClick={removeCourse}>
+            {isDeleting ? "Deleting Course..." : "Delete Course"}
+          </Button>
+        </div>
+      )}
       <CourseHeader
-          name={course && course?.name || ""}
-          code={course && course?.code || ""}
-          educator={course && course?.educator || ""}
-          description={course && course?.description || ""}
+          name={(course && course?.name) || ""}
+          code={(course && course?.code) || ""}
+          educator={(course && course?.educator) || ""}
+          description={(course && course?.description) || ""}
       />
       <div>
         <Button
@@ -136,14 +143,12 @@ const Course: React.FunctionComponent<RouteComponentProps> = ({
             Add Post
         </Button>
       </div>
-      <Collapse in={!addingPost}>
-        <Card className={classes.newPostCard}>
+      <Collapse in={addingPost}>
           <NewPost
             courseId={courseId}
             exit={toggleNewPost}
             refresh={refreshPosts}
           />
-        </Card>
       </Collapse>
       <div className="posts">
         {posts?.map((doc, index) => (
@@ -158,11 +163,6 @@ const Course: React.FunctionComponent<RouteComponentProps> = ({
           />
         ))}
       </div>
-      {userData?.isAdmin && (
-        <Button variant="contained" color="secondary" onClick={removeCourse}>
-          {isDeleting ? "Deleting Course..." : "Delete Course"}
-        </Button>
-      )}
     </div>
   );
 };

@@ -2,7 +2,6 @@ import React, { useState, useEffect, useContext } from "react";
 import {
   Collapse,
   Card,
-  CardContent,
   Typography,
   Button,
 } from "@material-ui/core";
@@ -21,7 +20,12 @@ const useStyles = makeStyles({
     justifyContent: "center",
     alignItems: "center",
     textAlign: "center",
-    backgroundColor: "#eceef8",
+  },
+  classCards: {
+    justifyContent: "center",
+    alignItems: "center",
+    textAlign: "center",
+    display:'flex'
   },
   button: {
     margin: "20px",
@@ -109,7 +113,7 @@ const Courses: React.FunctionComponent = () => {
         </Card>
       </Collapse>
 
-      <div className={classes.root}>
+      <div className={classes.classCards}>
         {coursesData?.map(({ name, id, code, description, educator }) => (
           <div>
             <ClassCard
