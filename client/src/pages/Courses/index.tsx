@@ -103,16 +103,14 @@ const Courses: React.FunctionComponent = () => {
 
       <div className={classes.root}>
         {coursesData?.map(({ name, id, code, description, educator }) => (
-          <div>
-            <ClassCard
-              key={id}
-              name={name}
-              id={id}
-              code={code}
-              description={description}
-              educator={educator}
-            />
-          </div>
+          <ClassCard
+            key={id}
+            name={name}
+            id={id}
+            code={code}
+            description={description}
+            educator={educator}
+          />
         ))}
       </div>
     </div>
