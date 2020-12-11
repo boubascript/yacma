@@ -19,7 +19,6 @@ const Login: React.FunctionComponent = () => {
   const history = useHistory();
   const [loginData, setLoginData] = useState<LoginData>(DEFAULT_INFO);
 
-  console.log("LOGIN");
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setLoginData({
       ...loginData,
