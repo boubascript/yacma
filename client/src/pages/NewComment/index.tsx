@@ -103,7 +103,7 @@ const NewComment: React.FunctionComponent<NewCommentProps> = ({
         Cancel
       </Button>
       <Button type="submit" variant="contained" color="primary" style={{margin:'20px', marginTop:0}}>
-        {comment ? "Update" : "New Comment"}
+        {comment ? "Update" : "Create Comment"}
       </Button>
       </div>
     </form>

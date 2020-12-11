@@ -94,6 +94,46 @@ const Post: React.FunctionComponent<PostProps> = ({
 
   const classes = useStyles();
 
+  const FileDisplay = (links:string) => {
+    if(!links){
+      return;
+    }
+    const extension = links.split('.').pop();
+    if(!extension){
+      return;
+    }
+    const images = ['jpg', 'jpeg', 'png']
+    if(images.includes(extension)){
+      return (
+        <div style={{textAlign:'center'}}>
+          <img src={links} title={`image${links}`}></img>
+        </div>
+      )
+    }
+    const videos = ['mp4', 'mov']
+    if(videos.includes(extension)){
+      return (
+        <div style={{textAlign:'center'}}>
+        <video width="80%" controls>
+          <source src={links} type="video/mp4" />
+          Your browser does not support HTML video.
+        </video>
+        </div>
+      )
+    }
+    return (
+      <>
+        <Typography variant="subtitle1">
+            Attached:
+        </Typography>
+        <Typography variant="subtitle1">
+          <a href={links}>{links}</a>
+        </Typography>
+      </>
+    )
+  }
+
+
   return (
     <>
       <Container>
@@ -121,7 +161,8 @@ const Post: React.FunctionComponent<PostProps> = ({
                   )}
               </div>
               <p>{description}</p>
-              {links != "" ? <img src={links} title={`image${links}`}></img> : ""}
+              
+              {FileDisplay(links)}
 
               <div className="comments">
                 {id &&
