@@ -54,8 +54,6 @@ const Register: React.FunctionComponent = () => {
 
   return (
     <div>
-      <Navbar />
-      <Typography variant="h1">Pull Up</Typography>
       <Container maxWidth="sm">
         <form onSubmit={handleSubmit} noValidate>
           <Grid container spacing={2} alignItems="center" justify="center">

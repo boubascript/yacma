@@ -2,6 +2,7 @@ import { Card, CardContent, Typography, Button } from "@material-ui/core";
 import React from "react";
 import { useHistory } from "react-router-dom";
 import { makeStyles } from "@material-ui/core/styles";
+import DeleteIcon from '@material-ui/icons/Delete';
 
 interface ClassProps {
   name: string;
@@ -76,6 +77,17 @@ const ClassCard: React.FC<ClassProps> = (props) => {
           }}
         >
           Go To Course
+        </Button> <br></br>
+        <Button 
+       
+        color="secondary"
+        startIcon={<DeleteIcon />}
+          name={props.code}
+          onClick={() => {
+            // make api call to delete course
+          }}
+        >
+          Unenroll
         </Button>
       </CardContent>
     </Card>
