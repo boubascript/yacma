@@ -3,13 +3,11 @@ import { UserContext } from "utils/auth";
 import { deleteComment } from "utils/services";
 import { CommentData } from "utils/types";
 import NewComment from "../NewComment";
-import {
-  Button,
-  Dialog,
-  DialogActions,
-  DialogTitle,
-  Container,
-} from "@material-ui/core";
+
+import { Button, Container, Dialog, DialogActions, DialogTitle, Typography, IconButton } from "@material-ui/core";
+import DeleteIcon from '@material-ui/icons/Delete';
+import EditIcon from '@material-ui/icons/Edit';
+import axios from "axios";
 
 interface CommentProps {
   courseId: string;
@@ -46,41 +44,51 @@ const Comment: React.FunctionComponent<CommentProps> = ({
 
   return (
     <>
-      {!isUpdating ? (
+      <div style={{borderTop:'1px solid rgb(217, 217, 217)'}}>
+      {!updatingComment ? (
         <Container>
-          <h5>{author}</h5>
-          <p>{comment}</p>
-          <Button color="primary" onClick={() => toggleUpdateComment(true)}>
-            Edit
-          </Button>
-          {!isDeleting ? (
-            <Button color="primary" onClick={() => toggleDeleteDialog(true)}>
-              Delete
-            </Button>
-          ) : (
-            <Dialog
-              open={isDeleting}
-              onClose={() => toggleDeleteDialog(false)}
-              aria-labelledby="alert-dialog-title"
-              aria-describedby="alert-dialog-description"
-            >
-              <DialogTitle id="alert-dialog-title">
-                {"Delete this comment? :("}
-              </DialogTitle>
-              <DialogActions>
-                <Button onClick={() => handleDelete(false)} color="primary">
-                  Disagree
-                </Button>
-                <Button
-                  onClick={() => handleDelete(true)}
-                  color="primary"
-                  autoFocus
+          <div>
+              <div style={{marginTop:'5px', marginLeft:'10px'}}>
+                <Typography variant="h6">
+                  <b>{author}</b>
+                </Typography>
+                <Typography variant="h6">
+                  {comment}
+                </Typography>
+              </div>
+              <IconButton aria-label="settings" onClick={() => toggleUpdateComment(true)}>
+                <EditIcon />
+              </IconButton>
+              {!deletingComment ? (
+                <IconButton aria-label="settings"  onClick={() => toggleDeleteDialog(true)}>
+                  <DeleteIcon />
+                </IconButton>
+              ) : (
+                <Dialog
+                  open={deletingComment}
+                  onClose={() => toggleDeleteDialog(false)}
+                  aria-labelledby="alert-dialog-title"
+                  aria-describedby="alert-dialog-description"
                 >
-                  Agree
-                </Button>
-              </DialogActions>
-            </Dialog>
-          )}
+                  <DialogTitle id="alert-dialog-title">
+                    {"Delete this comment? :("}
+                  </DialogTitle>
+                  <DialogActions>
+                    <Button onClick={() => handleDelete(false)} color="primary">
+                      Disagree
+                    </Button>
+                    <Button
+                      onClick={() => handleDelete(true)}
+                      color="primary"
+                      autoFocus
+                    >
+                      Agree
+                    </Button>
+                  </DialogActions>
+                </Dialog>
+              )}
+          </div>
+          
         </Container>
       ) : (
         <NewComment
@@ -91,6 +99,7 @@ const Comment: React.FunctionComponent<CommentProps> = ({
           comment={commentData}
         />
       )}
+      </div>
     </>
   );
 };

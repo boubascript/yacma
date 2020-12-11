@@ -65,7 +65,7 @@ const NewComment: React.FunctionComponent<NewCommentProps> = ({
   };
 
   return (
-    <form onSubmit={handleSubmit} noValidate>
+    <form onSubmit={handleSubmit} noValidate style={{marginTop:'10px'}}>
       <Grid container spacing={2} alignItems="center" justify="center">
         <Grid item xs={12}>
           <TextField
@@ -82,12 +82,14 @@ const NewComment: React.FunctionComponent<NewCommentProps> = ({
       </Grid>
 
       <br></br>
-      <Button type="submit" variant="contained" color="primary">
-        {comment ? "Update" : "New Comment"}
-      </Button>
-      <Button variant="contained" color="primary" onClick={cancel}>
+      <div style={{textAlign:'center'}}>
+      <Button variant="contained" color="primary" onClick={cancel} style={{margin:'20px', marginTop:0}}>
         Cancel
       </Button>
+      <Button type="submit" variant="contained" color="primary" style={{margin:'20px', marginTop:0}}>
+        {comment ? "Update" : "Create Comment"}
+      </Button>
+      </div>
     </form>
   );
 };
