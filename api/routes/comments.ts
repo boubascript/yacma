@@ -93,7 +93,6 @@ router.post(
 
       const timestamp = FieldValue.serverTimestamp();
       const d = await commentRef.add({ ...commentBody, createdAt: timestamp });
-      console.log("WHATS HAPPENING? ", d);
       return res.json({ mesage: "Added :)" });
     } catch (e) {
       console.log("There's an error afoot...", e);

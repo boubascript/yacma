@@ -36,6 +36,7 @@ const Login: React.FunctionComponent = () => {
     }
   };
 
+  console.log("LOGIN");
   return (
     <div>
       <Navbar />
