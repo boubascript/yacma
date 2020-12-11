@@ -41,10 +41,10 @@ const Post: React.FunctionComponent<PostProps> = ({
   };
 
   useEffect(() => {
-    if (id) {
-      getAllComments();
-    }
-  }, [id]);
+    // if (id) {
+    getAllComments();
+    // }
+  }, []);
 
   const handleNewComment = () => {
     setAddingComment(true);
@@ -114,7 +114,7 @@ const Post: React.FunctionComponent<PostProps> = ({
               courseId={courseId}
               postId={id}
               exit={toggleNewComment}
-              refresh={refresh}
+              refresh={refreshComments}
             />
           )
         )}

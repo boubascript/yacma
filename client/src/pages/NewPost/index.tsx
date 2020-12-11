@@ -68,7 +68,7 @@ const NewPost: React.FunctionComponent<NewPostProps> = ({
         formData.append("uid", user!.uid);
         await addPost(courseId, formData);
       }
-      refresh(); // refresh comments in Course Page
+      refresh(); // refresh posts in Course Page
     }
     exit(false); // exit New Post form
   };
