@@ -21,14 +21,21 @@ export interface PostData {
   createdAt: FirebaseFirestore.Timestamp;
 }
 
+/* Post Collection Path Parameter Interface */
+interface PostPathParams {
+  courseId: string;
+  postId?: string;
+  uid?: string;
+}
+
 /**
  * @desc Get all posts
- * @return Array of all posts
+ * @return Array of all posts (PostData[])
  * @cost One DB call
  */
-router.get("/:courseId/posts", async (req: Request, res: Response) => {
+router.get("/getPosts", async (req: Request, res: Response) => {
   try {
-    const courseId = req.query.courseId as string;
+    const { courseId } = (req.query as unknown) as PostPathParams;
     const postsRef = db
       .collection("courses")
       .doc(courseId)
@@ -51,10 +58,13 @@ router.get("/:courseId/posts", async (req: Request, res: Response) => {
   }
 });
 
-// Add Post
-router.post("/:courseId/posts", async (req: Request, res: Response) => {
+/**
+ * @desc Update Post
+ * @return PostData object
+ * @cost Costly ~
+ */
+router.post("/addPost", async (req: Request, res: Response) => {
   try {
-    console.log(req);
     const { title, author, description, courseId, uid } = req.body;
     const postRef = db.collection("courses").doc(courseId).collection("posts");
     const postBody = {
@@ -79,18 +89,24 @@ router.post("/:courseId/posts", async (req: Request, res: Response) => {
       blobStream.on("finish", async () => {
         // The public URL can be used to directly access the file via HTTP.
         const publicUrl = `https://storage.googleapis.com/${bucket.name}/${blob.name}`;
-        const timestamp = FieldValue.serverTimestamp();
         postBody["links"] = publicUrl;
         console.log("Make POST", postBody);
-        await postRef.add({ ...postBody, createdAt: timestamp, uid: uid });
+        await postRef.add({
+          ...postBody,
+          createdAt: FieldValue.serverTimestamp(),
+          uid: uid,
+        });
         return res.status(204).send("Added :)");
       });
 
       blobStream.end(file.buffer);
     } else {
       console.log("Make POST", postBody);
-      const timestamp = FieldValue.serverTimestamp();
-      await postRef.add({ ...postBody, createdAt: timestamp, uid: uid });
+      await postRef.add({
+        ...postBody,
+        createdAt: FieldValue.serverTimestamp(),
+        uid: uid,
+      });
       return res.status(204).send("Added :)");
     }
   } catch (e) {
@@ -98,47 +114,66 @@ router.post("/:courseId/posts", async (req: Request, res: Response) => {
   }
 });
 
-// Get Post
-router.get("/:courseId/posts/:postId", async (req: Request, res: Response) => {
+/**
+ * @desc Update Post
+ * @return PostData object
+ * @cost One DB calls
+ */
+router.get("/getPost", async (req: Request, res: Response) => {
   try {
-    const { courseId, postId } = req.body.params;
-    const postRef = db
-      .collection("courses")
-      .doc(courseId)
-      .collection("posts")
-      .doc(postId);
+    const { courseId, postId } = (req.query as unknown) as PostPathParams;
+    if (postId) {
+      const postRef = db
+        .collection("courses")
+        .doc(courseId)
+        .collection("posts")
+        .doc(postId);
 
-    const post = await postRef.get();
-    if (post.exists) {
-      return res.status(200).json({ ...post.data(), id: post.id });
-    } else {
-      console.log("No such post exists. *raises eyebrow*");
+      const post = await postRef.get();
+
+      if (post.exists) {
+        return res.status(200).json({ ...post.data(), id: post.id });
+      } else {
+        console.log("No such post exists. *raises eyebrow*");
+      }
     }
   } catch (e) {
     console.log("Could not add post.");
   }
 });
 
-// Update Post
-// Two calls to check if user owns post
-router.put("/:courseId/posts/:postId", async (req: Request, res: Response) => {
+/**
+ * @desc Update Post
+ * @cost Two DB calls
+ */
+router.put("/updatePost", async (req: Request, res: Response) => {
   try {
     const { courseId, postId, uid } = req.body.params;
     const { postBody } = req.body.data;
-    const postRef = db
-      .collection("courses")
-      .doc(courseId)
-      .collection("posts")
-      .doc(postId);
+    console.log(`Update post`, postBody);
+    console.log(`PostId`, postId);
+    console.log(`CourseId`, courseId);
 
-    const getPost = await postRef.get();
-    if (uid === getPost.data()?.uid) {
-      await postRef.update(postBody);
-      return res.status(204).send("Updated :)");
-    } else {
-      return res
-        .status(304)
-        .send("Nice Try. Can't update other peeps posts *shakes head*");
+    if (postId) {
+      const postRef = db
+        .collection("courses")
+        .doc(courseId)
+        .collection("posts")
+        .doc(postId);
+
+      const getPost = await postRef.get();
+
+      if (uid === getPost.data()?.uid) {
+        await postRef.update({
+          ...postBody,
+          createdAt: getPost.data()?.createdAt,
+        });
+        return res.status(204).send("Updated :)");
+      } else {
+        return res
+          .status(304)
+          .send("Nice Try. Can't update other peeps posts *shakes head*");
+      }
     }
   } catch (e) {
     console.log("There's an error afoot...", e);
