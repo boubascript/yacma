@@ -167,11 +167,6 @@ const Course: React.FunctionComponent<RouteComponentProps> = ({
           />
         ))}
       </div>
-      {userData?.isAdmin && (
-        <Button variant="contained" color="secondary" onClick={removeCourse}>
-          {isDeleting ? "Deleting Course..." : "Delete Course"}
-        </Button>
-      )}
     </div>
   );
 };

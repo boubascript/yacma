@@ -48,7 +48,6 @@ const NewPost: React.FunctionComponent<NewPostProps> = ({
 
   const [selectedFile, setSelectedFile] = useState<File>();
 
-  const [selectedFile, setSelectedFile] = useState<File>();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setPostData((prevState) => ({
