@@ -76,12 +76,9 @@ const ClassCard: React.FC<ClassCardData> = ({
         uid: uid,
       },
     });
-    console.log("HERE");
+
     if (res.status == 204) {
       deleteCourseContext(id!);
-      //console.log("courses after deleteCourseContext: ");
-      //console.log(userData!.courses);
-      //refresh();
     }
   };
 
