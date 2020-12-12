@@ -94,4 +94,15 @@ router.post("/addCourseStudent", async (req: Request, res: Response) => {
   }
 });
 
+router.post("/unenroll", async (req: Request, res: Response) => {
+  const courseId = req.body.data.courseId as string;
+  const uid: string = req.body.data.uid as string;
+  const removedCourse = await courseUtils.removeCourseForUser(courseId, uid);
+  if (removedCourse) {
+    res.status(204);
+  } else {
+    res.send("");
+  }
+});
+
 export default router;

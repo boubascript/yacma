@@ -26,7 +26,42 @@ export const addCourseForUser = async (
         }
       }
       else {
-        console.log("no such user")
+        console.log("no such user");
+        return false;
+      }
+    } catch {
+      console.log("error updating courses");
+    }
+  };
+
+  export const removeCourseForUser = async (
+    courseId: string,
+    uid: string
+  ) => {
+    // add to user
+    const userRef = users.doc(uid);
+    try {
+      console.log("uid: " + uid);
+      const user = await userRef.get();
+      if (user.exists) {
+        console.log("user exists");
+        console.log(user.data()!.courses);
+        console.log(courseId);
+        if (user.data()!.courses.includes(courseId)) {
+           await userRef.update({
+            courses: FieldValue.arrayRemove(courseId),
+          });
+          console.log("REMOVED COURSE");
+          return true;
+        }
+        else{
+          console.log("Student not enrolled");
+          return false;
+        }
+      }
+      else {
+        console.log("no such user");
+        return false;
       }
     } catch {
       console.log("error updating courses");

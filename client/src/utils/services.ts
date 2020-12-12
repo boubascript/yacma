@@ -51,6 +51,21 @@ export const addCourseStudent = async (courseCode: string, uid: string) => {
   }
 };
 
+export const unenroll = async (courseId: string, uid: string) => {
+  try {
+    const res = await axios.post("api/courses/unenroll", {
+      data: {
+        courseId: courseId,
+        uid: uid,
+      },
+    });
+    return res.status;
+  } catch (e) {
+    return false;
+  }
+};
+
+
 export const getPosts = async (courseId: string) => {
   try {
     const { data } = await axios.get("/api/posts/getPosts", {

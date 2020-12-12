@@ -1,15 +1,16 @@
 import { Card, CardContent, Typography, Button } from "@material-ui/core";
-import React from "react";
+import React, { useContext } from "react";
 import { useHistory } from "react-router-dom";
 import { makeStyles } from "@material-ui/core/styles";
 import DeleteIcon from '@material-ui/icons/Delete';
+import { CourseData } from "utils/types";
+//import { unenroll } from "utils/services";
+import { UserContext } from "utils/auth";
+import axios from "axios";
 
-interface ClassProps {
-  name: string;
-  id?: string;
-  code: string;
-  description: string;
-  educator: string;
+interface ClassCardData extends CourseData {
+  uid?: string;
+  refresh: () => void;
 }
 
 const useStyles = makeStyles({
@@ -49,15 +50,38 @@ const useStyles = makeStyles({
   },
 });
 
-const ClassCard: React.FC<ClassProps> = (props) => {
+const ClassCard: React.FC<ClassCardData> = ({
+  id, 
+  name,
+  code,
+  educator,
+  description,
+  uid,
+  refresh
+}) => {
+  const { addCourseContext } = useContext(UserContext);
   const history = useHistory();
   const classes = useStyles();
-  const loadCourse = (id: string) => {
-    console.log(props.id);
+  const loadCourse = () => {
     history.push({
       pathname: "/coursepage",
       search: id,
     });
+  };
+
+  const unenroll = async () => {
+    const res = await axios.post("api/courses/unenroll", {
+      data: {
+        courseId: id,
+        uid: uid,
+      },
+    });
+
+    if (res.status == 204) {
+      console.log("status is 204");
+      addCourseContext("");
+      refresh();
+    }
   };
 
   return (
@@ -65,16 +89,14 @@ const ClassCard: React.FC<ClassProps> = (props) => {
       <CardContent>
         <Typography variant="h4">
           {" "}
-          <b>{props.name} </b>
+          <b>{name} </b>
         </Typography>
-        <Typography variant="h5"> Code: {props.code} </Typography>
-        <Typography variant="h5">Professor: {props.educator}</Typography>
-        <Typography variant="h6" color="textSecondary">{props.description}</Typography>
+        <Typography variant="h5"> Code: {code} </Typography>
+        <Typography variant="h5">Professor: {educator}</Typography>
+        <Typography variant="h6" color="textSecondary">{description}</Typography>
         <Button
-          name={props.code}
-          onClick={() => {
-            loadCourse(props.id!);
-          }}
+          name={code}
+          onClick={loadCourse}
         >
           Go To Course
         </Button> <br></br>
@@ -82,11 +104,9 @@ const ClassCard: React.FC<ClassProps> = (props) => {
        
         color="secondary"
         startIcon={<DeleteIcon />}
-          name={props.code}
-          onClick={() => {
-            // make api call to delete course
-          }}
-        >
+          name={code}
+          onClick={unenroll}
+          >       
           Unenroll
         </Button>
       </CardContent>
