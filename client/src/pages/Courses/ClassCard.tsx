@@ -59,7 +59,7 @@ const ClassCard: React.FC<ClassCardData> = ({
   uid,
   refresh
 }) => {
-  const { addCourseContext } = useContext(UserContext);
+  const { deleteCourseContext, userData } = useContext(UserContext);
   const history = useHistory();
   const classes = useStyles();
   const loadCourse = () => {
@@ -76,11 +76,12 @@ const ClassCard: React.FC<ClassCardData> = ({
         uid: uid,
       },
     });
-
+    console.log("HERE");
     if (res.status == 204) {
-      console.log("status is 204");
-      addCourseContext("");
-      refresh();
+      deleteCourseContext(id!);
+      //console.log("courses after deleteCourseContext: ");
+      //console.log(userData!.courses);
+      //refresh();
     }
   };
 

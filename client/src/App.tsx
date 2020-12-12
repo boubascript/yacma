@@ -18,10 +18,6 @@ const App: React.FunctionComponent = () => {
 
   const addCourseContext = (newCourse: string) => {
     console.log(`NEW: ${newCourse}`);
-    /*if (newCourse = "") {
-      //just to trigger useEffect in /courses
-      setUserData(userData);
-    }*/
 
     setUserData({
       ...userData!,
@@ -36,6 +32,7 @@ const App: React.FunctionComponent = () => {
       ...userData!,
       courses: userData!.courses.filter((cid) => id !== cid),
     });
+    console.log("done deleteCourseContext");
   };
 
   useEffect(() => {

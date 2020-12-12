@@ -8,20 +8,23 @@ const courses = db.collection("courses");
 
 router.get("/getCourses", async (req: Request, res: Response) => {
   let courseIds = req.query.courseIds as string[];
+  console.log("courseIds: ");
+  console.log(courseIds);
 
   // TODO: find a workaround
   if (courseIds?.length > 0) {
     if (courseIds?.length > 10) {
       courseIds = courseIds.slice(1, 10);
     }
-    //@ts-ignore
-    const query = courses.where(FieldPath.documentId(), "in", courseIds);
-
+    
     try {
-      const courses = await query.get();
+      // @ts-ignore
+      const query = courses.where(FieldPath.documentId(), "in", courseIds);
+      
+      const coursesRes = await query.get();
       let ret: CourseData[] = [];
-      if (!courses.empty) {
-        courses.docs.map((doc) =>
+      if (!coursesRes.empty) {
+        coursesRes.docs.map((doc) =>
           ret.push((doc.data() as unknown) as CourseData)
         );
       }
@@ -99,9 +102,10 @@ router.post("/unenroll", async (req: Request, res: Response) => {
   const uid: string = req.body.data.uid as string;
   const removedCourse = await courseUtils.removeCourseForUser(courseId, uid);
   if (removedCourse) {
-    res.status(204);
+    console.log("should be sending 204");
+    return res.status(204).json();
   } else {
-    res.send("");
+    return res.status(400);
   }
 });
 
