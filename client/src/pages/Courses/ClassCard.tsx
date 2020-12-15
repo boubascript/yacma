@@ -4,9 +4,8 @@ import { useHistory } from "react-router-dom";
 import { makeStyles } from "@material-ui/core/styles";
 import DeleteIcon from '@material-ui/icons/Delete';
 import { CourseData } from "utils/types";
-//import { unenroll } from "utils/services";
+import { unenroll } from "utils/services";
 import { UserContext } from "utils/auth";
-import axios from "axios";
 
 interface ClassCardData extends CourseData {
   uid?: string;
@@ -69,19 +68,6 @@ const ClassCard: React.FC<ClassCardData> = ({
     });
   };
 
-  const unenroll = async () => {
-    const res = await axios.post("api/courses/unenroll", {
-      data: {
-        courseId: id,
-        uid: uid,
-      },
-    });
-
-    if (res.status == 204) {
-      deleteCourseContext(id!);
-    }
-  };
-
   return (
     <Card className={classes.card}>
       <CardContent>
@@ -94,7 +80,10 @@ const ClassCard: React.FC<ClassCardData> = ({
         <Typography variant="h6" color="textSecondary">{description}</Typography>
         <Button
           name={code}
-          onClick={loadCourse}
+          onClick={() => {
+            loadCourse(); 
+            }
+          }
         >
           Go To Course
         </Button> <br></br>
@@ -103,7 +92,13 @@ const ClassCard: React.FC<ClassCardData> = ({
         color="secondary"
         startIcon={<DeleteIcon />}
           name={code}
-          onClick={unenroll}
+          onClick={async () => {
+            const status = await unenroll(id!, uid!);
+            if (status == 204) {
+              deleteCourseContext(id!);
+            }
+          }
+        }
           >       
           Unenroll
         </Button>

@@ -47,7 +47,6 @@ export const addCourseStudent = async (courseCode: string, uid: string) => {
     return data;
   } catch (e) {
     console.log(`Already enrolled in course ${courseCode} :(`);
-    return false;
   }
 };
 
@@ -61,7 +60,7 @@ export const unenroll = async (courseId: string, uid: string) => {
     });
     return res.status;
   } catch (e) {
-    return false;
+    return -1;
   }
 };
 
