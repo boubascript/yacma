@@ -8,7 +8,7 @@ import {
   TextField,
   Grid,
 } from "@material-ui/core";
-import Navbar from "components/Navbar";
+//import Navbar from "components/Navbar";
 
 const DEFAULT_INFO: LoginData = {
   email: "foo@bar.baz",
@@ -38,8 +38,6 @@ const Login: React.FunctionComponent = () => {
 
   return (
     <div>
-      <Navbar />
-      <Typography variant="h1">Login Page</Typography>
       <Container maxWidth="sm">
         <form onSubmit={handleSubmit} noValidate>
           <Grid container spacing={2}>

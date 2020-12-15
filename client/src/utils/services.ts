@@ -47,6 +47,20 @@ export const addCourseStudent = async (courseCode: string, uid: string) => {
     return data;
   } catch (e) {
     console.log(`Already enrolled in course ${courseCode} :(`);
+  }
+};
+
+export const unenroll = async (courseId: string, uid: string) => {
+  try {
+    const { status } = await axios.post("api/courses/unenroll", {
+      data: {
+        courseId: courseId,
+        uid: uid,
+      },
+    });
+    return status === 204;
+  } catch (e) {
+    console.log(e);
     return false;
   }
 };

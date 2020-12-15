@@ -18,6 +18,7 @@ const App: React.FunctionComponent = () => {
 
   const addCourseContext = (newCourse: string) => {
     console.log(`NEW: ${newCourse}`);
+
     setUserData({
       ...userData!,
       courses: [...userData!.courses, newCourse],
@@ -31,6 +32,7 @@ const App: React.FunctionComponent = () => {
       ...userData!,
       courses: userData!.courses.filter((cid) => id !== cid),
     });
+    console.log("done deleteCourseContext");
   };
 
   useEffect(() => {

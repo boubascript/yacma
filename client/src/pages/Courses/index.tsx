@@ -58,7 +58,7 @@ const useStyles = makeStyles({
 });
 
 const Courses: React.FunctionComponent = () => {
-  const { userData } = useContext(UserContext);
+  const { userData, user, deleteCourseContext } = useContext(UserContext);
   const classes = useStyles();
   const [checked, setChecked] = React.useState(false);
   const [coursesData, setCoursesData] = useState<CourseData[]>([]);
@@ -70,15 +70,24 @@ const Courses: React.FunctionComponent = () => {
 
   const getAsyncCourses = async () => {
     if (userData) {
+      console.log("userData?.courses: ");
+      console.log(userData?.courses);
       const data = await getCourses(userData?.courses);
-      if (data) {
+
+      // if data is [], coursesData is not updated after removal
+      if (data || coursesData.length > 0 ) {
+        console.log("in data");
+        console.log("Data: ");
+        console.log(data);
         // @ts-ignore
         setCoursesData(data.courses?.map((doc) => doc as CourseData));
       }
+
+      console.log(coursesData);
     }
   };
 
-  useEffect(() => {
+useEffect(() => {
     getAsyncCourses();
   }, [userData]);
 
@@ -120,6 +129,8 @@ const Courses: React.FunctionComponent = () => {
             code={code}
             description={description}
             educator={educator}
+            uid={user!.uid}
+            refresh={forceRefresh}
           />
         ))}
       </div>

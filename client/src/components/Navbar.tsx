@@ -45,7 +45,7 @@ const Navbar: React.FunctionComponent = () => {
             YACMA{" "}
           </Link>
         </Typography>
-        {user ? (
+        {user && 
           <div>
             {" "}
             <Button color="inherit">
@@ -58,24 +58,7 @@ const Navbar: React.FunctionComponent = () => {
               Sign Out{" "}
             </Button>{" "}
           </div>
-        ) : (
-          <>
-            <Button color="inherit">
-              <Typography variant="h6">
-                <Link className={classes.navlink} to="/login">
-                  Login
-                </Link>
-              </Typography>
-            </Button>
-            <Button color="inherit">
-              <Typography variant="h6">
-                <Link className={classes.navlink} to="/register">
-                  Sign Up
-                </Link>
-              </Typography>
-            </Button>
-          </>
-        )}
+          }
       </Toolbar>
     </AppBar>
   );

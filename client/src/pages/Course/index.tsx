@@ -5,7 +5,7 @@ import { functions } from "config/firebase";
 import { CourseData, PostData } from "utils/types";
 import { Button, Card, Collapse, Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-import CourseHeader from './CourseHeader';
+import CourseHeader from "./CourseHeader";
 import Navbar from "components/Navbar";
 import Post from "pages/Post";
 import NewPost from "pages/NewPost";
@@ -24,13 +24,13 @@ const useStyles = makeStyles({
     backgroundColor: "#eceef8",
   },
   newPostCard: {
-    width:'80%',
+    width: "80%",
     minWidth: 350,
-    margin:'auto',
-    marginTop: '25px',
-    padding:'30px'
+    margin: "auto",
+    marginTop: "25px",
+    padding: "30px",
   },
-})
+});
 
 const Course: React.FunctionComponent<RouteComponentProps> = ({
   location: { search },
@@ -44,6 +44,10 @@ const Course: React.FunctionComponent<RouteComponentProps> = ({
   const [addingPost, setAddingPost] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const courseId = search.substring(1);
+
+  if (!userData?.courses.includes(courseId)) {
+    history.push("/courses");
+  }
 
   const getCourseInfo = async () => {
     if (courseId) {
@@ -106,35 +110,35 @@ const Course: React.FunctionComponent<RouteComponentProps> = ({
     <div className={classes.root}>
       <Navbar />
       {userData?.isAdmin && (
-        <div style={{marginTop:'10px'}}>
+        <div style={{ marginTop: "10px" }}>
           <Button variant="contained" color="secondary" onClick={removeCourse}>
             {isDeleting ? "Deleting Course..." : "Delete Course"}
           </Button>
         </div>
       )}
       <CourseHeader
-          name={(course && course?.name) || ""}
-          code={(course && course?.code) || ""}
-          educator={(course && course?.educator) || ""}
-          description={(course && course?.description) || ""}
+        name={(course && course?.name) || ""}
+        code={(course && course?.code) || ""}
+        educator={(course && course?.educator) || ""}
+        description={(course && course?.description) || ""}
       />
       <div>
         <Button
-            variant="contained"
-            color="primary"
-            onClick={() => {
-              toggleNewPost();
-            }}
-          >
-            Add Post
+          variant="contained"
+          color="primary"
+          onClick={() => {
+            toggleNewPost();
+          }}
+        >
+          Add Post
         </Button>
       </div>
       <Collapse in={addingPost}>
-          <NewPost
-            courseId={courseId}
-            exit={toggleNewPost}
-            refresh={refreshPosts}
-          />
+        <NewPost
+          courseId={courseId}
+          exit={toggleNewPost}
+          refresh={refreshPosts}
+        />
       </Collapse>
       <div className="posts">
         {posts?.map((doc, index) => (
