@@ -2,7 +2,7 @@ import { Card, CardContent, Typography, Button } from "@material-ui/core";
 import React, { useContext } from "react";
 import { useHistory } from "react-router-dom";
 import { makeStyles } from "@material-ui/core/styles";
-import DeleteIcon from '@material-ui/icons/Delete';
+import DeleteIcon from "@material-ui/icons/Delete";
 import { CourseData } from "utils/types";
 import { unenroll } from "utils/services";
 import { UserContext } from "utils/auth";
@@ -50,22 +50,30 @@ const useStyles = makeStyles({
 });
 
 const ClassCard: React.FC<ClassCardData> = ({
-  id, 
+  id,
   name,
   code,
   educator,
   description,
   uid,
-  refresh
+  refresh,
 }) => {
-  const { deleteCourseContext, userData } = useContext(UserContext);
+  const { deleteCourseContext } = useContext(UserContext);
   const history = useHistory();
   const classes = useStyles();
+
   const loadCourse = () => {
     history.push({
       pathname: "/coursepage",
       search: id,
     });
+  };
+
+  const unenrollCourse = async () => {
+    const isUnenrolled = await unenroll(id!, uid!);
+    if (isUnenrolled) {
+      deleteCourseContext(id!);
+    }
   };
 
   return (
@@ -77,29 +85,24 @@ const ClassCard: React.FC<ClassCardData> = ({
         </Typography>
         <Typography variant="h5"> Code: {code} </Typography>
         <Typography variant="h5">Professor: {educator}</Typography>
-        <Typography variant="h6" color="textSecondary">{description}</Typography>
+        <Typography variant="h6" color="textSecondary">
+          {description}
+        </Typography>
         <Button
           name={code}
           onClick={() => {
-            loadCourse(); 
-            }
-          }
+            loadCourse();
+          }}
         >
           Go To Course
-        </Button> <br></br>
-        <Button 
-       
-        color="secondary"
-        startIcon={<DeleteIcon />}
+        </Button>{" "}
+        <br></br>
+        <Button
+          color="secondary"
+          startIcon={<DeleteIcon />}
           name={code}
-          onClick={async () => {
-            const status = await unenroll(id!, uid!);
-            if (status == 204) {
-              deleteCourseContext(id!);
-            }
-          }
-        }
-          >       
+          onClick={unenrollCourse}
+        >
           Unenroll
         </Button>
       </CardContent>
