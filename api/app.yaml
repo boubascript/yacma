@@ -3,3 +3,8 @@ runtime: nodejs12
 
 env_variables:
   GOOGLE_APPLICATION_CREDENTIALS: "service-key.json"
+  REDISHOST: '10.87.236.195'
+  REDISPORT: '6379'
+
+vpc_access_connector:
+  name: 'projects/yacma-295322/locations/us-east1/connectors/yacma-connector'

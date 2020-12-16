@@ -59,7 +59,15 @@ const App: React.FunctionComponent = () => {
   }
 
   return (
-    <div style={{backgroundColor:'#eceef8', minHeight:'100vh', justifyContent: "center", alignItems: "center", textAlign: "center",}}>
+    <div
+      style={{
+        backgroundColor: "#eceef8",
+        minHeight: "100vh",
+        justifyContent: "center",
+        alignItems: "center",
+        textAlign: "center",
+      }}
+    >
       <BrowserRouter>
         <UserContext.Provider
           value={{ user, userData, addCourseContext, deleteCourseContext }}

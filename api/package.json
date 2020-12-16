@@ -18,10 +18,13 @@
     "deploy": "gcloud app deploy"
   },
   "devDependencies": {
+    "@types/async-redis": "^1.1.1",
     "@types/bcryptjs": "^2.4.2",
     "@types/express": "^4.17.7",
     "@types/morgan": "^1.9.2",
+    "@types/multer": "^1.4.5",
     "@types/node": "^14.0.20",
+    "@types/redis": "^2.8.28",
     "concurrently": "^5.2.0",
     "nodemon": "^2.0.4",
     "prettier": "^2.0.5",
@@ -30,6 +33,7 @@
   },
   "dependencies": {
     "@google-cloud/storage": "^5.6.0",
+    "async-redis": "^1.1.7",
     "axios": "^0.21.0",
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.19.0",
@@ -38,9 +42,8 @@
     "firebase-admin": "^9.4.1",
     "morgan": "^1.10.0",
     "multer": "^1.4.2",
-    "prettier": "^2.0.5",
+    "redis": "^3.0.2",
     "rimraf": "^3.0.2",
-    "tsconfig-paths": "^3.9.0",
-    "typescript": "^3.9.6"
+    "tsconfig-paths": "^3.9.0"
   }
 }
