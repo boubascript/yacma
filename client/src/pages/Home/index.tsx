@@ -29,8 +29,7 @@ const Home: React.FunctionComponent = () => {
       <img src={logoLink} /> <br></br>
       <Button onClick={() => setDisplay(1)}> Login </Button>
       <Button onClick={() => setDisplay(0)}> Register </Button>
-      { display ?  <Login/> : <Register/> }
-
+      {display ? <Login /> : <Register />}
     </div>
   );
 };

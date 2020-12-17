@@ -19,7 +19,7 @@ if (!firebase.apps.length) {
   firebase.initializeApp(config);
 }
 
-const functions = firebase.functions();
+const functions = firebase.app().functions("us-east1");
 
 if (window.location.hostname === "localhost") {
   functions.useEmulator("localhost", 5000);

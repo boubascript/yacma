@@ -1,8 +1,7 @@
 import express from "express";
 import bodyparser from "body-parser";
 import logger from "morgan";
-
-const multer = require("multer");
+import multer from "multer";
 
 require("dotenv").config();
 
@@ -10,6 +9,8 @@ import courseRouter from "./routes/courses";
 import postsRouter from "./routes/posts";
 import commentsRouter from "./routes/comments";
 import fileRouter from "./routes/file";
+
+import redisClient from "./config/redis";
 
 (async () => {
   try {
@@ -53,12 +54,14 @@ import fileRouter from "./routes/file";
     app.use("/api/file", fileRouter);
 
     // Routes
-    app.get("/", (req: express.Request, res: express.Response) => {
-      return res.send(`Hello YACMA!`);
-    });
 
-    app.get("/api", (req: express.Request, res: express.Response) => {
-      return res.json(`YACMA. It's on the syllabus.`);
+    app.get("/api", async (req: express.Request, res: express.Response) => {
+      try {
+        const visits = await redisClient.incr("visits");
+        return res.json(`YACMA. It's on the syllabus. ${visits} visits!`);
+      } catch (err) {
+        return res.status(500).json(err);
+      }
     });
 
     // Launch Server

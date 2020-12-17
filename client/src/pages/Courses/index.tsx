@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useContext } from "react";
 import {
+  Container,
+  Grid,
   Collapse,
   Card,
   Typography,
@@ -25,7 +27,7 @@ const useStyles = makeStyles({
     justifyContent: "center",
     alignItems: "center",
     textAlign: "center",
-    display:'flex'
+    display: "flex",
   },
   button: {
     margin: "20px",
@@ -70,25 +72,15 @@ const Courses: React.FunctionComponent = () => {
 
   const getAsyncCourses = async () => {
     if (userData) {
-      console.log("userData?.courses: ");
-      console.log(userData?.courses);
-      const data = await getCourses(userData?.courses);
-
-      // if data is [], coursesData is not updated after removal
-      if (data || coursesData.length > 0 ) {
-        console.log("in data");
-        console.log("Data: ");
-        console.log(data);
-        // @ts-ignore
-        setCoursesData(data.courses?.map((doc) => doc as CourseData));
-      }
-
-      console.log(coursesData);
+      const data: CourseData[] = await getCourses(userData?.courses);
+      setCoursesData(data);
     }
   };
 
-useEffect(() => {
-    getAsyncCourses();
+  useEffect(() => {
+    (async () => {
+      await getAsyncCourses();
+    })();
   }, [userData]);
 
   const handleClick = () => {
@@ -120,20 +112,22 @@ useEffect(() => {
         </Card>
       </Collapse>
 
-      <div className={classes.classCards}>
+      <Grid container className={classes.classCards}>
         {coursesData?.map(({ name, id, code, description, educator }) => (
-          <ClassCard
-            key={id}
-            name={name}
-            id={id}
-            code={code}
-            description={description}
-            educator={educator}
-            uid={user!.uid}
-            refresh={forceRefresh}
-          />
+          <Grid item>
+            <ClassCard
+              key={id}
+              name={name}
+              id={id}
+              code={code}
+              description={description}
+              educator={educator}
+              uid={user!.uid}
+              refresh={forceRefresh}
+            />
+          </Grid>
         ))}
-      </div>
+      </Grid>
     </div>
   );
 };

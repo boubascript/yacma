@@ -3,7 +3,13 @@ import { useHistory } from "react-router-dom";
 import { RouteComponentProps } from "react-router";
 import { functions } from "config/firebase";
 import { CourseData, PostData } from "utils/types";
-import { Button, Card, Collapse, Typography } from "@material-ui/core";
+import {
+  Button,
+  Card,
+  Collapse,
+  Typography,
+  CircularProgress,
+} from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import CourseHeader from "./CourseHeader";
 import Navbar from "components/Navbar";
@@ -111,9 +117,17 @@ const Course: React.FunctionComponent<RouteComponentProps> = ({
       <Navbar />
       {userData?.isAdmin && (
         <div style={{ marginTop: "10px" }}>
-          <Button variant="contained" color="secondary" onClick={removeCourse}>
-            {isDeleting ? "Deleting Course..." : "Delete Course"}
-          </Button>
+          {isDeleting ? (
+            <CircularProgress color="secondary" />
+          ) : (
+            <Button
+              variant="contained"
+              color="secondary"
+              onClick={removeCourse}
+            >
+              Delete Course
+            </Button>
+          )}
         </div>
       )}
       <CourseHeader

@@ -2,10 +2,18 @@ import React, { useState, useEffect, useContext } from "react";
 import { UserContext } from "utils/auth";
 import { PostData, CommentData } from "utils/types";
 import axios from "axios";
-import { Button, Card, CardHeader, Container, IconButton, Typography} from "@material-ui/core";
-import DeleteIcon from '@material-ui/icons/Delete';
-import EditIcon from '@material-ui/icons/Edit';
-import {makeStyles} from '@material-ui/core/styles';
+import {
+  Button,
+  Card,
+  CardHeader,
+  Container,
+  IconButton,
+  Typography,
+  CircularProgress,
+} from "@material-ui/core";
+import DeleteIcon from "@material-ui/icons/Delete";
+import EditIcon from "@material-ui/icons/Edit";
+import { makeStyles } from "@material-ui/core/styles";
 import Comment from "pages/Comment";
 import NewComment from "pages/NewComment";
 import NewPost from "pages/NewPost";
@@ -14,20 +22,20 @@ import { getComments } from "utils/services";
 
 const useStyles = makeStyles({
   button: {
-    marginLeft: '15%',
-    marginRight: '15%',
-    marginTop:'20px'
+    marginLeft: "15%",
+    marginRight: "15%",
+    marginTop: "20px",
   },
   postCard: {
-    width:'80%',
+    width: "80%",
     minWidth: 350,
-    margin:'auto',
-    marginTop: '25px',
-    padding:'30px',
-    paddingTop:'10px',
-    textAlign:'left'
+    margin: "auto",
+    marginTop: "25px",
+    padding: "30px",
+    paddingTop: "10px",
+    textAlign: "left",
   },
-})
+});
 
 interface PostProps {
   courseId: string;
@@ -81,49 +89,47 @@ const Post: React.FunctionComponent<PostProps> = ({
 
   // TODO: Find a better way to do this
   const refreshComments = async () => {
-    getAllComments();
+    await getAllComments();
   };
 
   const classes = useStyles();
 
-  const FileDisplay = (links:string) => {
-    if(!links){
+  const FileDisplay = (links: string) => {
+    if (!links) {
       return;
     }
-    const extension = links.split('.').pop();
-    if(!extension){
+    const extension = links.split(".").pop();
+    if (!extension) {
       return;
     }
-    const images = ['jpg', 'jpeg', 'png']
-    if(images.includes(extension)){
+    const images = ["jpg", "jpeg", "png"];
+    if (images.includes(extension)) {
       return (
-        <div style={{textAlign:'center'}}>
+        <div style={{ textAlign: "center" }}>
           <img src={links} title={`image${links}`}></img>
         </div>
-      )
+      );
     }
-    const videos = ['mp4', 'mov']
-    if(videos.includes(extension)){
+    const videos = ["mp4", "mov"];
+    if (videos.includes(extension)) {
       return (
-        <div style={{textAlign:'center'}}>
-        <video width="80%" controls>
-          <source src={links} type="video/mp4" />
-          Your browser does not support HTML video.
-        </video>
+        <div style={{ textAlign: "center" }}>
+          <video width="80%" controls>
+            <source src={links} type="video/mp4" />
+            Your browser does not support HTML video.
+          </video>
         </div>
-      )
+      );
     }
     return (
       <>
-        <Typography variant="subtitle1">
-            Attached:
-        </Typography>
+        <Typography variant="subtitle1">Attached:</Typography>
         <Typography variant="subtitle1">
           <a href={links}>{links}</a>
         </Typography>
       </>
-    )
-  }
+    );
+  };
 
   return (
     <>
@@ -131,28 +137,54 @@ const Post: React.FunctionComponent<PostProps> = ({
         {!updatingPost ? (
           <>
             <Card className={classes.postCard}>
-              <div style={{marginTop: '20px', borderColor:'#3f51b5', borderStyle:'solid', borderWidth:'2px', borderRadius:'5px', height:'50px'}}>
-                  <div style={{float:'left', display:'flex', marginTop:'5px', marginLeft:'10px'}}>
-                    <Typography variant="h4">
-                      {title}
-                    </Typography>
-                    <Typography style={{marginTop:'13px', marginLeft:'10px'}} variant="subtitle1" color="textSecondary">
-                      By {author}
-                    </Typography>
-                  </div>
-                  {userData?.firstName + " " + userData?.lastName === author && (
-                    <>
-                      <IconButton aria-label="settings"  onClick={remove} style={{float:'right'}}>
-                        <DeleteIcon />
-                      </IconButton>
-                      <IconButton aria-label="settings" onClick={() => toggleUpdatePost(true)}style={{float:'right'}}>
-                        <EditIcon />
-                      </IconButton>
-                    </>
-                  )}
+              <div
+                style={{
+                  marginTop: "20px",
+                  borderColor: "#3f51b5",
+                  borderStyle: "solid",
+                  borderWidth: "2px",
+                  borderRadius: "5px",
+                  height: "50px",
+                }}
+              >
+                <div
+                  style={{
+                    float: "left",
+                    display: "flex",
+                    marginTop: "5px",
+                    marginLeft: "10px",
+                  }}
+                >
+                  <Typography variant="h4">{title}</Typography>
+                  <Typography
+                    style={{ marginTop: "13px", marginLeft: "10px" }}
+                    variant="subtitle1"
+                    color="textSecondary"
+                  >
+                    By {author}
+                  </Typography>
+                </div>
+                {userData?.firstName + " " + userData?.lastName === author && (
+                  <>
+                    <IconButton
+                      aria-label="settings"
+                      onClick={remove}
+                      style={{ float: "right" }}
+                    >
+                      {isDeleting ? <CircularProgress /> : <DeleteIcon />}
+                    </IconButton>
+                    <IconButton
+                      aria-label="settings"
+                      onClick={() => toggleUpdatePost(true)}
+                      style={{ float: "right" }}
+                    >
+                      <EditIcon />
+                    </IconButton>
+                  </>
+                )}
               </div>
               <p>{description}</p>
-              
+
               {FileDisplay(links)}
 
               <div className="comments">
@@ -169,7 +201,7 @@ const Post: React.FunctionComponent<PostProps> = ({
                   ))}
               </div>
               {!addingComment ? (
-                <div style={{textAlign:'center'}}>
+                <div style={{ textAlign: "center" }}>
                   <Button
                     variant="contained"
                     color="primary"
@@ -184,7 +216,7 @@ const Post: React.FunctionComponent<PostProps> = ({
                     courseId={courseId}
                     postId={id}
                     exit={toggleNewComment}
-                    refresh={refreshComments}
+                    refresh={getAllComments}
                   />
                 )
               )}

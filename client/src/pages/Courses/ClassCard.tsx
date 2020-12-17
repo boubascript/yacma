@@ -5,7 +5,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import DeleteIcon from "@material-ui/icons/Delete";
 import { CourseData } from "utils/types";
 import { unenroll } from "utils/services";
-import { UserContext } from "utils/auth";
+import { getUserData, UserContext } from "utils/auth";
 
 interface ClassCardData extends CourseData {
   uid?: string;
@@ -58,7 +58,7 @@ const ClassCard: React.FC<ClassCardData> = ({
   uid,
   refresh,
 }) => {
-  const { deleteCourseContext } = useContext(UserContext);
+  const { userData, deleteCourseContext } = useContext(UserContext);
   const history = useHistory();
   const classes = useStyles();
 
@@ -97,14 +97,16 @@ const ClassCard: React.FC<ClassCardData> = ({
           Go To Course
         </Button>{" "}
         <br></br>
-        <Button
-          color="secondary"
-          startIcon={<DeleteIcon />}
-          name={code}
-          onClick={unenrollCourse}
-        >
-          Unenroll
-        </Button>
+        {!userData?.isAdmin && (
+          <Button
+            color="secondary"
+            startIcon={<DeleteIcon />}
+            name={code}
+            onClick={unenrollCourse}
+          >
+            Unenroll
+          </Button>
+        )}
       </CardContent>
     </Card>
   );

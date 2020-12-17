@@ -8,18 +8,18 @@ import axios from "axios";
 
 const useStyles = makeStyles({
   button: {
-    marginLeft: '15%',
-    marginRight: '15%',
-    marginTop:'20px'
+    marginLeft: "15%",
+    marginRight: "15%",
+    marginTop: "20px",
   },
   newPostCard: {
-    width:'80%',
+    width: "80%",
     minWidth: 350,
-    margin:'auto',
-    marginTop: '25px',
-    padding:'30px'
+    margin: "auto",
+    marginTop: "25px",
+    padding: "30px",
   },
-})
+});
 
 // TODO: Update links to media object type
 const DEFAULT_POST_DATA: PostData = {
@@ -48,7 +48,6 @@ const NewPost: React.FunctionComponent<NewPostProps> = ({
   const classes = useStyles();
 
   const [selectedFile, setSelectedFile] = useState<File>();
-
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setPostData((prevState) => ({
@@ -140,10 +139,20 @@ const NewPost: React.FunctionComponent<NewPostProps> = ({
         </Grid>
 
         <br></br>
-        <Button variant="contained" color="primary" className={classes.button} onClick={cancel}>
+        <Button
+          variant="contained"
+          color="primary"
+          className={classes.button}
+          onClick={cancel}
+        >
           Cancel
         </Button>
-        <Button type="submit" variant="contained" className={classes.button} color="primary">
+        <Button
+          type="submit"
+          variant="contained"
+          className={classes.button}
+          color="primary"
+        >
           {post ? "Update" : "Create Post"}
         </Button>
       </form>

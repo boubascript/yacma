@@ -4,9 +4,17 @@ import { deleteComment } from "utils/services";
 import { CommentData } from "utils/types";
 import NewComment from "../NewComment";
 
-import { Button, Container, Dialog, DialogActions, DialogTitle, Typography, IconButton } from "@material-ui/core";
-import DeleteIcon from '@material-ui/icons/Delete';
-import EditIcon from '@material-ui/icons/Edit';
+import {
+  Button,
+  Container,
+  Dialog,
+  DialogActions,
+  DialogTitle,
+  Typography,
+  IconButton,
+} from "@material-ui/core";
+import DeleteIcon from "@material-ui/icons/Delete";
+import EditIcon from "@material-ui/icons/Edit";
 import axios from "axios";
 
 interface CommentProps {
@@ -44,23 +52,27 @@ const Comment: React.FunctionComponent<CommentProps> = ({
 
   return (
     <>
-      <div style={{borderTop:'1px solid rgb(217, 217, 217)'}}>
-      {!isUpdating ? (
-        <Container>
-          <div>
-              <div style={{marginTop:'5px', marginLeft:'10px'}}>
+      <div style={{ borderTop: "1px solid rgb(217, 217, 217)" }}>
+        {!isUpdating ? (
+          <Container>
+            <div>
+              <div style={{ marginTop: "5px", marginLeft: "10px" }}>
                 <Typography variant="h6">
                   <b>{author}</b>
                 </Typography>
-                <Typography variant="h6">
-                  {comment}
-                </Typography>
+                <Typography variant="h6">{comment}</Typography>
               </div>
-              <IconButton aria-label="settings" onClick={() => toggleUpdateComment(true)}>
+              <IconButton
+                aria-label="settings"
+                onClick={() => toggleUpdateComment(true)}
+              >
                 <EditIcon />
               </IconButton>
               {!isDeleting ? (
-                <IconButton aria-label="settings"  onClick={() => toggleDeleteDialog(true)}>
+                <IconButton
+                  aria-label="settings"
+                  onClick={() => toggleDeleteDialog(true)}
+                >
                   <DeleteIcon />
                 </IconButton>
               ) : (
@@ -87,18 +99,17 @@ const Comment: React.FunctionComponent<CommentProps> = ({
                   </DialogActions>
                 </Dialog>
               )}
-          </div>
-          
-        </Container>
-      ) : (
-        <NewComment
-          courseId={courseId}
-          exit={toggleUpdateComment}
-          refresh={refresh}
-          postId={postId}
-          comment={commentData}
-        />
-      )}
+            </div>
+          </Container>
+        ) : (
+          <NewComment
+            courseId={courseId}
+            exit={toggleUpdateComment}
+            refresh={refresh}
+            postId={postId}
+            comment={commentData}
+          />
+        )}
       </div>
     </>
   );
